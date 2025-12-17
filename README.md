@@ -542,9 +542,15 @@ Copy the `.claude/` directory to add domain expertise to any project.
 
 Contributions welcome! See [DIRECTORY.md](.claude/DIRECTORY.md) for complete documentation of the structure.
 
+## Trademarks
+
+All third-party trademarks, service marks, and company names referenced in this package are the property of their respective owners. See [TRADEMARKS.md](./TRADEMARKS.md) for details.
+
+This package is not affiliated with, endorsed by, or sponsored by Stripe, Anthropic, Supabase, Expo, Plaid, Shopify, Whop, or any other referenced service provider.
+
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT - See [LICENSE](./LICENSE) for details.
 
 ---
 
