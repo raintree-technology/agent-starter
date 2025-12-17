@@ -1,0 +1,8 @@
+{
+  "id": "plaid-auth",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["plaid", "auth", "ach", "account-verification"],
+  "dependencies": ["plaid"],
+  "docs": null
+}

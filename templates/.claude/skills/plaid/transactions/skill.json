@@ -1,0 +1,8 @@
+{
+  "id": "plaid-transactions",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["plaid", "transactions", "history", "sync"],
+  "dependencies": ["plaid"],
+  "docs": null
+}

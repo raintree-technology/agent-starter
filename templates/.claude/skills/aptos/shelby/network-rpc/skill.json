@@ -1,0 +1,8 @@
+{
+  "id": "shelby-network",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["shelby", "rpc", "network", "cavalier"],
+  "dependencies": ["shelby"],
+  "docs": null
+}

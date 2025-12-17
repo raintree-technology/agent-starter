@@ -1,0 +1,12 @@
+{
+  "id": "shopify",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["shopify", "e-commerce", "store", "graphql", "liquid", "hydrogen"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://shopify.dev/docs",
+    "lastPulled": null,
+    "hash": null
+  }
+}

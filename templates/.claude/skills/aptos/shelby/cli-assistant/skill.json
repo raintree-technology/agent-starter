@@ -1,0 +1,8 @@
+{
+  "id": "shelby-cli",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["shelby", "cli", "command-line"],
+  "dependencies": ["shelby"],
+  "docs": null
+}

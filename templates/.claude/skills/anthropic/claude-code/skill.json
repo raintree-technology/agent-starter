@@ -1,0 +1,12 @@
+{
+  "id": "claude-code",
+  "version": "1.0.0",
+  "category": "ai",
+  "keywords": ["claude-code", "skills", "commands", "hooks", "mcp"],
+  "dependencies": ["anthropic"],
+  "docs": {
+    "url": "https://docs.anthropic.com/en/docs/claude-code",
+    "lastPulled": null,
+    "hash": null
+  }
+}

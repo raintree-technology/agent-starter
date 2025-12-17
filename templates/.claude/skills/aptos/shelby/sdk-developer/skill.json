@@ -1,0 +1,8 @@
+{
+  "id": "shelby-sdk",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["shelby", "sdk", "typescript", "upload", "download"],
+  "dependencies": ["shelby"],
+  "docs": null
+}

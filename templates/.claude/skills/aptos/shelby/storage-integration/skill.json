@@ -1,0 +1,8 @@
+{
+  "id": "shelby-storage",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["shelby", "storage", "integration", "migration"],
+  "dependencies": ["shelby"],
+  "docs": null
+}

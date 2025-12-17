@@ -1,0 +1,12 @@
+{
+  "id": "stripe",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["stripe", "payments", "subscriptions", "billing", "checkout", "webhooks"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://docs.stripe.com",
+    "lastPulled": null,
+    "hash": null
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "name": "create-claude-starter",
+  "version": "1.0.0",
+  "description": "Production-ready Claude Code configuration with 40+ skills, TOON format support, and docpull integration",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "claude-starter": "bin/cli.js",
+    "create-claude-starter": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "templates/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "lint": "eslint src/",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "ai",
+    "llm",
+    "anthropic",
+    "skills",
+    "starter",
+    "template",
+    "toon",
+    "docpull"
+  ],
+  "author": "Raintree",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raintree/claude-starter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/raintree/claude-starter/issues"
+  },
+  "homepage": "https://github.com/raintree/claude-starter#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^9.3.0",
+    "ora": "^8.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0"
+  }
+}

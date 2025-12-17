@@ -1,0 +1,12 @@
+{
+  "id": "decibel",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["decibel", "perpetuals", "trading", "aptos", "orderbook"],
+  "dependencies": ["aptos"],
+  "docs": {
+    "url": "https://docs.decibel.trading",
+    "lastPulled": null,
+    "hash": null
+  }
+}

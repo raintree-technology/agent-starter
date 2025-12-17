@@ -1,0 +1,8 @@
+{
+  "id": "aptos-dapp-integration",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "dapp", "petra", "wallet", "web3"],
+  "dependencies": ["aptos"],
+  "docs": null
+}

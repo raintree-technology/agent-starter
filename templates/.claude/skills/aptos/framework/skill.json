@@ -1,0 +1,8 @@
+{
+  "id": "aptos-framework",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "framework", "standard-library", "coin"],
+  "dependencies": ["aptos"],
+  "docs": null
+}

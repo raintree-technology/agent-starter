@@ -1,0 +1,8 @@
+{
+  "id": "claude-settings-expert",
+  "version": "1.0.0",
+  "category": "ai",
+  "keywords": ["claude-code", "settings", "configuration"],
+  "dependencies": ["claude-code"],
+  "docs": null
+}

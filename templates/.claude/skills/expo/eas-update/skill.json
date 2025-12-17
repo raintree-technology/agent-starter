@@ -1,0 +1,8 @@
+{
+  "id": "expo-eas-update",
+  "version": "1.0.0",
+  "category": "mobile",
+  "keywords": ["expo", "eas", "update", "ota"],
+  "dependencies": ["expo"],
+  "docs": null
+}

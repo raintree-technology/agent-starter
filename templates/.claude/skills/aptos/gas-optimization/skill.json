@@ -1,0 +1,8 @@
+{
+  "id": "aptos-gas-optimization",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "gas", "optimization", "profiling"],
+  "dependencies": ["aptos"],
+  "docs": null
+}

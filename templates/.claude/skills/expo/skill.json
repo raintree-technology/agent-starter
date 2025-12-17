@@ -1,0 +1,12 @@
+{
+  "id": "expo",
+  "version": "1.0.0",
+  "category": "mobile",
+  "keywords": ["expo", "react-native", "mobile", "eas", "ios", "android"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://docs.expo.dev",
+    "lastPulled": null,
+    "hash": null
+  }
+}

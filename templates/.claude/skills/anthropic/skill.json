@@ -1,0 +1,12 @@
+{
+  "id": "anthropic",
+  "version": "1.0.0",
+  "category": "ai",
+  "keywords": ["anthropic", "claude", "api", "messages", "embeddings", "prompt-caching"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://docs.anthropic.com",
+    "lastPulled": null,
+    "hash": null
+  }
+}

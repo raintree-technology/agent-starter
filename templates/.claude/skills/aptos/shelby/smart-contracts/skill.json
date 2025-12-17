@@ -1,0 +1,8 @@
+{
+  "id": "shelby-contracts",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["shelby", "contracts", "move", "micropayment"],
+  "dependencies": ["shelby"],
+  "docs": null
+}

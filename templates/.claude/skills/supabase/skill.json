@@ -1,0 +1,12 @@
+{
+  "id": "supabase",
+  "version": "1.0.0",
+  "category": "backend",
+  "keywords": ["supabase", "postgresql", "auth", "realtime", "storage", "edge-functions"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://supabase.com/docs",
+    "lastPulled": null,
+    "hash": null
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "ios",
+  "version": "1.0.0",
+  "category": "mobile",
+  "keywords": ["ios", "swift", "swiftui", "uikit", "xcode", "apple"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://developer.apple.com/documentation",
+    "lastPulled": null,
+    "hash": null
+  }
+}

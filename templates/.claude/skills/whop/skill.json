@@ -1,0 +1,12 @@
+{
+  "id": "whop",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["whop", "memberships", "courses", "communities", "digital-products"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://docs.whop.com",
+    "lastPulled": null,
+    "hash": null
+  }
+}

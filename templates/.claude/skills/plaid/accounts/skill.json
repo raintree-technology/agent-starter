@@ -1,0 +1,8 @@
+{
+  "id": "plaid-accounts",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["plaid", "accounts", "balances", "data"],
+  "dependencies": ["plaid"],
+  "docs": null
+}

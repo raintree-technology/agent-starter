@@ -1,0 +1,12 @@
+{
+  "id": "aptos",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "move", "blockchain", "smart-contracts", "web3"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://aptos.dev/docs",
+    "lastPulled": null,
+    "hash": null
+  }
+}

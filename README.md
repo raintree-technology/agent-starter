@@ -4,10 +4,30 @@ A starter pack for Claude Code.
 
 Drop it into any project to get 40+ skills, TOON tools, and a clean pattern for extending Claude Code.
 
+[![npm version](https://img.shields.io/npm/v/create-claude-starter.svg)](https://www.npmjs.com/package/create-claude-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-%3E%3D1.0.0-blue)](https://claude.com/claude-code)
 [![TOON v2.0](https://img.shields.io/badge/TOON-v2.0-brightgreen)](https://toonformat.dev)
-[![Zig](https://img.shields.io/badge/Zig-0.14.0-orange)](https://ziglang.org)
+
+---
+
+## Quick Install (NPM)
+
+```bash
+# Install to current project
+npx create-claude-starter
+
+# Or with specific skills
+npx create-claude-starter --skills stripe,supabase
+
+# Or with a profile
+npx create-claude-starter --profile web-saas
+```
+
+Then pull documentation:
+```bash
+npx claude-starter docs pull stripe
+```
 
 ---
 
@@ -207,7 +227,49 @@ Configuration files, not application code.
 
 ## 5. Quick Start
 
-### Option 1: Use directly
+### Option 1: NPM (Recommended)
+
+```bash
+# Install everything
+npx create-claude-starter
+
+# Install with specific skills only
+npx create-claude-starter --skills stripe,supabase,expo
+
+# Install with a preset profile
+npx create-claude-starter --profile web-saas     # stripe, supabase, expo
+npx create-claude-starter --profile blockchain   # aptos, shelby, decibel
+npx create-claude-starter --profile minimal      # toon-formatter only
+```
+
+**Manage documentation:**
+```bash
+# Pull docs for specific skills
+npx claude-starter docs pull stripe
+
+# Pull all documentation
+npx claude-starter docs pull
+
+# Check documentation status
+npx claude-starter docs status
+
+# Update stale docs (>7 days old)
+npx claude-starter docs update
+```
+
+**Other commands:**
+```bash
+# List all available skills
+npx claude-starter list
+
+# Add skills to existing setup
+npx claude-starter add expo ios
+
+# Update installed skills
+npx claude-starter update
+```
+
+### Option 2: Git clone
 
 ```bash
 git clone https://github.com/yourusername/claude-starter.git
@@ -215,34 +277,18 @@ cd claude-starter
 
 # Skills work immediately - just start using Claude
 # Ask about Stripe, Whop, Aptos, Supabase - skills auto-activate
-
-# Try TOON tools
-echo '[{"id":1,"name":"Alice"},{"id":2,"name":"Bob"}]' > test.json
-# Convert to TOON: /convert-to-toon test.json
 ```
 
-**Optional:** Pull full API documentation for comprehensive reference:
-```bash
-pipx install docpull
-docpull https://docs.stripe.com -o .claude/skills/stripe/docs      # 3,253 files
-docpull https://supabase.com/docs -o .claude/skills/supabase/docs  # 2,616 files
-# See Documentation Setup below for all available docs
-```
-
-### Option 2: Copy to your project
+### Option 3: Copy manually
 
 ```bash
 cp -r claude-starter/.claude /path/to/your-project/
 cd /path/to/your-project
 
 # Skills work immediately - start using Claude
-
-# Optional: Pull full API docs
-pipx install docpull
-docpull https://docs.stripe.com -o .claude/skills/stripe/docs
 ```
 
-### Option 3: Pick what you need
+### Option 4: Pick what you need
 
 ```bash
 # Just payment processing

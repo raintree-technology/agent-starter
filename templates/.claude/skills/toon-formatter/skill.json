@@ -1,0 +1,8 @@
+{
+  "id": "toon-formatter",
+  "version": "1.0.0",
+  "category": "data",
+  "keywords": ["toon", "format", "token", "optimization", "json", "data"],
+  "dependencies": [],
+  "docs": null
+}

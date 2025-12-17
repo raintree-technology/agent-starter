@@ -1,0 +1,8 @@
+{
+  "id": "aptos-move-testing",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "move", "testing", "unit-tests"],
+  "dependencies": ["aptos"],
+  "docs": null
+}

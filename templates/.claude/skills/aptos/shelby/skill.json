@@ -1,0 +1,8 @@
+{
+  "id": "shelby",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["shelby", "storage", "blob", "decentralized", "aptos"],
+  "dependencies": ["aptos"],
+  "docs": null
+}

@@ -1,0 +1,8 @@
+{
+  "id": "expo-router",
+  "version": "1.0.0",
+  "category": "mobile",
+  "keywords": ["expo", "router", "navigation", "file-based"],
+  "dependencies": ["expo"],
+  "docs": null
+}

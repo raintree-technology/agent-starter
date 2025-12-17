@@ -1,0 +1,8 @@
+{
+  "id": "shelby-dapp",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["shelby", "dapp", "react", "vue", "browser"],
+  "dependencies": ["shelby"],
+  "docs": null
+}

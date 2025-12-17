@@ -1,0 +1,8 @@
+{
+  "id": "plaid-identity",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["plaid", "identity", "kyc", "verification"],
+  "dependencies": ["plaid"],
+  "docs": null
+}

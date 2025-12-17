@@ -1,0 +1,12 @@
+{
+  "id": "plaid",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["plaid", "banking", "financial-data", "transactions", "ach"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://plaid.com/docs",
+    "lastPulled": null,
+    "hash": null
+  }
+}
