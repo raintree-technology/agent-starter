@@ -14,7 +14,7 @@ export async function init(dir = '.', options = {}) {
   const targetDir = resolve(dir);
   const claudeDir = resolve(targetDir, '.claude');
 
-  console.log(chalk.bold('\n🚀 Claude Starter\n'));
+  console.log(chalk.bold('\nClaude Starter\n'));
 
   // Check if .claude already exists
   if (await pathExists(claudeDir)) {
@@ -194,7 +194,7 @@ export async function init(dir = '.', options = {}) {
     }
 
     // Success message
-    console.log('\n' + chalk.green('✓') + ' Claude starter installed successfully!\n');
+    console.log('\n' + chalk.green('Claude starter installed successfully.') + '\n');
     console.log(chalk.bold('Next steps:'));
     console.log(chalk.dim('  1. Pull documentation for skills you need:'));
     console.log(`     ${chalk.cyan('npx claude-starter docs pull stripe')}`);

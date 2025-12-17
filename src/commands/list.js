@@ -17,7 +17,7 @@ export async function list(options = {}) {
     return;
   }
 
-  console.log(chalk.bold('\n📚 Available Skills\n'));
+  console.log(chalk.bold('\nAvailable Skills\n'));
 
   let skills = manifest.skills;
 
@@ -70,7 +70,7 @@ export async function list(options = {}) {
         docsStatus = chalk.dim(` [docs: ${skill.docs.files} files]`);
       }
 
-      const installedMark = isInstalled ? chalk.green('✓') : chalk.dim('○');
+      const installedMark = isInstalled ? chalk.green('[installed]') : chalk.dim('[not installed]');
       const name = skill.id.padEnd(25);
       const deps = skill.dependencies?.length
         ? chalk.dim(` → ${skill.dependencies.join(', ')}`)

@@ -181,11 +181,11 @@ async function pullDocs(skillId, claudeDir, options) {
   console.log("\n" + chalk.dim("─".repeat(40)));
   if (results.success.length > 0) {
     console.log(
-      chalk.green(`✓ Successfully pulled: ${results.success.length}`),
+      chalk.green(`Successfully pulled: ${results.success.length}`),
     );
   }
   if (results.failed.length > 0) {
-    console.log(chalk.red(`✗ Failed: ${results.failed.length}`));
+    console.log(chalk.red(`Failed: ${results.failed.length}`));
   }
   console.log("");
 }
@@ -234,7 +234,7 @@ async function updateDocs(claudeDir, options) {
   );
 
   for (const { skill, reason } of staleSkills) {
-    console.log(chalk.yellow(`  ○ ${skill.id} (${reason})`));
+    console.log(chalk.yellow(`  - ${skill.id} (${reason})`));
   }
 
   console.log("");
@@ -256,7 +256,7 @@ async function updateDocs(claudeDir, options) {
 }
 
 async function showStatus(skillId, claudeDir) {
-  console.log(chalk.bold("\n📊 Documentation Status\n"));
+  console.log(chalk.bold("\nDocumentation Status\n"));
 
   const manifest = readManifest(getTemplatesDir());
 
@@ -338,7 +338,7 @@ async function syncDocs(claudeDir, options) {
   const staleSkills = await getStaleSkills(staleDays);
 
   if (staleSkills.length === 0) {
-    console.log(chalk.green("✓ All documentation is up to date!\n"));
+    console.log(chalk.green("All documentation is up to date.\n"));
     return;
   }
 
@@ -372,10 +372,10 @@ async function syncDocs(claudeDir, options) {
 
   // Summary
   console.log("\n" + chalk.dim("─".repeat(40)));
-  console.log(chalk.green(`✓ Updated: ${results.success.length} skills`));
+  console.log(chalk.green(`Updated: ${results.success.length} skills`));
   if (results.failed.length > 0) {
-    console.log(chalk.red(`✗ Failed: ${results.failed.length} skills`));
+    console.log(chalk.red(`Failed: ${results.failed.length} skills`));
   }
-  console.log(chalk.dim(`\n💡 Tip: Run this periodically to keep docs fresh`));
+  console.log(chalk.dim(`\nTip: Run this periodically to keep docs fresh`));
   console.log(chalk.dim(`   Or add to cron: 0 0 * * 0 (weekly on Sunday)\n`));
 }

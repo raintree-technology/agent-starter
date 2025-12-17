@@ -86,13 +86,13 @@ export async function update(skillIds = [], options = {}) {
   console.log('\n' + chalk.dim('─'.repeat(40)));
 
   if (results.updated.length > 0) {
-    console.log(chalk.green(`✓ Updated: ${results.updated.length}`));
+    console.log(chalk.green(`Updated: ${results.updated.length}`));
   }
   if (results.skipped.length > 0) {
-    console.log(chalk.dim(`○ Skipped: ${results.skipped.length}`));
+    console.log(chalk.dim(`Skipped: ${results.skipped.length}`));
   }
   if (results.failed.length > 0) {
-    console.log(chalk.red(`✗ Failed: ${results.failed.length}`));
+    console.log(chalk.red(`Failed: ${results.failed.length}`));
   }
 
   console.log('');

@@ -50,7 +50,7 @@ export async function copyAll(targetDir, options = {}) {
       try {
         const stats = await lstat(src);
         if (stats.isSymbolicLink()) {
-          console.warn(chalk.yellow(`⚠️  Skipping symlink: ${src}`));
+          console.warn(chalk.yellow(`Warning: Skipping symlink: ${src}`));
           return false;
         }
       } catch {
@@ -114,7 +114,7 @@ export async function copySkill(targetDir, skillPath, options = {}) {
       try {
         const stats = await lstat(src);
         if (stats.isSymbolicLink()) {
-          console.warn(chalk.yellow(`⚠️  Skipping symlink: ${src}`));
+          console.warn(chalk.yellow(`Warning: Skipping symlink: ${src}`));
           return false;
         }
       } catch {
@@ -139,7 +139,7 @@ export async function copySkills(targetDir, skillPaths, options = {}) {
   const results = [];
 
   if (!skillPaths || skillPaths.length === 0) {
-    console.log(chalk.yellow('⚠️  No skills to copy'));
+    console.log(chalk.yellow('Warning: No skills to copy'));
     return results;
   }
 
@@ -148,7 +148,7 @@ export async function copySkills(targetDir, skillPaths, options = {}) {
       const destPath = await copySkill(targetDir, skillPath, options);
       results.push({ skillPath, destPath, success: true });
     } catch (error) {
-      console.error(chalk.red(`✗ Failed to copy ${skillPath}: ${error.message}`));
+      console.error(chalk.red(`Failed to copy ${skillPath}: ${error.message}`));
       results.push({ skillPath, error: error.message, success: false });
     }
   }
@@ -214,7 +214,7 @@ export async function copyCommands(targetDir, commandNames, options = {}) {
     if (await pathExists(srcPath)) {
       await copy(srcPath, destPath, { overwrite: options.force });
     } else {
-      console.warn(chalk.yellow(`⚠️  Command not found: ${commandName}`));
+      console.warn(chalk.yellow(`Warning: Command not found: ${commandName}`));
     }
   }
 }
@@ -239,7 +239,7 @@ export async function copyHooks(targetDir, options = {}) {
       try {
         const stats = await lstat(src);
         if (stats.isSymbolicLink()) {
-          console.warn(chalk.yellow(`⚠️  Skipping symlink: ${src}`));
+          console.warn(chalk.yellow(`Warning: Skipping symlink: ${src}`));
           return false;
         }
       } catch {

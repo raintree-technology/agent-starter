@@ -77,16 +77,16 @@ export async function add(skillIds, options = {}) {
     // Report results
     if (results.success.length > 0) {
       spinner.succeed(`Added ${results.success.length} skill(s)`);
-      console.log(chalk.green(`  ✓ ${results.success.join(', ')}`));
+      console.log(chalk.green(`  Added: ${results.success.join(', ')}`));
     }
 
     if (results.skipped.length > 0) {
-      console.log(chalk.yellow(`  ○ Skipped (already installed): ${results.skipped.join(', ')}`));
+      console.log(chalk.yellow(`  Skipped (already installed): ${results.skipped.join(', ')}`));
       console.log(chalk.dim('    Use --force to overwrite'));
     }
 
     if (results.failed.length > 0) {
-      console.log(chalk.red(`  ✗ Failed:`));
+      console.log(chalk.red(`  Failed:`));
       for (const f of results.failed) {
         console.log(chalk.red(`    - ${f.id}: ${f.error}`));
       }
