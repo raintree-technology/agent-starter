@@ -1,0 +1,34 @@
+{
+  "id": "plaid-identity",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["plaid", "identity", "kyc", "verification"],
+  "dependencies": ["plaid"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["identity_verification", "kyc", "user_verification"],
+    "secondary": ["personal_info", "addresses", "phone_numbers"],
+    "domains": ["fintech", "compliance", "verification", "security"]
+  },
+  "capabilities": {
+    "inputs": ["access_token", "verification_requirements"],
+    "outputs": ["identity_data", "verification_status", "personal_info"],
+    "actions": ["verify_identity", "retrieve_personal_data", "validate_info", "perform_kyc", "match_identity"]
+  },
+  "orchestration": {
+    "priority": 6,
+    "cooperationLevel": "medium",
+    "parallelizable": true,
+    "estimatedTokens": 3500,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["plaid"],
+    "complements": ["plaid-auth", "supabase"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["supabase"],
+    "canConsumeDataFrom": ["plaid"],
+    "sharedContext": ["user_id", "identity_data", "verification_status", "access_token"]
+  }
+}

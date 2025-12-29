@@ -1,0 +1,38 @@
+{
+  "id": "aptos",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "move", "blockchain", "smart-contracts", "web3"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://aptos.dev/docs",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["blockchain", "smart_contracts", "layer1"],
+    "secondary": ["move_language", "defi", "nfts", "consensus"],
+    "domains": ["blockchain", "web3", "fintech", "decentralized"]
+  },
+  "capabilities": {
+    "inputs": ["move_code", "transaction_data", "account_info"],
+    "outputs": ["deployed_contracts", "transaction_results", "blockchain_state"],
+    "actions": ["deploy_contract", "execute_transaction", "query_blockchain", "manage_accounts", "mint_tokens"]
+  },
+  "orchestration": {
+    "priority": 8,
+    "cooperationLevel": "medium",
+    "parallelizable": true,
+    "estimatedTokens": 6000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["aptos-move-language", "aptos-framework"],
+    "complements": ["shelby", "decibel"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["shelby", "decibel", "supabase"],
+    "canConsumeDataFrom": ["supabase"],
+    "sharedContext": ["account_address", "transaction_hash", "module_address", "api_key"]
+  }
+}

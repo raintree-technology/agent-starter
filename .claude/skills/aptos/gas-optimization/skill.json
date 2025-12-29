@@ -1,0 +1,34 @@
+{
+  "id": "aptos-gas-optimization",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "gas", "optimization", "profiling"],
+  "dependencies": ["aptos"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["gas_optimization", "performance", "cost_reduction"],
+    "secondary": ["profiling", "benchmarking", "efficiency"],
+    "domains": ["blockchain", "optimization", "cost_management"]
+  },
+  "capabilities": {
+    "inputs": ["move_code", "gas_metrics"],
+    "outputs": ["optimized_code", "gas_reports", "recommendations"],
+    "actions": ["profile_gas", "optimize_code", "benchmark_functions", "reduce_costs", "analyze_patterns"]
+  },
+  "orchestration": {
+    "priority": 5,
+    "cooperationLevel": "medium",
+    "parallelizable": true,
+    "estimatedTokens": 3500,
+    "activationThreshold": 0.65
+  },
+  "dependencies": {
+    "recommended": ["aptos", "aptos-move-language"],
+    "complements": ["aptos-move-testing"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["aptos-move-language"],
+    "canConsumeDataFrom": ["aptos-move-language", "aptos-move-testing"],
+    "sharedContext": ["gas_data", "performance_metrics", "optimization_opportunities"]
+  }
+}

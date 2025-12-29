@@ -1,0 +1,38 @@
+{
+  "id": "stripe",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["stripe", "payments", "subscriptions", "billing", "checkout", "webhooks"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://docs.stripe.com",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["payment_processing", "subscription_billing", "checkout_flows"],
+    "secondary": ["webhooks", "customer_management", "invoice_generation", "recurring_payments"],
+    "domains": ["fintech", "saas", "e-commerce", "marketplace"]
+  },
+  "capabilities": {
+    "inputs": ["payment_intent", "customer_data", "subscription_plan", "price_info"],
+    "outputs": ["payment_confirmation", "subscription_object", "customer_object", "webhook_event"],
+    "actions": ["process_payment", "create_subscription", "manage_customer", "handle_webhook", "generate_invoice"]
+  },
+  "orchestration": {
+    "priority": 8,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 5000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["supabase"],
+    "complements": ["whop", "shopify", "plaid"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["supabase", "plaid", "whop"],
+    "canConsumeDataFrom": ["supabase", "expo", "shopify"],
+    "sharedContext": ["user_id", "customer_id", "payment_method", "subscription_id"]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "expo",
+  "version": "1.0.0",
+  "category": "mobile",
+  "keywords": ["expo", "react-native", "mobile", "eas", "ios", "android"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://docs.expo.dev",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["mobile_development", "cross_platform", "react_native"],
+    "secondary": ["eas_build", "eas_update", "expo_router", "native_modules"],
+    "domains": ["mobile", "ios", "android", "cross-platform"]
+  },
+  "capabilities": {
+    "inputs": ["react_component", "navigation_config", "build_config", "api_endpoint"],
+    "outputs": ["mobile_app", "native_build", "app_update", "deeplink_config"],
+    "actions": ["create_screen", "setup_navigation", "configure_build", "deploy_update", "setup_auth"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 4500,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["supabase", "stripe"],
+    "complements": ["anthropic", "whop"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["supabase", "stripe", "anthropic"],
+    "canConsumeDataFrom": ["supabase", "stripe", "whop"],
+    "sharedContext": ["user_id", "device_id", "app_config", "navigation_state"]
+  }
+}

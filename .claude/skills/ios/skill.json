@@ -1,0 +1,38 @@
+{
+  "id": "ios",
+  "version": "1.0.0",
+  "category": "mobile",
+  "keywords": ["ios", "swift", "swiftui", "uikit", "xcode", "apple"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://developer.apple.com/documentation",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["ios_development", "mobile_app", "apple_platform"],
+    "secondary": ["swiftui", "uikit", "app_store", "push_notifications", "in-app_purchases"],
+    "domains": ["mobile", "fintech", "saas", "consumer"]
+  },
+  "capabilities": {
+    "inputs": ["app_requirements", "design_specs", "api_endpoints"],
+    "outputs": ["ios_app", "app_bundle", "ui_components"],
+    "actions": ["build_ui", "implement_navigation", "integrate_apis", "handle_notifications", "app_store_submission"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "medium",
+    "parallelizable": true,
+    "estimatedTokens": 5000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["expo"],
+    "complements": ["supabase", "stripe", "anthropic"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["supabase", "stripe"],
+    "canConsumeDataFrom": ["supabase", "stripe", "expo", "anthropic"],
+    "sharedContext": ["user_id", "api_keys", "auth_tokens", "device_id"]
+  }
+}

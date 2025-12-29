@@ -1,0 +1,38 @@
+{
+  "id": "supabase",
+  "version": "1.0.0",
+  "category": "backend",
+  "keywords": ["supabase", "postgresql", "auth", "realtime", "storage", "edge-functions"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://supabase.com/docs",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["database_management", "authentication", "realtime_data"],
+    "secondary": ["storage", "edge_functions", "row_level_security", "api_generation"],
+    "domains": ["backend", "saas", "web", "mobile"]
+  },
+  "capabilities": {
+    "inputs": ["schema_definition", "user_credentials", "file_upload", "query_params"],
+    "outputs": ["database_connection", "auth_session", "realtime_subscription", "api_endpoint"],
+    "actions": ["create_table", "authenticate_user", "store_file", "execute_query", "subscribe_to_changes"]
+  },
+  "orchestration": {
+    "priority": 9,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 6000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["stripe", "expo"],
+    "complements": ["plaid", "whop", "anthropic"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["stripe", "expo", "plaid", "whop"],
+    "canConsumeDataFrom": ["stripe", "expo", "anthropic"],
+    "sharedContext": ["user_id", "session_id", "database_schema", "auth_token"]
+  }
+}

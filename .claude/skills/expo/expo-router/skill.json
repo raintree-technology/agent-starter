@@ -1,0 +1,34 @@
+{
+  "id": "expo-router",
+  "version": "1.0.0",
+  "category": "mobile",
+  "keywords": ["expo", "router", "navigation", "file-based"],
+  "dependencies": ["expo"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["navigation", "file_based_routing", "universal_navigation"],
+    "secondary": ["deep_linking", "layouts", "dynamic_routes"],
+    "domains": ["mobile", "web", "navigation", "frontend"]
+  },
+  "capabilities": {
+    "inputs": ["app_structure", "navigation_requirements"],
+    "outputs": ["route_definitions", "navigation_config", "layout_components"],
+    "actions": ["setup_routing", "create_screens", "implement_navigation", "handle_deep_links", "build_layouts"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 4000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["expo"],
+    "complements": ["supabase", "stripe"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["expo"],
+    "canConsumeDataFrom": ["expo", "supabase"],
+    "sharedContext": ["routes", "navigation_state", "params", "auth_flow"]
+  }
+}

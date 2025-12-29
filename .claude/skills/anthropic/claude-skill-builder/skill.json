@@ -1,0 +1,34 @@
+{
+  "id": "claude-skill-builder",
+  "version": "1.0.0",
+  "category": "ai",
+  "keywords": ["claude-code", "skill", "builder", "create"],
+  "dependencies": ["claude-code"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["skill_creation", "skill_builder", "expertise_packaging"],
+    "secondary": ["skill_structure", "activation_keywords", "documentation"],
+    "domains": ["ai", "development", "tools", "automation"]
+  },
+  "capabilities": {
+    "inputs": ["skill_requirements", "expertise_domain"],
+    "outputs": ["skill_files", "skill_documentation", "activation_patterns"],
+    "actions": ["create_skill", "structure_skill", "define_keywords", "write_documentation", "test_activation"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 4500,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["claude-code"],
+    "complements": ["claude-command-builder", "claude-settings-expert"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["claude-code"],
+    "canConsumeDataFrom": ["claude-code"],
+    "sharedContext": ["skill_structure", "keywords", "documentation"]
+  }
+}

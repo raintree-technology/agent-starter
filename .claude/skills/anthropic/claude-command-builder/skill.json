@@ -1,0 +1,34 @@
+{
+  "id": "claude-command-builder",
+  "version": "1.0.0",
+  "category": "ai",
+  "keywords": ["claude-code", "command", "slash", "workflow"],
+  "dependencies": ["claude-code"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["command_creation", "slash_commands", "workflow_automation"],
+    "secondary": ["frontmatter", "instructions", "examples"],
+    "domains": ["ai", "development", "automation", "tools"]
+  },
+  "capabilities": {
+    "inputs": ["command_requirements", "workflow_specs"],
+    "outputs": ["command_files", "usage_examples", "command_documentation"],
+    "actions": ["create_command", "write_instructions", "define_arguments", "add_examples", "validate_command"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 4500,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["claude-code"],
+    "complements": ["claude-skill-builder", "claude-hook-builder"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["claude-code"],
+    "canConsumeDataFrom": ["claude-code"],
+    "sharedContext": ["command_structure", "frontmatter", "instructions"]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "aptos-move-language",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "move", "syntax", "resources", "modules"],
+  "dependencies": ["aptos"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["move_programming", "smart_contract_language", "resource_oriented"],
+    "secondary": ["syntax", "modules", "resources", "generics", "abilities"],
+    "domains": ["blockchain", "programming", "web3"]
+  },
+  "capabilities": {
+    "inputs": ["move_requirements", "contract_logic"],
+    "outputs": ["move_modules", "resource_definitions", "function_implementations"],
+    "actions": ["write_move_code", "define_resources", "create_modules", "implement_generics", "use_abilities"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 5000,
+    "activationThreshold": 0.75
+  },
+  "dependencies": {
+    "recommended": ["aptos"],
+    "complements": ["aptos-move-testing", "aptos-move-prover", "aptos-framework"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["aptos-move-testing", "aptos-move-prover", "aptos"],
+    "canConsumeDataFrom": ["aptos-framework"],
+    "sharedContext": ["module_code", "resource_types", "function_signatures"]
+  }
+}

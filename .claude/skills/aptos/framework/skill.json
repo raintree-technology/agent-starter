@@ -1,0 +1,34 @@
+{
+  "id": "aptos-framework",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "framework", "standard-library", "coin"],
+  "dependencies": ["aptos"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["aptos_framework", "standard_library", "core_modules"],
+    "secondary": ["coin", "account", "timestamp", "event", "table"],
+    "domains": ["blockchain", "web3", "infrastructure"]
+  },
+  "capabilities": {
+    "inputs": ["framework_requirements"],
+    "outputs": ["framework_usage", "module_imports", "standard_patterns"],
+    "actions": ["use_coin_module", "manage_accounts", "emit_events", "use_tables", "handle_timestamps"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 4500,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["aptos", "aptos-move-language"],
+    "complements": ["aptos-token-standards", "aptos-object-model"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["aptos-move-language", "aptos"],
+    "canConsumeDataFrom": ["aptos"],
+    "sharedContext": ["framework_modules", "standard_types", "core_functions"]
+  }
+}

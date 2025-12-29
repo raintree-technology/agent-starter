@@ -1,0 +1,34 @@
+{
+  "id": "claude-mcp-expert",
+  "version": "1.0.0",
+  "category": "ai",
+  "keywords": ["claude-code", "mcp", "model-context-protocol", "server"],
+  "dependencies": ["claude-code"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["mcp_servers", "model_context_protocol", "server_integration"],
+    "secondary": ["tools", "resources", "prompts", "server_config"],
+    "domains": ["ai", "development", "integration", "protocols"]
+  },
+  "capabilities": {
+    "inputs": ["integration_requirements", "server_specs"],
+    "outputs": ["mcp_configs", "server_integrations", "tool_definitions"],
+    "actions": ["configure_mcp", "integrate_servers", "define_tools", "manage_resources", "setup_prompts"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "medium",
+    "parallelizable": true,
+    "estimatedTokens": 5000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["claude-code", "anthropic"],
+    "complements": ["claude-settings-expert"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["claude-code", "anthropic"],
+    "canConsumeDataFrom": ["claude-code", "anthropic"],
+    "sharedContext": ["mcp_config", "server_definitions", "tool_schemas"]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "expo-eas-update",
+  "version": "1.0.0",
+  "category": "mobile",
+  "keywords": ["expo", "eas", "update", "ota"],
+  "dependencies": ["expo"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["ota_updates", "instant_updates", "app_updates"],
+    "secondary": ["update_channels", "rollback", "update_branches"],
+    "domains": ["mobile", "deployment", "updates"]
+  },
+  "capabilities": {
+    "inputs": ["app_code", "update_message", "channel_config"],
+    "outputs": ["update_manifests", "published_updates", "rollback_points"],
+    "actions": ["publish_updates", "manage_channels", "rollback_updates", "preview_updates", "configure_runtime"]
+  },
+  "orchestration": {
+    "priority": 6,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 3500,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["expo"],
+    "complements": ["expo-eas-build"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["expo"],
+    "canConsumeDataFrom": ["expo", "expo-eas-build"],
+    "sharedContext": ["update_id", "channel", "runtime_version", "update_group"]
+  }
+}
