@@ -152,7 +152,19 @@ https://devnet.helius-rpc.com/?api-key=YOUR_API_KEY
 
 Full documentation: https://www.helius.dev/docs
 
-Local docs available in `docs/` subdirectory (pulled via docpull).
+### Pull Local Docs (Optional)
+
+For offline access to 200+ Helius docs, install docpull and run:
+
+```bash
+# Install docpull
+pipx install docpull
+
+# Pull Helius documentation
+docpull https://www.helius.dev/docs -o .claude/skills/helius/docs
+```
+
+This pulls the full documentation locally for faster context loading.
 
 ## Support
 
