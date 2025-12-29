@@ -1,26 +1,30 @@
 # claude-starter
 
-Production-ready Claude Code configuration with 40+ skills, TOON format support, and skill marketplace integration.
+Advanced Claude Code framework with 40+ skills, meta-commands, skill orchestration, workflow automation, and TOON format support.
 
 [![npm version](https://img.shields.io/npm/v/create-claude-starter.svg)](https://www.npmjs.com/package/create-claude-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## What is this?
 
-A `.claude/` configuration directory for [Claude Code](https://code.claude.com) that provides:
+The most advanced `.claude/` configuration framework for [Claude Code](https://code.claude.com) that provides:
 
 - **40 Skills** - Auto-activating expertise (Stripe, Supabase, Aptos, Expo, Plaid, Whop, Shopify, iOS)
+- **Meta-Commands** - Create custom commands from templates in <2 minutes
+- **Skill Orchestration** - Multi-skill collaboration with semantic matching
+- **Workflow Automation** - YAML-based workflows (GitHub Actions-inspired)
 - **TOON Format** - 30-60% token savings for tabular data
-- **7 Commands** - TOON conversion, skill installation, token analysis
+- **14 Commands** - Meta-commands, debugging, TOON, workflows
 - **Templates** - Build your own skills and commands
 
 This is configuration, not code. No library, no framework, no runtime dependencies.
 
 ## Installation
 
+### Option 1: NPX (Recommended)
 ```bash
 # Install to current project
-npx create-claude-starter
+npx create-claude-starter@latest
 
 # Install specific skills
 npx create-claude-starter --skills stripe,supabase,expo
@@ -29,11 +33,28 @@ npx create-claude-starter --skills stripe,supabase,expo
 npx create-claude-starter --profile web-saas
 ```
 
-Or copy manually:
+### Option 2: Plugin Marketplace (Within Claude Code)
+```bash
+# Install everything
+/plugin marketplace add raintree-technology/claude-starter
 
+# Install specific categories
+/plugin marketplace add raintree-technology/claude-starter/stripe-payments
+/plugin marketplace add raintree-technology/claude-starter/expo-mobile
+/plugin marketplace add raintree-technology/claude-starter/meta-commands
+```
+
+### Option 3: Manual Copy
 ```bash
 git clone https://github.com/raintree-technology/claude-starter.git
-cp -r claude-starter/.claude your-project/.claude
+cp -r claude-starter/templates/.claude your-project/.claude
+```
+
+### Option 4: Discover on SkillsMP
+Browse 40+ skills at [SkillsMP](https://skillsmp.com/) and install individually:
+```bash
+/discover-skills
+/install-skill <github-url>
 ```
 
 ## Usage

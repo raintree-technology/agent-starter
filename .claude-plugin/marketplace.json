@@ -1,0 +1,111 @@
+{
+  "name": "claude-starter-complete",
+  "version": "2.0.0",
+  "description": "Complete collection of 40+ production-ready skills including Stripe, Supabase, Expo, Plaid, Aptos, and more. Plus meta-commands, orchestration, and workflows.",
+  "owner": {
+    "name": "Raintree Technology",
+    "url": "https://github.com/raintree-technology"
+  },
+  "repository": "https://github.com/raintree-technology/claude-starter",
+  "plugins": [
+    {
+      "name": "ai-skills",
+      "source": "./templates/.claude/skills/anthropic",
+      "description": "Claude Code expertise: skills, commands, hooks, MCP, settings (7 skills)",
+      "category": "ai"
+    },
+    {
+      "name": "stripe-payments",
+      "source": "./templates/.claude/skills/stripe",
+      "description": "Complete Stripe API integration (payments, subscriptions, webhooks)",
+      "category": "api"
+    },
+    {
+      "name": "supabase-backend",
+      "source": "./templates/.claude/skills/supabase",
+      "description": "Supabase backend (PostgreSQL, Auth, Storage, Edge Functions)",
+      "category": "backend"
+    },
+    {
+      "name": "plaid-banking",
+      "source": "./templates/.claude/skills/plaid",
+      "description": "Plaid banking API (Auth, Transactions, Identity, Accounts - 5 skills)",
+      "category": "api"
+    },
+    {
+      "name": "expo-mobile",
+      "source": "./templates/.claude/skills/expo",
+      "description": "Expo/React Native mobile development (EAS Build, Update, Router - 4 skills)",
+      "category": "mobile"
+    },
+    {
+      "name": "aptos-blockchain",
+      "source": "./templates/.claude/skills/aptos",
+      "description": "Aptos blockchain development (Move language, Shelby Protocol, Decibel - 17 skills)",
+      "category": "blockchain"
+    },
+    {
+      "name": "shopify-ecommerce",
+      "source": "./templates/.claude/skills/shopify",
+      "description": "Shopify e-commerce platform integration",
+      "category": "ecommerce"
+    },
+    {
+      "name": "whop-platform",
+      "source": "./templates/.claude/skills/whop",
+      "description": "Whop digital products and memberships platform",
+      "category": "ecommerce"
+    },
+    {
+      "name": "ios-development",
+      "source": "./templates/.claude/skills/ios",
+      "description": "iOS/Swift development",
+      "category": "mobile"
+    },
+    {
+      "name": "toon-formatter",
+      "source": "./templates/.claude/skills/toon-formatter",
+      "description": "TOON format for 30-60% token savings on tabular data",
+      "category": "optimization"
+    },
+    {
+      "name": "meta-commands",
+      "source": "./templates/.claude/commands/meta",
+      "description": "Meta-commands for creating custom commands from templates",
+      "category": "automation"
+    },
+    {
+      "name": "debug-tools",
+      "source": "./templates/.claude/commands/debug",
+      "description": "Debugging tools (skill-graph, explain-ranking, workflow-debug, command-validate)",
+      "category": "development"
+    },
+    {
+      "name": "workflows",
+      "source": "./templates/.claude/workflows",
+      "description": "YAML workflow automation (production-release, ci-pipeline, daily-maintenance, hotfix)",
+      "category": "automation"
+    },
+    {
+      "name": "orchestration",
+      "source": "./templates/.claude/orchestration",
+      "description": "Skill orchestration engine for multi-skill collaboration",
+      "category": "automation"
+    }
+  ],
+  "keywords": [
+    "stripe",
+    "supabase",
+    "plaid",
+    "expo",
+    "aptos",
+    "blockchain",
+    "payments",
+    "backend",
+    "mobile",
+    "workflows",
+    "orchestration",
+    "meta-commands",
+    "toon"
+  ]
+}
