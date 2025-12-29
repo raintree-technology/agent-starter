@@ -1,0 +1,119 @@
+# Production Release Workflow
+# Complete release workflow with quality checks, testing, and deployment
+
+name: "Production Release"
+version: "1.0"
+description: "Complete production release with quality checks, testing, versioning, and deployment"
+
+inputs:
+  version_type:
+    type: string
+    default: patch
+    allowed: [patch, minor, major]
+    description: "Version bump type (patch for bug fixes, minor for features, major for breaking changes)"
+
+  skip_tests:
+    type: boolean
+    default: false
+    description: "Skip test suite (not recommended for production)"
+
+env:
+  NODE_ENV: production
+  CI: true
+
+steps:
+  - name: "Pre-flight Checks"
+    type: parallel
+    steps:
+      - name: "Git Status"
+        bash: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "Error: Working directory not clean"
+            exit 1
+          fi
+          echo "✓ Working directory clean"
+
+      - name: "Check Dependencies"
+        bash: |
+          if command -v npm &>/dev/null; then
+            npm outdated || true
+          fi
+
+  - name: "Quality Checks"
+    type: sequential
+    steps:
+      - name: "Audit Code"
+        command: /audit-code --strict
+        fail_on_error: true
+
+      - name: "Optimize Check"
+        command: /optimize session
+        fail_on_error: false
+
+  - name: "Build and Test"
+    when: ${{ inputs.skip_tests == false }}
+    bash: |
+      echo "Building project..."
+      npm run build
+
+      echo "Running test suite..."
+      npm test -- --coverage
+    timeout: 1800000
+    fail_on_error: true
+
+  - name: "Version Bump"
+    bash: |
+      echo "Bumping version: ${inputs.version_type}"
+      npm version ${inputs.version_type} --no-git-tag-version
+      NEW_VERSION=$(node -p "require('./package.json').version")
+      echo "New version: $NEW_VERSION"
+    fail_on_error: true
+
+  - name: "Create Git Tag"
+    bash: |
+      VERSION=$(node -p "require('./package.json').version")
+      git add package.json package-lock.json
+      git commit -m "Release v$VERSION"
+      git tag -a "v$VERSION" -m "Release v$VERSION"
+      echo "✓ Created tag v$VERSION"
+    fail_on_error: true
+
+  - name: "Deploy to Production"
+    confirm: true
+    bash: |
+      echo "Deploying to production..."
+      npm run deploy:production
+    timeout: 3600000
+    fail_on_error: true
+
+  - name: "Push Changes"
+    bash: |
+      git push origin main
+      git push origin --tags
+      echo "✓ Pushed changes and tags"
+    fail_on_error: true
+
+on_failure:
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - message: "❌ Production release failed"
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - command: /clean build
+  - bash: |
+      git reset --hard HEAD~1
+      git tag -d $(git describe --tags --abbrev=0) 2>/dev/null || true
+  - message: "Changes rolled back. Review errors above."
+
+on_success:
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - message: "✅ Production release complete!"
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - bash: |
+      VERSION=$(node -p "require('./package.json').version")
+      echo "Released: v$VERSION"
+      echo "Deployment: Production"
+      echo "View at: https://github.com/$(git remote get-url origin | sed 's/.*://;s/.git$//')/releases/tag/v$VERSION"
+
+metadata:
+  category: deployment
+  tags: [release, production, deployment]
+  estimated_duration: "5-10 minutes"

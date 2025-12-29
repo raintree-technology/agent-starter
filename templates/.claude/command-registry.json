@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-12-28T00:00:00.000Z",
+  "commands": {},
+  "conflicts": [],
+  "reserved_names": [
+    "help",
+    "version",
+    "init",
+    "config",
+    "settings",
+    "claude",
+    "agent",
+    "system",
+    "internal",
+    "setup",
+    "install",
+    "update",
+    "upgrade"
+  ],
+  "statistics": {
+    "total": 0,
+    "byType": {
+      "standard": 0,
+      "meta": 0,
+      "generated": 0
+    },
+    "byCategory": {}
+  },
+  "metadata": {
+    "description": "Command registry for claude-starter meta-command system",
+    "schemaVersion": "1.0.0",
+    "features": [
+      "Automatic conflict detection",
+      "Command validation",
+      "Metadata tracking",
+      "Template source tracking",
+      "Dependency management"
+    ]
+  }
+}

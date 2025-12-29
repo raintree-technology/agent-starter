@@ -1,0 +1,86 @@
+# CI Pipeline Workflow
+# Continuous integration with linting, testing, and building
+
+name: "CI Pipeline"
+version: "1.0"
+description: "Continuous integration pipeline for automated testing and validation"
+
+env:
+  CI: true
+
+steps:
+  - name: "Install Dependencies"
+    bash: |
+      echo "Installing dependencies..."
+      if [[ -f package-lock.json ]]; then
+        npm ci
+      elif [[ -f yarn.lock ]]; then
+        yarn install --frozen-lockfile
+      elif [[ -f pnpm-lock.yaml ]]; then
+        pnpm install --frozen-lockfile
+      else
+        npm install
+      fi
+    timeout: 300000
+
+  - name: "Code Quality Checks"
+    type: parallel
+    steps:
+      - name: "Lint"
+        bash: |
+          if command -v eslint &>/dev/null || [[ -f node_modules/.bin/eslint ]]; then
+            npm run lint
+          else
+            echo "⚠ No linter found, skipping"
+          fi
+
+      - name: "Type Check"
+        bash: |
+          if [[ -f tsconfig.json ]]; then
+            npm run type-check || npx tsc --noEmit
+          else
+            echo "⚠ No TypeScript config found, skipping"
+          fi
+
+      - name: "Audit Code"
+        command: /audit-code
+        fail_on_error: false
+
+  - name: "Run Tests"
+    bash: |
+      echo "Running test suite..."
+      npm test -- --coverage --ci
+    timeout: 600000
+    fail_on_error: true
+
+  - name: "Build Project"
+    bash: |
+      echo "Building project..."
+      npm run build
+    timeout: 300000
+    fail_on_error: true
+
+  - name: "Check Bundle Size"
+    bash: |
+      if [[ -d dist ]] || [[ -d build ]]; then
+        echo "Bundle size:"
+        du -sh dist build 2>/dev/null || true
+      fi
+    fail_on_error: false
+
+on_failure:
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - message: "❌ CI Pipeline failed"
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - message: "Review errors above and fix before merging."
+
+on_success:
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - message: "✅ CI Pipeline passed"
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - message: "All checks passed. Ready to merge!"
+
+metadata:
+  category: ci
+  tags: [testing, linting, building]
+  estimated_duration: "2-5 minutes"

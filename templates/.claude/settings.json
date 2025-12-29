@@ -35,15 +35,41 @@
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/file-size-monitor.sh",
             "description": "Warn about files exceeding size limits"
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-optimize.sh",
+            "description": "Suggest optimization checks after code changes"
           }
         ]
       }
     ]
   },
   "permissions": {
-    "allow": ["Read(*)", "Write(*)", "Edit(*)", "Grep(*)", "Glob(*)"],
-    "ask": ["Bash(*)"],
+    "allow": ["Read(*)", "Write(*)", "Edit(*)", "Grep(*)", "Glob(*)", "Bash(*)"],
+    "ask": [],
     "deny": []
   },
-  "model": "claude-sonnet-4-5"
+  "model": "claude-sonnet-4-5",
+  "orchestration": {
+    "enabled": true,
+    "semanticMatching": true,
+    "multiSkillWorkflows": true,
+    "maxActiveSkills": 5,
+    "semanticThreshold": 0.7,
+    "cacheEmbeddings": true,
+    "embeddingProvider": "openai"
+  },
+  "workflows": {
+    "enabled": true,
+    "defaultTimeout": 300000,
+    "saveLog": true,
+    "logDirectory": ".claude/logs/workflows"
+  },
+  "metaCommands": {
+    "enabled": true,
+    "autoValidate": true,
+    "preventConflicts": true,
+    "registryPath": ".claude/command-registry.json"
+  }
 }

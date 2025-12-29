@@ -2,7 +2,7 @@
 
 Complete documentation of all components in the `.claude` directory.
 
-**Last Updated:** 2025-11-20
+**Last Updated:** 2025-12-28
 
 **Quick Start:** See [README.md](./README.md) for installation and usage guide
 
@@ -11,12 +11,15 @@ Complete documentation of all components in the `.claude` directory.
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Skills](#skills)
-3. [Commands](#commands)
-4. [Hooks](#hooks)
-5. [Utils](#utils)
-6. [Docs](#docs)
-7. [Configuration](#configuration)
+2. [Advanced Features](#advanced-features) ⭐ NEW
+3. [Skills](#skills)
+4. [Commands](#commands)
+5. [Hooks](#hooks)
+6. [Utils](#utils)
+7. [Workflows](#workflows) ⭐ NEW
+8. [Orchestration](#orchestration) ⭐ NEW
+9. [Docs](#docs)
+10. [Configuration](#configuration)
 
 ---
 
@@ -32,13 +35,225 @@ The `.claude` directory contains all Claude Code configuration, skills, commands
 ├── README.md              # Quick start and overview
 ├── DIRECTORY.md           # This file - complete documentation
 ├── commands/              # Slash commands (manual invocation)
+│   ├── meta/              # ⭐ Meta-commands (create commands)
+│   └── generated/         # ⭐ User-generated commands
 ├── docs/                  # Documentation and guides
 ├── hooks/                 # Auto-run scripts on tool use
+├── orchestration/         # ⭐ Skill orchestration engine
 ├── skills/                # Auto-invoked knowledge domains
-├── utils/                 # Utilities and helpers (TOON format tools)
+├── templates/             # ⭐ Command templates
+│   └── commands/          # ⭐ 6 command templates
+├── utils/                 # Utilities and helpers
+│   ├── toon/              # TOON format tools
+│   └── workflows/         # ⭐ Workflow execution engine
+├── validators/            # ⭐ Command validation system
+├── workflows/             # ⭐ YAML workflow definitions
+├── command-registry.json  # ⭐ Command metadata registry
 ├── settings.json          # Active configuration
 ├── settings.json.example  # Example settings
 └── settings.local.json    # Local overrides
+```
+
+**Total Statistics:**
+- **Skills:** 40 (across 10 categories)
+- **Commands:** 14 (11 standard + 3 meta-commands)
+- **Hooks:** 6 automation hooks
+- **Workflows:** 4 example workflows
+- **Templates:** 6 command templates
+- **Orchestration Files:** 8 TypeScript modules
+
+---
+
+## Advanced Features
+
+This section documents the three transformative features that make claude-starter the most advanced AI-powered development framework:
+
+### 1. Meta-Command System
+
+**Purpose:** Infinite extensibility - create custom commands from templates
+
+**Location:** `.claude/commands/meta/`
+
+**Features:**
+- ✨ Generate commands from 6 proven templates
+- ✨ Automatic validation and conflict detection
+- ✨ Command registry management
+- ✨ Template-based workflow composition
+
+**Meta-Commands:**
+1. **/create-command** - Generate new commands interactively
+2. **/edit-command** - Modify existing commands
+3. **/workflow-compose** - Build YAML workflows
+
+**Templates Available:**
+- `basic-prompt.md` - Text-based commands
+- `with-arguments.md` - Parameterized commands
+- `with-bash.md` - System operations
+- `git-workflow.md` - Git automation
+- `code-generator.md` - File generation
+- `analyzer.md` - Code analysis
+
+**Validation System:**
+- JSON schema validation
+- Conflict detection
+- Reserved name checking
+- Automatic registry updates
+
+**Example:**
+```bash
+# Create custom deployment command
+/create-command deploy-staging --template git-workflow
+
+# Edit existing command
+/edit-command deploy-staging --description "Deploy to staging with tests"
+
+# Compose workflow from commands
+/workflow-compose release-pipeline
+```
+
+### 2. Skill Orchestration Layer
+
+**Purpose:** Multi-skill coordination with semantic matching
+
+**Location:** `.claude/orchestration/`
+
+**Features:**
+- ✨ Semantic skill matching with embeddings
+- ✨ Multi-factor ranking algorithm
+- ✨ Automatic workflow planning
+- ✨ Inter-skill communication
+- ✨ Shared context management
+
+**Components:**
+1. **engine.ts** - Main orchestration controller
+2. **semantic-matcher.ts** - Embedding-based matching
+3. **ranker.ts** - Multi-factor scoring (5 factors)
+4. **workflow-planner.ts** - Pattern detection
+5. **message-bus.ts** - Inter-skill messaging
+6. **context-store.ts** - Shared state
+7. **dependency-resolver.ts** - Dependency graph
+
+**Ranking Factors:**
+- Semantic match: 35% (embedding similarity)
+- Keyword match: 25% (keyword overlap)
+- Context relevance: 20% (recent usage)
+- User history: 10% (success rates)
+- Skill priority: 10% (skill metadata)
+
+**Workflow Patterns:**
+- **Sequential** - A → B → C
+- **Parallel** - [A, B, C] → merge
+- **Hierarchical** - Parent → [Children]
+- **Iterative** - A → check → B → check
+
+**Enhanced Skill Metadata:**
+```json
+{
+  "semanticTags": {
+    "primary": ["payment_processing"],
+    "secondary": ["webhooks"],
+    "domains": ["fintech", "saas"]
+  },
+  "capabilities": {
+    "inputs": ["payment_intent"],
+    "outputs": ["payment_confirmation"],
+    "actions": ["process_payment"]
+  },
+  "orchestration": {
+    "priority": 8,
+    "parallelizable": true,
+    "estimatedTokens": 5000
+  },
+  "collaboration": {
+    "canProvideDataTo": ["supabase"],
+    "canConsumeDataFrom": ["expo"],
+    "sharedContext": ["user_id"]
+  }
+}
+```
+
+**Example:**
+```
+Query: "Build a SaaS app with Stripe payments and Supabase backend"
+
+Orchestrator:
+1. Selects: Stripe (0.92), Supabase (0.89), Expo (0.85)
+2. Plans: Hierarchical workflow
+3. Executes: Database → Payments → Integration
+4. Output: Complete integrated codebase
+```
+
+### 3. Workflow Composition System
+
+**Purpose:** YAML-based automation workflows
+
+**Location:** `.claude/workflows/`
+
+**Features:**
+- ✨ YAML DSL inspired by GitHub Actions
+- ✨ Sequential and parallel execution
+- ✨ Conditional logic
+- ✨ Variable substitution
+- ✨ Error handling and rollback
+- ✨ Manual checkpoints
+
+**Workflow Engine:**
+- `engine.js` - Main executor
+- `parser.js` - YAML parser with validation
+- `step-runner.js` - Step execution
+- `state-manager.js` - Variable substitution
+- `logger.js` - Formatted output
+
+**Example Workflows:**
+
+1. **production-release.yml** - Complete release automation
+2. **ci-pipeline.yml** - Continuous integration
+3. **daily-maintenance.yml** - Automated maintenance
+4. **hotfix.yml** - Emergency hotfix workflow
+
+**YAML Features:**
+```yaml
+# Input parameters
+inputs:
+  version_type:
+    type: string
+    allowed: [patch, minor, major]
+
+# Sequential steps
+steps:
+  - name: "Build"
+    bash: npm run build
+
+  - name: "Test"
+    bash: npm test
+
+# Parallel execution
+  - type: parallel
+    steps:
+      - bash: npm run lint
+      - bash: npm run type-check
+
+# Conditional logic
+  - name: "Deploy"
+    when: ${{ steps.build.exit_code == 0 }}
+    bash: npm run deploy
+
+# Error handling
+on_failure:
+  - command: /clean build
+  - message: "Rollback complete"
+```
+
+**Usage:**
+```bash
+# List workflows
+/workflow --list
+
+# Run workflow
+/workflow production-release --input version_type=minor
+
+# Preview
+/workflow ci-pipeline --dry-run
 ```
 
 ---
@@ -347,7 +562,7 @@ Decibel is included in the Aptos blockchain skills count as it runs on Aptos.
 
 Commands are slash commands that users invoke manually (e.g., `/convert-to-toon`).
 
-### Total Commands: 7
+### Total Commands: 11 (7 TOON + 2 marketplace + 2 workflow + 2 quality)
 
 #### 1. `/analyze-tokens`
 **File:** `commands/analyze-tokens.md`
@@ -427,6 +642,62 @@ Commands are slash commands that users invoke manually (e.g., `/convert-to-toon`
 - Installation verification
 - Post-install testing guidance
 
+#### 8. `/audit-code`
+**File:** `commands/audit-code.md`
+**Purpose:** Run comprehensive code quality audit using knip, vulture, and ast-grep
+**Usage:** `/audit-code [options]`
+**Features:**
+- Detects unused files, dependencies, exports (knip)
+- Finds dead Python code (vulture)
+- Identifies deprecated patterns and anti-patterns (ast-grep)
+- Aggregates findings by priority (Critical, High, Medium, Low)
+- Generates actionable recommendations
+- Auto-fixes safe issues with `--fix` flag
+- Detailed markdown reports with `--report`
+- CI mode with `--strict` flag
+
+#### 9. `/optimize`
+**File:** `commands/optimize.md`
+**Purpose:** Automatically review code changes for optimization opportunities
+**Usage:** `/optimize [scope] [options]`
+**Features:**
+- Performance analysis (algorithms, N+1 queries, memory leaks)
+- Security analysis (SQL injection, XSS, CSRF)
+- Maintainability analysis (complexity, nesting, duplicates)
+- Test coverage gaps identification
+- Documentation completeness checks
+- Actual benchmarks with `--detailed` flag
+- Auto-apply safe fixes with `--fix`
+- Review last change, session, file, commit, or branch
+
+#### 10. `/release`
+**File:** `commands/release.md`
+**Purpose:** Automate version bumping, changelog generation, and npm publishing
+**Usage:** `/release [version] [options]`
+**Features:**
+- Semantic versioning (patch, minor, major)
+- Auto-generate changelog from commits
+- Run quality checks (tests, lint, type check, build)
+- Create git tags and commits
+- Push to remote with tags
+- Publish to npm with custom tags
+- Create GitHub releases
+- Dry-run mode to preview changes
+
+#### 11. `/clean`
+**File:** `commands/clean.md`
+**Purpose:** Remove build artifacts, dependencies, caches, and temporary files
+**Usage:** `/clean [scope] [options]`
+**Features:**
+- Clean dependencies (node_modules, .venv, vendor)
+- Remove build artifacts (dist, build, .next, .nuxt)
+- Clear caches (.cache, .turbo, __pycache__)
+- Delete temporary files (logs, .DS_Store, .tmp)
+- Git cleanup (untracked files, merged branches)
+- Aggressive mode for IDE files and test coverage
+- Shows space reclaimed with before/after sizes
+- Dry-run mode to preview deletions
+
 ---
 
 ## Hooks
@@ -435,7 +706,7 @@ Commands are slash commands that users invoke manually (e.g., `/convert-to-toon`
 
 Hooks run automatically after tool use (e.g., after Edit, Write operations). Currently **disabled by default** in settings.json.
 
-### Total Hooks: 5
+### Total Hooks: 6
 
 #### 1. File Size Monitor
 **File:** `hooks/file-size-monitor.sh`
@@ -491,6 +762,19 @@ Hooks run automatically after tool use (e.g., after Edit, Write operations). Cur
 - Uses compiled Zig validator
 - Reports errors with line numbers
 - Ensures format compliance
+
+#### 6. Auto-Optimize
+**File:** `hooks/auto-optimize.sh`
+**Type:** Post-tool suggestion
+**Triggers on:** Write, Edit (source code files)
+**Purpose:** Automatically suggest running optimization checks after code changes
+**Features:**
+- Tracks changes per session
+- Suggests `/optimize` every 5 file changes
+- Suggests for large files (100+ lines)
+- 10-minute cooldown per file (avoids spam)
+- Skips test files and generated code
+- Non-blocking informational suggestions
 
 ### Hook Configuration
 
@@ -815,8 +1099,8 @@ Shows how to enable hooks and configure Claude Code features.
 ## Statistics
 
 - **Total Skills:** 40
-- **Total Commands:** 7
-- **Total Hooks:** 5 (disabled by default)
+- **Total Commands:** 11 (7 TOON + 2 marketplace + 2 workflow + 2 quality)
+- **Total Hooks:** 6 (5 disabled by default + 1 auto-optimize)
 - **Total Utils:** 1 (TOON format tools)
 - **Documentation Files (pulled separately):**
   - Stripe: 3,253 files

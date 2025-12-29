@@ -1,0 +1,384 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://claude-starter.dev/schemas/command.json",
+  "title": "Claude Code Command Schema",
+  "description": "JSON schema for validating Claude Code command markdown files",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "minLength": 2,
+      "maxLength": 50,
+      "description": "Command name (kebab-case, lowercase, alphanumeric with hyphens)"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 200,
+      "description": "Brief description of what the command does"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version (e.g., 1.0.0)"
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Command author"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "automation",
+        "code-quality",
+        "development",
+        "deployment",
+        "documentation",
+        "git",
+        "meta",
+        "optimization",
+        "testing",
+        "workflow",
+        "utility"
+      ],
+      "description": "Command category"
+    },
+    "model": {
+      "type": "string",
+      "enum": ["sonnet", "opus", "haiku"],
+      "description": "Preferred Claude model for this command"
+    },
+    "allowedTools": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(Read|Write|Edit|Bash|Glob|Grep|Task|WebFetch|WebSearch|LSP|AskUserQuestion|TodoWrite|Skill)\\(.*\\)$"
+      },
+      "description": "List of allowed tools (e.g., 'Bash(git:*)', 'Read(*)')"
+    },
+    "requiredTools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "External tools that must be installed (e.g., 'git', 'npm', 'knip')"
+    },
+    "arguments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$",
+            "description": "Argument name (snake_case)"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["string", "number", "boolean", "path", "choice"],
+            "description": "Argument type"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 5,
+            "description": "What this argument does"
+          },
+          "required": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this argument is required"
+          },
+          "default": {
+            "description": "Default value if not provided"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Valid choices (if type is 'choice')"
+          },
+          "validation": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "description": "Regex pattern for validation"
+              },
+              "min": {
+                "type": "number",
+                "description": "Minimum value (for numbers)"
+              },
+              "max": {
+                "type": "number",
+                "description": "Maximum value (for numbers)"
+              },
+              "minLength": {
+                "type": "integer",
+                "description": "Minimum string length"
+              },
+              "maxLength": {
+                "type": "integer",
+                "description": "Maximum string length"
+              }
+            }
+          }
+        },
+        "required": ["name", "type", "description"]
+      },
+      "description": "Command arguments"
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "flag": {
+            "type": "string",
+            "pattern": "^--[a-z][a-z0-9-]*$",
+            "description": "Option flag (e.g., --verbose, --dry-run)"
+          },
+          "short": {
+            "type": "string",
+            "pattern": "^-[a-z]$",
+            "description": "Short flag (e.g., -v)"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 5,
+            "description": "What this option does"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["boolean", "string", "number"],
+            "default": "boolean",
+            "description": "Option type"
+          },
+          "default": {
+            "description": "Default value"
+          }
+        },
+        "required": ["flag", "description"]
+      },
+      "description": "Command options"
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "command": {
+            "type": "string",
+            "description": "Example command usage"
+          },
+          "description": {
+            "type": "string",
+            "description": "What this example demonstrates"
+          }
+        },
+        "required": ["command", "description"]
+      },
+      "minItems": 1,
+      "description": "Usage examples"
+    },
+    "workflow": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Step number"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "description": "Step name"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 10,
+            "description": "What this step does"
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tools used in this step"
+          },
+          "commands": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bash commands to execute"
+          }
+        },
+        "required": ["step", "name", "description"]
+      },
+      "description": "Workflow steps"
+    },
+    "safety": {
+      "type": "object",
+      "properties": {
+        "destructive": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this command performs destructive operations"
+        },
+        "requiresConfirmation": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether to ask for user confirmation"
+        },
+        "canModifyFiles": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this command modifies files"
+        },
+        "canExecuteBash": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this command executes bash commands"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Safety warnings for users"
+        }
+      },
+      "description": "Safety metadata"
+    },
+    "performance": {
+      "type": "object",
+      "properties": {
+        "estimatedTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Estimated token usage"
+        },
+        "estimatedDuration": {
+          "type": "string",
+          "pattern": "^[0-9]+(s|m|h)$",
+          "description": "Estimated execution time (e.g., '30s', '5m', '1h')"
+        },
+        "cacheableResult": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether results can be cached"
+        }
+      },
+      "description": "Performance metadata"
+    },
+    "dependencies": {
+      "type": "object",
+      "properties": {
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Other commands this depends on"
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Skills this command uses"
+        },
+        "external": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "External tools required"
+        }
+      },
+      "description": "Command dependencies"
+    },
+    "template": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": [
+            "basic-prompt",
+            "with-arguments",
+            "with-bash",
+            "git-workflow",
+            "code-generator",
+            "analyzer",
+            "custom"
+          ],
+          "description": "Template this command was generated from"
+        },
+        "generated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this command was generated"
+        },
+        "generator": {
+          "type": "string",
+          "enum": ["create-command", "workflow-compose", "manual"],
+          "description": "How this command was created"
+        }
+      },
+      "description": "Template metadata (for generated commands)"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*$"
+      },
+      "description": "Searchable tags"
+    }
+  },
+  "required": ["name", "description", "category"],
+  "additionalProperties": false,
+  "definitions": {
+    "reservedNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "const": [
+        "help",
+        "version",
+        "init",
+        "config",
+        "settings",
+        "claude",
+        "agent",
+        "system",
+        "internal"
+      ],
+      "description": "Reserved command names that cannot be used"
+    },
+    "namingConventions": {
+      "type": "object",
+      "properties": {
+        "pattern": {
+          "const": "^[a-z][a-z0-9-]*$",
+          "description": "Command names must be kebab-case"
+        },
+        "examples": {
+          "const": ["audit-code", "convert-to-toon", "create-command"],
+          "description": "Valid command name examples"
+        },
+        "antiExamples": {
+          "const": ["AuditCode", "convert_to_toon", "Create-Command", "123command"],
+          "description": "Invalid command names"
+        }
+      }
+    }
+  }
+}

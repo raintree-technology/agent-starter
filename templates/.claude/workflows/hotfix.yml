@@ -1,0 +1,143 @@
+# Hotfix Workflow
+# Emergency fix workflow for production issues
+
+name: "Hotfix Release"
+version: "1.0"
+description: "Emergency hotfix workflow for critical production issues"
+
+inputs:
+  issue_number:
+    type: string
+    required: true
+    description: "Issue tracking number (e.g., ISSUE-123, #456)"
+
+env:
+  NODE_ENV: production
+
+steps:
+  - name: "Verify Clean State"
+    bash: |
+      if [[ -n $(git status --porcelain) ]]; then
+        echo "Error: Working directory not clean"
+        echo "Stash or commit changes before creating hotfix"
+        exit 1
+      fi
+      echo "✓ Working directory clean"
+    fail_on_error: true
+
+  - name: "Create Hotfix Branch"
+    bash: |
+      BRANCH="hotfix/${inputs.issue_number}"
+      git checkout -b "$BRANCH"
+      echo "✓ Created branch: $BRANCH"
+    fail_on_error: true
+
+  - name: "Apply Fix"
+    manual: |
+      ═══════════════════════════════════════════════
+      APPLY HOTFIX FOR: ${inputs.issue_number}
+      ═══════════════════════════════════════════════
+
+      1. Make necessary code changes to fix the issue
+      2. Test the fix locally
+      3. Stage your changes (git add .)
+
+      Press Enter when fix is applied and staged...
+
+  - name: "Verify Changes"
+    bash: |
+      if [[ -z $(git status --porcelain) ]]; then
+        echo "Error: No changes staged"
+        exit 1
+      fi
+
+      echo "Changes to be committed:"
+      git status --short
+      echo
+      read -p "Continue with these changes? (y/N) " -n 1 -r
+      echo
+      if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Aborted"
+        exit 1
+      fi
+    fail_on_error: true
+
+  - name: "Run Tests"
+    bash: |
+      echo "Running tests with --bail (stop on first failure)..."
+      npm test -- --bail
+    timeout: 600000
+    fail_on_error: true
+
+  - name: "Commit Fix"
+    bash: |
+      git commit -m "Hotfix: ${inputs.issue_number}
+
+      Emergency fix for production issue.
+      Issue: ${inputs.issue_number}
+      "
+      echo "✓ Changes committed"
+    fail_on_error: true
+
+  - name: "Release Patch Version"
+    command: /release patch --skip-tests
+    fail_on_error: true
+
+  - name: "Deploy to Production"
+    confirm: true
+    bash: |
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo "⚠ DEPLOYING HOTFIX TO PRODUCTION"
+      echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      echo
+      npm run deploy:production
+    timeout: 1800000
+    fail_on_error: true
+
+  - name: "Merge to Main"
+    bash: |
+      CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+      git checkout main
+      git merge "$CURRENT_BRANCH" --no-ff -m "Merge hotfix: ${inputs.issue_number}"
+      git push origin main
+      git push origin --tags
+      echo "✓ Hotfix merged to main"
+    fail_on_error: true
+
+  - name: "Delete Hotfix Branch"
+    bash: |
+      BRANCH="hotfix/${inputs.issue_number}"
+      git branch -d "$BRANCH"
+      echo "✓ Deleted branch: $BRANCH"
+    fail_on_error: false
+
+on_failure:
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - message: "❌ Hotfix deployment failed"
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - bash: |
+      echo "Rolling back..."
+      BRANCH=$(git rev-parse --abbrev-ref HEAD)
+      if [[ "$BRANCH" =~ ^hotfix/ ]]; then
+        git checkout main
+        git branch -D "$BRANCH"
+        echo "✓ Hotfix branch deleted"
+      fi
+  - message: "Hotfix rolled back. Review errors and try again."
+
+on_success:
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - message: "✅ Hotfix deployed successfully!"
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - bash: |
+      VERSION=$(node -p "require('./package.json').version")
+      echo "Issue: ${inputs.issue_number}"
+      echo "Version: v$VERSION"
+      echo "Deployed: $(date)"
+  - message: "Monitor production for verification."
+
+metadata:
+  category: deployment
+  tags: [hotfix, emergency, production]
+  estimated_duration: "10-20 minutes"
+  severity: critical

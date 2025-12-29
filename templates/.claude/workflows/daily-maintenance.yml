@@ -1,0 +1,83 @@
+# Daily Maintenance Workflow
+# Automated daily maintenance tasks
+
+name: "Daily Maintenance"
+version: "1.0"
+description: "Daily automated maintenance tasks for dependency updates, cleanup, and reporting"
+
+schedule:
+  cron: "0 9 * * *"  # Every day at 9 AM
+
+steps:
+  - name: "Update Dependencies"
+    bash: |
+      echo "Checking for dependency updates..."
+
+      if command -v npm &>/dev/null; then
+        npm outdated || true
+        echo
+        read -p "Update dependencies? (y/N) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+          npm update
+          echo "✓ Dependencies updated"
+        fi
+      fi
+    fail_on_error: false
+
+  - name: "Clean Caches"
+    command: /clean cache temp
+    fail_on_error: false
+
+  - name: "Clean Build Artifacts"
+    bash: |
+      if [[ -d dist ]] || [[ -d build ]] || [[ -d .next ]]; then
+        read -p "Remove build artifacts? (y/N) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+          rm -rf dist build .next .output
+          echo "✓ Build artifacts removed"
+        fi
+      fi
+    fail_on_error: false
+
+  - name: "Code Quality Report"
+    command: /audit-code --report
+    fail_on_error: false
+
+  - name: "Check for Unused Files"
+    bash: |
+      if command -v knip &>/dev/null; then
+        echo "Checking for unused files..."
+        knip --no-exit-code || true
+      fi
+    fail_on_error: false
+
+  - name: "Security Audit"
+    bash: |
+      echo "Running security audit..."
+      npm audit || true
+    fail_on_error: false
+
+  - name: "Disk Usage Report"
+    bash: |
+      echo "Project disk usage:"
+      du -sh . 2>/dev/null || true
+      echo
+      echo "By directory:"
+      du -sh node_modules dist build .next .cache 2>/dev/null | sort -hr || true
+    fail_on_error: false
+
+on_success:
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - message: "✅ Daily maintenance complete"
+  - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  - bash: |
+      echo "Completed: $(date)"
+      echo "Summary saved to: .claude/logs/maintenance-$(date +%Y%m%d).log"
+
+metadata:
+  category: maintenance
+  tags: [cleanup, updates, reporting]
+  estimated_duration: "3-5 minutes"
+  schedule: daily
