@@ -71,15 +71,33 @@ Claude: [Activates Whop and provides code]
 
 ### Optional: Pull Documentation
 
-Skills work immediately with built-in knowledge. Optionally pull comprehensive API docs:
+Skills work immediately with built-in knowledge. Optionally pull comprehensive API docs for enhanced accuracy:
 
 ```bash
 # Install docpull
 brew install pipx && pipx install docpull
 
-# Pull documentation
+# Pull documentation (stored locally, never committed)
 docpull https://docs.stripe.com -o .claude/skills/stripe/docs
 docpull https://supabase.com/docs -o .claude/skills/supabase/docs
+```
+
+**Important notes:**
+- Documentation is **optional** - skills work without it
+- Docs are stored in `.claude/skills/*/docs/` (**gitignored**, never committed)
+- Total size: ~8GB across all skills
+- Pulled once, persistent across sessions
+- Use CLI for easier management: `npx claude-starter docs pull`
+
+**Advanced: Custom doc location**
+```bash
+# Pull to /tmp (lost on restart, auto-cleanup)
+docpull https://docs.stripe.com -o /tmp/claude-docs/stripe
+
+# Or use symlink for separation
+mkdir -p ~/claude-docs/stripe
+ln -s ~/claude-docs/stripe .claude/skills/stripe/docs
+docpull https://docs.stripe.com -o ~/claude-docs/stripe
 ```
 
 ### TOON Format
