@@ -77,17 +77,17 @@ claude-starter/
 - **ios/** - iOS development (1 skill)
 - **toon-formatter/** - Token optimization (1 skill)
 
-**Documentation** - Pull separately using `docpull`:
-- Stripe: 3,253 files
-- Supabase: 2,616 files
-- Expo: 810 files
-- Plaid: 659 files
-- Whop: 212 files
-- Claude Code: 201 files
-- Anthropic: 199 files
-- Decibel: 45 files
-- Shopify: 25 files
-- iOS: 4 files
+**Documentation** - NOT bundled in repo. Pull separately using `docpull`:
+```bash
+pipx install docpull
+docpull <docs-url> -o .claude/skills/<skill>/docs
+```
+Available documentation (pull as needed):
+- Helius: 200+ files - `docpull https://www.helius.dev/docs -o .claude/skills/helius/docs`
+- Stripe: 3,253 files - `docpull https://docs.stripe.com -o .claude/skills/stripe/docs`
+- Supabase: 2,616 files - `docpull https://supabase.com/docs -o .claude/skills/supabase/docs`
+- Expo: 810 files - `docpull https://docs.expo.dev -o .claude/skills/expo/docs`
+- Plaid: 659 files - `docpull https://plaid.com/docs -o .claude/skills/plaid/docs`
 
 **7 Commands** - Slash commands (5 TOON format + 2 skill marketplace):
 - `/analyze-tokens` - Compare JSON vs TOON savings
@@ -174,15 +174,19 @@ TOON formatter activates with optimization tools
 
 ### Pull documentation (optional)
 
+**Documentation is NOT bundled** - skills include only `skill.md` files. For local docs, use docpull:
+
 ```bash
 # Install docpull
-brew install pipx
 pipx install docpull
 
-# Pull docs for specific skills
+# Pull docs for any skill you need
+docpull https://www.helius.dev/docs -o .claude/skills/helius/docs
 docpull https://docs.stripe.com -o .claude/skills/stripe/docs
 docpull https://supabase.com/docs -o .claude/skills/supabase/docs
 ```
+
+Each skill's `skill.md` contains the docpull command for that skill.
 
 ### Use commands
 
@@ -284,7 +288,7 @@ The structure demonstrates:
 ### Documentation location
 - Template guides: `/docs/` (how to use claude-starter)
 - TOON specification: `.claude/utils/toon/toon-guide.md`
-- API docs: `.claude/skills/*/docs/` (embedded in each skill)
+- API docs: `.claude/skills/*/docs/` (NOT bundled - pull with docpull)
 - Reference: `.claude/DIRECTORY.md` (complete structure)
 
 ### File counts (accurate as of 2025-11-20)
