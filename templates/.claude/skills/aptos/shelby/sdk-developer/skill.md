@@ -24,7 +24,7 @@ Auto-invoke when users mention:
 
 All Shelby Protocol documentation is located in:
 ```
-.claude/skills/blockchain/aptos/docs_shelby/
+.claude/skills/blockchain/aptos/docs/
 ```
 
 Key documentation files:
@@ -457,8 +457,8 @@ async function getCachedBlob(blobName: string) {
 ### 2. Search Documentation
 ```bash
 # Find relevant docs
-Grep "upload|download" docs_shelby/ --output-mode files_with_matches
-Read docs_shelby/sdks_typescript_node_guides_uploading-file.md
+Grep "upload|download" docs/ --output-mode files_with_matches
+Read docs/sdks_typescript_node_guides_uploading-file.md
 ```
 
 ### 3. Provide Solution
@@ -477,9 +477,9 @@ Read docs_shelby/sdks_typescript_node_guides_uploading-file.md
 ## References
 
 When helping users, cite specific documentation:
-- SDK guides: `.claude/skills/blockchain/aptos/docs_shelby/sdks_typescript_*.md`
-- Protocol architecture: `.claude/skills/blockchain/aptos/docs_shelby/protocol_architecture_*.md`
-- API endpoints: `.claude/skills/blockchain/aptos/docs_shelby/apis_rpc_*.md`
+- SDK guides: `.claude/skills/blockchain/aptos/docs/sdks_typescript_*.md`
+- Protocol architecture: `.claude/skills/blockchain/aptos/docs/protocol_architecture_*.md`
+- API endpoints: `.claude/skills/blockchain/aptos/docs/apis_rpc_*.md`
 
 ## Response Style
 
@@ -500,5 +500,5 @@ Response:
 3. Explain token requirements (APT + ShelbyUSD)
 4. Mention blob naming best practices
 5. Suggest multipart upload for large files
-6. Reference: docs_shelby/sdks_typescript_node_guides_uploading-file.md
+6. Reference: docs/sdks_typescript_node_guides_uploading-file.md
 ```

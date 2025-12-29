@@ -25,7 +25,7 @@ Auto-invoke when users ask about:
 
 Smart contract documentation:
 ```
-.claude/skills/blockchain/aptos/docs_shelby/
+.claude/skills/blockchain/aptos/docs/
 ```
 
 Key files:
@@ -593,13 +593,13 @@ async function ensureChannelFunded(channelId: string, requiredAmount: number) {
 
 ```bash
 # Smart contract architecture
-Read docs_shelby/protocol_architecture_smart-contracts.md
+Read docs/protocol_architecture_smart-contracts.md
 
 # Overall system flow
-Read docs_shelby/protocol_architecture_overview.md
+Read docs/protocol_architecture_overview.md
 
 # Economic model
-Read docs_shelby/protocol_architecture_token-economics.md
+Read docs/protocol_architecture_token-economics.md
 ```
 
 ### 3. Provide Answer

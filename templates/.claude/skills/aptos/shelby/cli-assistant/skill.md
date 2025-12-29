@@ -24,7 +24,7 @@ Auto-invoke when users mention:
 
 Shelby CLI documentation location:
 ```
-.claude/skills/blockchain/aptos/docs_shelby/
+.claude/skills/blockchain/aptos/docs/
 ```
 
 Key files:
@@ -718,13 +718,13 @@ diff file.txt verify.txt
 
 ```bash
 # For upload/download issues
-Read docs_shelby/tools_cli_commands_uploads-and-downloads.md
+Read docs/tools_cli_commands_uploads-and-downloads.md
 
 # For account issues
-Read docs_shelby/tools_cli_commands_account-management.md
+Read docs/tools_cli_commands_account-management.md
 
 # For setup issues
-Read docs_shelby/tools_cli.md
+Read docs/tools_cli.md
 ```
 
 ### 3. Provide Solution
@@ -761,14 +761,14 @@ Response:
 3. Show canonical directory layout example
 4. Mention --assume-yes for scripts
 5. Suggest verification with `shelby account blobs`
-6. Reference: docs_shelby/tools_cli_commands_uploads-and-downloads.md
+6. Reference: docs/tools_cli_commands_uploads-and-downloads.md
 ```
 
 ## References
 
 When helping users, cite specific documentation:
-- CLI guide: `.claude/skills/blockchain/aptos/docs_shelby/tools_cli.md`
-- Commands: `.claude/skills/blockchain/aptos/docs_shelby/tools_cli_commands_*.md`
+- CLI guide: `.claude/skills/blockchain/aptos/docs/tools_cli.md`
+- Commands: `.claude/skills/blockchain/aptos/docs/tools_cli_commands_*.md`
 - Config file location: `~/.shelby/config.yaml`
 
 ## Limitations

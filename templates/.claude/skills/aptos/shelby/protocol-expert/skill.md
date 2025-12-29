@@ -23,12 +23,13 @@ Auto-invoke when users ask about:
 
 ## Knowledge Base
 
-Core protocol documentation in:
-```
-.claude/skills/blockchain/aptos/docs_shelby/
-```
+**Full access to Shelby Protocol documentation (when available):**
+- **Location:** `docs/` (relative to this skill)
+- Pull with: `docpull https://docs.shelby.cloud -o .claude/skills/aptos/shelby/docs` (when available)
 
-Key files:
+**Note:** Documentation must be pulled separately. Skill works with built-in knowledge but benefits from comprehensive protocol docs.
+
+Key documentation files (when pulled):
 - `protocol.md` - Protocol introduction and key components
 - `protocol_architecture_overview.md` - Comprehensive architecture
 - `protocol_architecture_rpcs.md` - RPC server operations
@@ -419,17 +420,17 @@ Uploaded as:
 
 ```bash
 # Architecture questions
-Read docs_shelby/protocol_architecture_overview.md
+Read docs/protocol_architecture_overview.md
 
 # Erasure coding details
-Grep "erasure|clay|chunking" docs_shelby/ --output-mode content
+Grep "erasure|clay|chunking" docs/ --output-mode content
 
 # Economic model
-Read docs_shelby/protocol_architecture_token-economics.md
+Read docs/protocol_architecture_token-economics.md
 
 # Specific components
-Read docs_shelby/protocol_architecture_rpcs.md
-Read docs_shelby/protocol_architecture_storage-providers.md
+Read docs/protocol_architecture_rpcs.md
+Read docs/protocol_architecture_storage-providers.md
 ```
 
 ### 3. Provide Comprehensive Answer

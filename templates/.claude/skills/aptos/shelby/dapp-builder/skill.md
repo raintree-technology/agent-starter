@@ -25,7 +25,7 @@ Auto-invoke when users ask about:
 
 DApp development documentation:
 ```
-.claude/skills/blockchain/aptos/docs_shelby/
+.claude/skills/blockchain/aptos/docs/
 ```
 
 Key files:

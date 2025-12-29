@@ -25,7 +25,7 @@ Auto-invoke when users ask about:
 
 Integration documentation:
 ```
-.claude/skills/blockchain/aptos/docs_shelby/
+.claude/skills/blockchain/aptos/docs/
 ```
 
 Key files:
@@ -911,7 +911,7 @@ Response:
 4. Provide upload and playback code examples
 5. Discuss costs and optimization (caching, expiration)
 6. Suggest monitoring strategy
-7. Reference: docs_shelby/protocol.md, SDK guides
+7. Reference: docs/protocol.md, SDK guides
 ```
 
 ## Limitations

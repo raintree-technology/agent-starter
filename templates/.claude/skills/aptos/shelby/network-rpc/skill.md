@@ -25,7 +25,7 @@ Auto-invoke when users ask about:
 
 Network and infrastructure documentation:
 ```
-.claude/skills/blockchain/aptos/docs_shelby/
+.claude/skills/blockchain/aptos/docs/
 ```
 
 Key files:
@@ -732,13 +732,13 @@ Batch requests: Group operations where possible
 
 ```bash
 # RPC architecture
-Read docs_shelby/protocol_architecture_rpcs.md
+Read docs/protocol_architecture_rpcs.md
 
 # Storage providers
-Read docs_shelby/protocol_architecture_storage-providers.md
+Read docs/protocol_architecture_storage-providers.md
 
 # Network topology
-Read docs_shelby/protocol_architecture_overview.md
+Read docs/protocol_architecture_overview.md
 ```
 
 ### 3. Provide Answer
