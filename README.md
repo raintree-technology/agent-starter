@@ -5,6 +5,26 @@ Advanced Claude Code framework with 40+ skills, meta-commands, skill orchestrati
 [![npm version](https://img.shields.io/npm/v/create-claude-starter.svg)](https://www.npmjs.com/package/create-claude-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+## Quick Install (npx add-skill)
+
+Install individual skills directly:
+
+```bash
+# Token optimization
+npx add-skill raintree-technology/claude-starter --skill toon-formatter
+
+# Claude Code meta-tools
+npx add-skill raintree-technology/claude-starter --skill claude-skill-builder
+npx add-skill raintree-technology/claude-starter --skill claude-mcp-expert
+
+# Blockchain
+npx add-skill raintree-technology/claude-starter --skill move-prover
+npx add-skill raintree-technology/claude-starter --skill helius
+
+# List all available skills
+npx add-skill raintree-technology/claude-starter --list
+```
+
 ## What is this?
 
 The most advanced `.claude/` configuration framework for [Claude Code](https://code.claude.com) that provides:
