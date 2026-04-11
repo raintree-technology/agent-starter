@@ -27,7 +27,7 @@ steps:
 
   - name: "Create Hotfix Branch"
     bash: |
-      BRANCH="hotfix/${inputs.issue_number}"
+      BRANCH="hotfix/${{ inputs.issue_number }}"
       git checkout -b "$BRANCH"
       echo "✓ Created branch: $BRANCH"
     fail_on_error: true
@@ -35,7 +35,7 @@ steps:
   - name: "Apply Fix"
     manual: |
       ═══════════════════════════════════════════════
-      APPLY HOTFIX FOR: ${inputs.issue_number}
+      APPLY HOTFIX FOR: ${{ inputs.issue_number }}
       ═══════════════════════════════════════════════
 
       1. Make necessary code changes to fix the issue
@@ -71,16 +71,23 @@ steps:
 
   - name: "Commit Fix"
     bash: |
-      git commit -m "Hotfix: ${inputs.issue_number}
+      git commit -m "Hotfix: ${{ inputs.issue_number }}
 
       Emergency fix for production issue.
-      Issue: ${inputs.issue_number}
+      Issue: ${{ inputs.issue_number }}
       "
       echo "✓ Changes committed"
     fail_on_error: true
 
   - name: "Release Patch Version"
-    command: /release patch --skip-tests
+    bash: |
+      echo "Bumping patch version..."
+      npm version patch --no-git-tag-version
+      VERSION=$(node -p "require('./package.json').version")
+      git add package.json package-lock.json
+      git commit -m "Release v$VERSION"
+      git tag -a "v$VERSION" -m "Hotfix release v$VERSION"
+      echo "✓ Created hotfix release v$VERSION"
     fail_on_error: true
 
   - name: "Deploy to Production"
@@ -98,7 +105,7 @@ steps:
     bash: |
       CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
       git checkout main
-      git merge "$CURRENT_BRANCH" --no-ff -m "Merge hotfix: ${inputs.issue_number}"
+      git merge "$CURRENT_BRANCH" --no-ff -m "Merge hotfix: ${{ inputs.issue_number }}"
       git push origin main
       git push origin --tags
       echo "✓ Hotfix merged to main"
@@ -106,7 +113,7 @@ steps:
 
   - name: "Delete Hotfix Branch"
     bash: |
-      BRANCH="hotfix/${inputs.issue_number}"
+      BRANCH="hotfix/${{ inputs.issue_number }}"
       git branch -d "$BRANCH"
       echo "✓ Deleted branch: $BRANCH"
     fail_on_error: false
@@ -115,15 +122,8 @@ on_failure:
   - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   - message: "❌ Hotfix deployment failed"
   - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  - bash: |
-      echo "Rolling back..."
-      BRANCH=$(git rev-parse --abbrev-ref HEAD)
-      if [[ "$BRANCH" =~ ^hotfix/ ]]; then
-        git checkout main
-        git branch -D "$BRANCH"
-        echo "✓ Hotfix branch deleted"
-      fi
-  - message: "Hotfix rolled back. Review errors and try again."
+  - message: "Automatic rollback is disabled for safety."
+  - message: "Review the hotfix branch, git status, and deployment state before cleaning up manually."
 
 on_success:
   - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -131,7 +131,7 @@ on_success:
   - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   - bash: |
       VERSION=$(node -p "require('./package.json').version")
-      echo "Issue: ${inputs.issue_number}"
+      echo "Issue: ${{ inputs.issue_number }}"
       echo "Version: v$VERSION"
       echo "Deployed: $(date)"
   - message: "Monitor production for verification."

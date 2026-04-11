@@ -138,10 +138,23 @@ export class WorkflowParser {
       errors.push(`${stepId}: command must be a string`);
     }
 
+    if (step.confirm !== undefined && typeof step.confirm !== 'boolean') {
+      errors.push(`${stepId}: confirm must be a boolean`);
+    }
+
     // Validate timeout
     if (step.timeout !== undefined) {
       if (typeof step.timeout !== 'number' || step.timeout < 0) {
         errors.push(`${stepId}: timeout must be a positive number`);
+      }
+    }
+
+    for (const fieldName of ['bash', 'command', 'manual']) {
+      const value = step[fieldName];
+      if (typeof value === 'string' && /\$\{(inputs|env|steps|workflow)\./.test(value)) {
+        errors.push(
+          `${stepId}: ${fieldName} uses unsupported template syntax. Use \${{ ... }} instead of \${...}.`,
+        );
       }
     }
 

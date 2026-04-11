@@ -281,7 +281,7 @@ arguments:
 
 If deployment fails:
 1. Check error logs: `.claude/logs/deploy-<timestamp>.log`
-2. Rollback: `git reset --hard HEAD`
+2. Inspect git state before cleanup: `git status --short`
 3. Clean build artifacts: `rm -rf dist/`
 4. Retry with --verbose flag for details
 ```

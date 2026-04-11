@@ -41,9 +41,13 @@ Skills can be installed three ways:
 # Create directory if needed
 mkdir -p ~/.claude/skills
 
-# Download skill
-curl -o ~/.claude/skills/skill-name.md \
-  https://raw.githubusercontent.com/user/repo/main/skill.md
+# Download a commit-pinned artifact once, review it, then install it
+COMMIT_SHA=0123456789abcdef0123456789abcdef01234567
+TMP_SKILL=$(mktemp)
+curl --fail --location --output "$TMP_SKILL" \
+  "https://raw.githubusercontent.com/user/repo/${COMMIT_SHA}/skill.md"
+shasum -a 256 "$TMP_SKILL"
+cp "$TMP_SKILL" ~/.claude/skills/skill-name.md
 ```
 
 ### 2. Project (.claude/skills/)
@@ -52,9 +56,13 @@ curl -o ~/.claude/skills/skill-name.md \
 # In your project root
 mkdir -p .claude/skills
 
-# Download skill
-curl -o .claude/skills/skill-name.md \
-  https://raw.githubusercontent.com/user/repo/main/skill.md
+# Download a commit-pinned artifact once, review it, then install it
+COMMIT_SHA=0123456789abcdef0123456789abcdef01234567
+TMP_SKILL=$(mktemp)
+curl --fail --location --output "$TMP_SKILL" \
+  "https://raw.githubusercontent.com/user/repo/${COMMIT_SHA}/skill.md"
+shasum -a 256 "$TMP_SKILL"
+cp "$TMP_SKILL" .claude/skills/skill-name.md
 ```
 
 ### 3. Plugin-based
@@ -99,20 +107,22 @@ When considering a skill, check:
 
 ### 3. Install the Skill
 
-Use the `/install-skill <url>` command for guided installation, or:
+Use the `/install-skill <url>` command for guided installation, or install only from an immutable commit-pinned raw URL:
 
 **Quick Install:**
 ```bash
-# Personal (all projects)
-curl -o ~/.claude/skills/skill-name.md <github-raw-url>
+COMMIT_SHA=0123456789abcdef0123456789abcdef01234567
+RAW_URL="https://raw.githubusercontent.com/user/repo/${COMMIT_SHA}/path/to/skill.md"
+TMP_SKILL=$(mktemp)
 
-# Project-specific
-curl -o .claude/skills/skill-name.md <github-raw-url>
+curl --fail --location --output "$TMP_SKILL" "$RAW_URL"
+shasum -a 256 "$TMP_SKILL"
+cp "$TMP_SKILL" .claude/skills/skill-name.md
 ```
 
 **GitHub Raw URL Format:**
 ```
-https://raw.githubusercontent.com/user/repo/main/path/to/skill.md
+https://raw.githubusercontent.com/user/repo/<commit-sha>/path/to/skill.md
 ```
 
 ### 4. Verify Installation
@@ -144,8 +154,8 @@ ls .claude/skills/
 
 **Update a skill:**
 ```bash
-# Re-download from GitHub
-curl -o ~/.claude/skills/skill-name.md <github-raw-url>
+# Repeat the review flow with a newly pinned commit SHA before overwriting
+/install-skill <github-url>
 ```
 
 **Remove a skill:**
@@ -221,6 +231,8 @@ See `.claude/DIRECTORY.md` for complete list.
 - Always review code before installing
 - Check repository reputation
 - Verify maintainer activity
+- Prefer commit-pinned raw URLs over branch URLs
+- Record or compare the reviewed SHA-256 digest before overwrite
 
 ## Related Commands
 

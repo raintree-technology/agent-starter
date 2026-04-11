@@ -9,19 +9,20 @@ Install a Claude Code skill from a GitHub repository URL with guided setup and v
 - `--project` - Install to `.claude/skills/` (project-specific, default)
 
 **Examples:**
-- `/install-skill https://github.com/user/repo/blob/main/skill.md`
-- `/install-skill https://raw.githubusercontent.com/user/repo/main/skill.md --personal`
-- `/install-skill https://github.com/user/skills/tree/main/api/stripe.md --project`
+- `/install-skill https://github.com/user/repo/blob/0123456789abcdef0123456789abcdef01234567/skill.md`
+- `/install-skill https://raw.githubusercontent.com/user/repo/0123456789abcdef0123456789abcdef01234567/skill.md --personal`
+- `/install-skill https://github.com/user/skills/tree/0123456789abcdef0123456789abcdef01234567/api/stripe.md --project`
 
 ## Overview
 
 This command helps you safely install Claude Code skills from GitHub repositories with:
 
-✅ URL validation and conversion to raw format
+✅ URL validation and conversion to commit-pinned raw format
 ✅ Skill content preview and security review
+✅ SHA-256 digest display for the reviewed artifact
 ✅ Installation location selection
 ✅ Automatic file naming from skill title
-✅ Installation verification
+✅ Byte-for-byte installation verification
 ✅ Documentation update suggestions
 
 ## Workflow
@@ -29,15 +30,15 @@ This command helps you safely install Claude Code skills from GitHub repositorie
 ### 1. Parse and Validate URL
 
 **Accept these GitHub URL formats:**
-- `https://github.com/user/repo/blob/branch/path/skill.md`
-- `https://raw.githubusercontent.com/user/repo/branch/path/skill.md`
-- `https://github.com/user/repo/tree/branch/path/skill.md`
+- `https://github.com/user/repo/blob/<branch-or-commit>/path/skill.md`
+- `https://raw.githubusercontent.com/user/repo/<branch-or-commit>/path/skill.md`
+- `https://github.com/user/repo/tree/<branch-or-commit>/path/skill.md`
 
-**Convert to raw URL:**
+**Resolve mutable refs to a pinned commit SHA, then convert to a raw URL:**
 ```
-github.com/user/repo/blob/main/skill.md
+github.com/user/repo/blob/<branch-or-commit>/skill.md
 ↓
-raw.githubusercontent.com/user/repo/main/skill.md
+raw.githubusercontent.com/user/repo/0123456789abcdef0123456789abcdef01234567/skill.md
 ```
 
 **Validate:**
@@ -45,16 +46,21 @@ raw.githubusercontent.com/user/repo/main/skill.md
 - ✅ Repository exists
 - ✅ File is `.md` format
 - ✅ URL is accessible
+- ✅ Final download URL is pinned to an immutable commit SHA
 
 If validation fails, show error and suggest corrections.
 
 ### 2. Fetch Skill Content
 
-Download the skill file from the raw GitHub URL.
+Download the skill file once from the commit-pinned raw GitHub URL, then review and install that exact artifact.
 
-**Use WebFetch or curl to retrieve:**
+**Use WebFetch or curl to retrieve a single review artifact:**
 ```bash
-curl -sL <raw-github-url>
+TMP_SKILL=$(mktemp)
+PINNED_RAW_URL="https://raw.githubusercontent.com/user/repo/<commit-sha>/path/to/skill.md"
+
+curl --fail --location --output "$TMP_SKILL" "$PINNED_RAW_URL"
+SKILL_SHA256=$(shasum -a 256 "$TMP_SKILL" | awk '{print $1}')
 ```
 
 **Check for errors:**
@@ -73,6 +79,8 @@ Skill Preview
 
 Title: {extracted title}
 Source: {github-url}
+Pinned Commit: {commit-sha}
+SHA-256: {skill-sha256}
 Size: {file-size}
 
 Description:
@@ -94,6 +102,7 @@ Please review this skill's content before installing:
 2. Verify it matches your use case
 3. Confirm the source repository is trustworthy
 4. Review any bash commands or file operations
+5. Confirm the reviewed SHA-256 matches the installed file
 
 Would you like to:
   [A] View full skill content
@@ -150,13 +159,15 @@ Options:
 
 ### 6. Install the Skill
 
-**Download and save:**
+**Install the reviewed artifact without re-fetching:**
 ```bash
-# Using curl
-curl -o {install-path}/{filename} {raw-github-url}
+# Copy the exact bytes you reviewed
+cp "$TMP_SKILL" "{install-path}/{filename}"
 
-# Verify file was created
+# Verify file was created and matches the reviewed digest
 ls -lh {install-path}/{filename}
+INSTALLED_SHA256=$(shasum -a 256 "{install-path}/{filename}" | awk '{print $1}')
+test "$INSTALLED_SHA256" = "$SKILL_SHA256"
 ```
 
 **Show progress:**
@@ -166,8 +177,9 @@ Installing skill...
 Source: {github-url}
 Target: {install-path}/{filename}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Downloading... ✓
-Saving... ✓
+Pinned commit verified... ✓
+Digest captured... ✓
+Saving reviewed artifact... ✓
 ```
 
 ### 7. Verify Installation
@@ -177,6 +189,7 @@ Saving... ✓
 # Confirm file exists and has content
 ls -lh {install-path}/{filename}
 wc -l {install-path}/{filename}
+shasum -a 256 {install-path}/{filename}
 ```
 
 **Show success message:**
@@ -222,7 +235,7 @@ Next Steps:
 
 **Command:**
 ```
-/install-skill https://github.com/anthropics/skills/blob/main/api/stripe.md
+/install-skill https://github.com/anthropics/skills/blob/0123456789abcdef0123456789abcdef01234567/api/stripe.md
 ```
 
 **Output:**
@@ -233,6 +246,8 @@ Skill Preview
 
 Title: Stripe API
 Source: anthropics/skills
+Pinned Commit: 0123456789abcdef0123456789abcdef01234567
+SHA-256: 4f4d3d0f4f9e8efeb6f96759f54f1b7d15bfb89a4b6d9d5d9d1efafca3b1a8a4
 Size: 15.2 KB
 
 Description:
@@ -259,7 +274,7 @@ The skill will auto-activate when you:
 
 **Command:**
 ```
-/install-skill https://raw.githubusercontent.com/user/repo/main/docker.md --personal
+/install-skill https://raw.githubusercontent.com/user/repo/0123456789abcdef0123456789abcdef01234567/docker.md --personal
 ```
 
 **Output:**
@@ -281,7 +296,7 @@ Next steps:
 
 **Command:**
 ```
-/install-skill https://github.com/user/repo/blob/main/sql.md
+/install-skill https://github.com/user/repo/blob/0123456789abcdef0123456789abcdef01234567/sql.md
 ```
 
 **Output:**
@@ -311,7 +326,7 @@ Size: 14.3 KB (updated from 12.1 KB)
 ❌ Error: Invalid GitHub URL
 
 Expected format:
-  https://github.com/user/repo/blob/branch/path/skill.md
+  https://github.com/user/repo/blob/<branch-or-commit>/path/skill.md
 
 Received:
   {user-provided-url}
@@ -370,9 +385,9 @@ Install multiple skills from a list:
 ```bash
 # Create skills-list.txt with URLs
 cat > skills-list.txt <<EOF
-https://github.com/user/repo/blob/main/skill1.md
-https://github.com/user/repo/blob/main/skill2.md
-https://github.com/user/repo/blob/main/skill3.md
+https://github.com/user/repo/blob/0123456789abcdef0123456789abcdef01234567/skill1.md
+https://github.com/user/repo/blob/89abcdef0123456789abcdef0123456789abcdef/skill2.md
+https://github.com/user/repo/blob/fedcba9876543210fedcba9876543210fedcba98/skill3.md
 EOF
 
 # Install each (requires manual approval for security)
@@ -424,8 +439,13 @@ rm .claude/skills/<tab-complete>
 
 4. ✅ **Keep updated:**
    - Check for skill updates periodically
-   - Re-install from source to update
+   - Re-pin to a reviewed commit SHA before updating
    - Review changelog if available
+
+5. ✅ **Install immutable bytes only:**
+   - Never install directly from a mutable branch URL
+   - Record the reviewed commit SHA and SHA-256 digest
+   - Copy the reviewed artifact instead of downloading twice
 
 ## Related Commands
 

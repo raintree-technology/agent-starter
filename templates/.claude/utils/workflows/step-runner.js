@@ -6,9 +6,50 @@
 import { spawn } from 'child_process';
 import readline from 'readline';
 
+const SAFE_PARENT_ENV_KEYS = [
+  'PATH',
+  'HOME',
+  'LANG',
+  'LC_ALL',
+  'TERM',
+  'TMPDIR',
+  'TMP',
+  'TEMP',
+  'USER',
+  'LOGNAME',
+  'SHELL',
+  'PWD',
+  'SystemRoot',
+  'ComSpec',
+  'WINDIR'
+];
+
 export class StepRunner {
   constructor(options = {}) {
-    this.options = options;
+    this.options = {
+      allowShell: false,
+      ...options
+    };
+  }
+
+  buildExecutionEnv(stepEnv = {}) {
+    const env = {};
+
+    for (const key of SAFE_PARENT_ENV_KEYS) {
+      if (process.env[key]) {
+        env[key] = process.env[key];
+      }
+    }
+
+    for (const [key, value] of Object.entries(stepEnv)) {
+      if (!/^[A-Z_][A-Z0-9_]*$/.test(key)) {
+        continue;
+      }
+
+      env[key] = String(value);
+    }
+
+    return env;
   }
 
   /**
@@ -18,6 +59,12 @@ export class StepRunner {
    * @returns {Promise<object>} Execution result
    */
   async runBash(step, state) {
+    if (!this.options.allowShell) {
+      throw new Error(
+        'Shell execution is disabled by default. Review the workflow and rerun with --allow-shell to execute bash steps.',
+      );
+    }
+
     const command = state.substituteVariables(step.bash);
     const timeout = step.timeout || 120000; // 2 minutes default
 
@@ -26,7 +73,8 @@ export class StepRunner {
     return new Promise((resolve, reject) => {
       const child = spawn('bash', ['-c', command], {
         stdio: ['inherit', 'pipe', 'pipe'],
-        env: { ...process.env, ...state.getEnv() }
+        cwd: process.cwd(),
+        env: this.buildExecutionEnv(state.getEnv())
       });
 
       let stdout = '';
@@ -80,10 +128,38 @@ export class StepRunner {
    * @returns {Promise<object>} Execution result
    */
   async runCommand(step, state) {
-    const command = state.substituteVariables(step.command);
+    const command = state.substituteVariables(step.command).trim();
 
-    // For now, treat commands like bash
-    // In practice, this would invoke Claude Code commands
+    if (command.startsWith('/')) {
+      if (typeof this.options.commandHandler !== 'function') {
+        throw new Error(
+          'Claude slash-command workflow steps require an explicit commandHandler; refusing to continue without verified execution.',
+        );
+      }
+
+      const startTime = Date.now();
+      const result = await this.options.commandHandler({ ...step, command }, state);
+
+      if (!result || typeof result !== 'object') {
+        throw new Error(
+          `Command handler for "${command}" must return a result object with a numeric exitCode.`,
+        );
+      }
+
+      if (typeof result.exitCode !== 'number' || Number.isNaN(result.exitCode)) {
+        throw new Error(
+          `Command handler for "${command}" must return a numeric exitCode.`,
+        );
+      }
+
+      return {
+        stdout: '',
+        stderr: '',
+        duration: Date.now() - startTime,
+        ...result
+      };
+    }
+
     return this.runBash({ ...step, bash: command }, state);
   }
 
@@ -95,6 +171,15 @@ export class StepRunner {
    */
   async runManual(step, state) {
     const message = state.substituteVariables(step.manual);
+    const startTime = Date.now();
+
+    if (typeof this.options.manualHandler === 'function') {
+      return this.options.manualHandler({ ...step, manual: message }, state);
+    }
+
+    if (!process.stdin.isTTY || !process.stdout.isTTY) {
+      throw new Error('Manual workflow steps require an interactive terminal');
+    }
 
     console.log('');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -115,7 +200,8 @@ export class StepRunner {
         console.log('');
         resolve({
           exitCode: 0,
-          manual: true
+          manual: true,
+          duration: Date.now() - startTime
         });
       });
     });
