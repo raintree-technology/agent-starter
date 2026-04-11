@@ -22,9 +22,10 @@ We will respond within 48 hours and provide a timeline for fixing the issue.
 This package implements multiple layers of security:
 
 ### 1. Command Injection Prevention
-- ✅ Uses `execFile` (not `exec` or `spawn` with shell)
-- ✅ Arguments passed as arrays, never concatenated strings
-- ✅ No shell interpretation of user input
+- ✅ Documentation pulling uses `execFile` with argument arrays
+- ✅ Workflow shell execution is disabled by default and requires explicit `--allow-shell` opt-in
+- ✅ Claude slash-command workflow steps require an explicit verified handler and fail closed otherwise
+- ✅ Workflow child processes run with a scrubbed environment instead of inheriting all parent secrets
 
 ### 2. Path Traversal Prevention
 - ✅ All file paths validated before operations
@@ -54,9 +55,17 @@ This package implements multiple layers of security:
 ### 7. SSRF Prevention
 - ✅ URL validation blocks localhost, private IPs, file:// protocol
 - ✅ Only `http://` and `https://` allowed
-- ✅ Domain whitelist for documentation sources
+- ✅ Documentation sources are curated through the shipped manifest and should stay on reviewed domains
 
-### 8. Input Validation
+### 8. Least Privilege Defaults
+- ✅ Shared template settings ship without wildcard tool permissions
+- ✅ Executable hooks and elevated trust settings belong in `.claude/settings.local.json`
+
+### 9. Supply Chain Hardening
+- ✅ Skill installation guidance requires commit-pinned GitHub sources
+- ✅ Skill installs review a single downloaded artifact and surface its SHA-256 digest before install
+- ✅ Installed bytes are copied from the reviewed artifact instead of being re-fetched from a mutable branch
+### 10. Input Validation
 - ✅ All user inputs sanitized
 - ✅ Skill IDs, paths, URLs validated before use
 - ✅ Log injection prevention (control character filtering)
@@ -127,7 +136,7 @@ npm outdated
 
 1. **Never commit secrets** - Use `.gitignore`
 2. **Validate all inputs** - Use security.js utilities
-3. **Use `execFile`** - Never use `exec` or `spawn` with shell
+3. **Default to typed execution** - Use `execFile` or other typed actions by default; keep shell execution opt-in and heavily tested
 4. **Test security** - Run `npm run test:security`
 5. **Update dependencies** - Keep packages current
 
@@ -142,7 +151,8 @@ Before each release, verify:
 - [ ] Security tests passing
 - [ ] No hardcoded secrets or credentials
 - [ ] All file operations use path validation
-- [ ] All external commands use `execFile` with arg arrays
+- [ ] Workflow shell execution remains disabled by default
+- [ ] Any reviewed shell workflows require explicit opt-in and confirmation
 - [ ] Input validation on all user-provided data
 - [ ] Error messages don't leak sensitive info
 - [ ] CHANGELOG.md documents security fixes

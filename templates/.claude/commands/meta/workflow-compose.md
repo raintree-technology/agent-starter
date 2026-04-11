@@ -54,7 +54,7 @@ Creating workflow: production-release
 Build step-by-step workflow:
 
 **Step types:**
-- `command` - Execute Claude Code command
+- `command` - Execute a non-shell command or externally verified command handler
 - `bash` - Run bash command
 - `parallel` - Run multiple steps concurrently
 - `sequential` - Explicit sequential steps
@@ -64,14 +64,14 @@ Build step-by-step workflow:
 
 ```
 Step 1: What type of step?
-  1. Command (/audit-code, /optimize, etc.)
+  1. Command (externally verified handler only)
   2. Bash (npm test, git push, etc.)
   3. Parallel steps
   4. Manual checkpoint
-> 1
+> 2
 
-? Which command?
-> /audit-code --strict
+? Bash command?
+> npm audit --omit=dev && npm run lint
 
 ? Step name:
 > Quality Checks
@@ -79,7 +79,7 @@ Step 1: What type of step?
 ? Continue on error?
 > no
 
-✅ Step 1 added: Quality Checks (/audit-code --strict)
+✅ Step 1 added: Quality Checks (npm audit --omit=dev && npm run lint)
 
 Add another step? (Y/n) y
 
@@ -103,10 +103,10 @@ Step 2: What type of step?
 Add another step? (Y/n) y
 
 Step 3: What type of step?
-> 1
+> 2
 
-? Which command?
-> /release ${inputs.version_type}
+? Bash command?
+> npm version ${{ inputs.version_type }} --no-git-tag-version
 
 ? Step name:
 > Release
@@ -148,16 +148,15 @@ Define failure and success handlers:
 
 ```
 ? What should happen on failure?
-  1. Rollback changes
+  1. Print recovery checklist
   2. Send notification
   3. Run cleanup command
   4. Custom steps
   5. Nothing (default)
 > 1
 
-? Rollback steps:
-> /clean build
-> git reset --hard HEAD
+? Failure steps:
+> Inspect git status before manual cleanup
 
 ✅ Failure handler added
 
@@ -169,7 +168,7 @@ Define failure and success handlers:
 > 3
 
 ? Success message:
-> Production release complete! Version: ${inputs.version_type}
+> Production release complete! Version: ${{ inputs.version_type }}
 
 ✅ Success handler added
 ```
@@ -202,7 +201,7 @@ env:
 
 steps:
   - name: "Quality Checks"
-    command: /audit-code --strict
+    bash: npm audit --omit=dev && npm run lint
     fail_on_error: true
 
   - name: "Build and Test"
@@ -212,7 +211,7 @@ steps:
     when: ${{ inputs.skip_tests == false }}
 
   - name: "Release"
-    command: /release ${inputs.version_type}
+    bash: npm version ${{ inputs.version_type }} --no-git-tag-version
     confirm: true
     fail_on_error: true
 
@@ -222,12 +221,10 @@ steps:
     fail_on_error: true
 
 on_failure:
-  - command: /clean build
-  - bash: git reset --hard HEAD
-  - message: "Release failed - changes rolled back"
+  - message: "Release failed - inspect git status before manual cleanup"
 
 on_success:
-  - message: "Production release complete! Version: ${inputs.version_type}"
+  - message: "Production release complete! Version: ${{ inputs.version_type }}"
 
 metadata:
   created: "2025-12-28T10:15:00Z"
@@ -256,12 +253,8 @@ node -e "
 # Validate workflow schema
 node .claude/utils/workflows/validator.js .claude/workflows/production-release.yml
 
-# Check referenced commands exist
-for cmd in audit-code release clean; do
-  if ! grep -q "\"$cmd\"" .claude/command-registry.json; then
-    echo "Warning: Command /$cmd not found in registry"
-  fi
-done
+# Review for unsafe shell before enabling execution
+grep -n "bash:" .claude/workflows/production-release.yml
 ```
 
 ### 6. Generate Command Wrapper (Optional)
@@ -346,13 +339,13 @@ Inputs:
   - skip_tests (boolean): Skip test suite
 
 Steps: 4
-  1. Quality Checks (/audit-code --strict)
+  1. Quality Checks (npm audit --omit=dev && npm run lint)
   2. Build and Test (npm run build && npm test)
-  3. Release (/release ${inputs.version_type})
+  3. Release (npm version ${{ inputs.version_type }} --no-git-tag-version)
   4. Deploy (npm run deploy:production) [conditional]
 
 Error Handling:
-  On Failure: Rollback + cleanup
+  On Failure: Recovery checklist
   On Success: Success message
 
 Validation: ✅ PASSED
@@ -378,8 +371,8 @@ Workflow is ready to use!
 
 # Interactive prompts:
 Steps:
-1. /audit-code
-2. /optimize session
+1. npm audit --omit=dev
+2. npm run lint
 3. npm outdated
 
 Result: .claude/workflows/daily-checks.yml
@@ -403,9 +396,9 @@ steps:
 ### From Existing Commands
 
 ```bash
-/workflow-compose my-process --from-commands "/audit-code /optimize /clean"
+/workflow-compose my-process --from-commands "npm run lint npm test npm run build"
 
-# Automatically creates workflow with those commands in sequence
+# Automatically creates workflow with those steps in sequence
 ```
 
 ## Workflow Templates
@@ -420,7 +413,7 @@ steps:
     steps:
       - bash: npm run lint
       - bash: npm run type-check
-      - command: /audit-code
+      - bash: npm audit --omit=dev
   - bash: npm test -- --coverage
   - bash: npm run build
 ```
@@ -434,9 +427,9 @@ inputs:
     type: string
     allowed: [patch, minor, major]
 steps:
-  - command: /audit-code --strict
+  - bash: npm audit --omit=dev
   - bash: npm test
-  - command: /release ${inputs.version_type}
+  - bash: npm version ${{ inputs.version_type }} --no-git-tag-version
   - bash: git push origin main --tags
 ```
 
@@ -450,8 +443,8 @@ inputs:
     allowed: [dev, staging, production]
 steps:
   - bash: npm run build
-  - bash: npm run deploy:${inputs.environment}
-  - bash: curl -f https://${inputs.environment}.example.com/health
+  - bash: npm run deploy:${{ inputs.environment }}
+  - bash: curl -f https://${{ inputs.environment }}.example.com/health
 ```
 
 ### Maintenance Template
@@ -462,8 +455,8 @@ schedule:
   cron: "0 9 * * *"
 steps:
   - bash: npm update
-  - command: /clean cache temp
-  - command: /audit-code --report
+  - bash: rm -rf .cache tmp
+  - bash: npm audit --omit=dev
 ```
 
 ## Workflow DSL Reference
@@ -513,18 +506,16 @@ env:
   VERSION: 1.0.0
 
 steps:
-  - bash: echo "Deploying ${env.APP_NAME} v${env.VERSION}"
-  - bash: deploy --version ${inputs.version}
-  - bash: echo "Result: ${steps.deploy.output}"
+  - bash: echo "Deploying ${{ env.APP_NAME }} v${{ env.VERSION }}"
+  - bash: deploy --version ${{ inputs.version }}
+  - bash: echo "Result: ${{ steps.deploy.output }}"
 ```
 
 ### Error Handling
 
 ```yaml
 on_failure:
-  - command: /clean build
-  - bash: git reset --hard HEAD
-  - message: "Workflow failed - rolled back"
+  - message: "Workflow failed - inspect git status before manual cleanup"
 
 on_success:
   - message: "Workflow complete!"
@@ -582,9 +573,9 @@ steps:
 
 - ✅ YAML validation
 - ✅ Step dependency checking
-- ✅ Command existence validation
+- ✅ Fail-closed slash-command handling
 - ✅ Dry-run mode
-- ✅ Automatic rollback on failure
+- ✅ Recovery checklist guidance
 - ✅ Timeout protection
 - ✅ Confirmation for destructive steps
 
@@ -608,12 +599,10 @@ Solution: Check YAML formatting
 - Validate at yamllint.com
 ```
 
-**Error: "Command not found"**
+**Error: "slash-command workflow steps require an explicit commandHandler"**
 ```
-Solution: Ensure referenced commands exist
-- Check command registry
-- Create missing commands first
-- Use full command names (include /prefix in workflow)
+Solution: Replace the slash-command step with bash/manual/confirm,
+or run the engine from a caller that provides a verified commandHandler.
 ```
 
 **Error: "Workflow validation failed"**

@@ -1,55 +1,7 @@
 {
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/settings-backup.sh",
-            "description": "Backup critical config files before editing"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/secret-scanner.sh",
-            "description": "Prevent accidentally writing sensitive data"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/toon-validator.sh",
-            "description": "Validate TOON format syntax"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/markdown-formatter.sh",
-            "description": "Auto-format markdown files"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/file-size-monitor.sh",
-            "description": "Warn about files exceeding size limits"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-optimize.sh",
-            "description": "Suggest optimization checks after code changes"
-          }
-        ]
-      }
-    ]
-  },
-  "permissions": {
-    "allow": ["Read(*)", "Write(*)", "Edit(*)", "Grep(*)", "Glob(*)", "Bash(*)"],
-    "ask": [],
-    "deny": []
-  },
+  "$schema": "https://code.claude.com/schemas/settings.schema.json",
+  "version": "1.0.0",
+  "description": "Safe shared Claude Code defaults for claude-starter. Keep executable hooks, elevated permissions, and other machine-specific trust settings in .claude/settings.local.json.",
   "model": "claude-sonnet-4-5",
   "orchestration": {
     "enabled": true,

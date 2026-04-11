@@ -58,7 +58,7 @@ Variables defined:
 - env.NODE_ENV (string)
 
 Variable usage:
-- ✓ ${inputs.version_type} → Step 4 (valid)
+- ✓ ${{ inputs.version_type }} → Step 4 (valid)
 - ✓ ${{ steps.build.exit_code }} → Step 5 (valid)
 - ⚠ ${{ steps.deploy.output }} → Step 6 (undefined - deploy hasn't run yet)
 

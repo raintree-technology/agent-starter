@@ -70,6 +70,9 @@ git clone https://github.com/raintree-technology/claude-starter.git
 cp -r claude-starter/templates/.claude your-project/.claude
 ```
 
+Manual copy now ships a fail-closed `.claude/settings.json`.
+Keep executable hooks, elevated permissions, and any workflow trust overrides in `.claude/settings.local.json` after review.
+
 ### Option 4: Discover on SkillsMP
 Browse 40+ skills at [SkillsMP](https://skillsmp.com/) and install individually:
 ```bash
@@ -108,6 +111,7 @@ docpull https://supabase.com/docs -o .claude/skills/supabase/docs
 - Total size: ~8GB across all skills
 - Pulled once, persistent across sessions
 - Use CLI for easier management: `npx claude-starter docs pull`
+- Workflow shell steps are disabled by default; only enable them after reviewing the workflow you plan to run
 
 **Advanced: Custom doc location**
 ```bash

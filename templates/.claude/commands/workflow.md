@@ -12,10 +12,14 @@ Execute YAML-defined workflows with automatic orchestration and state management
 - `--dry-run` - Preview without execution
 - `--input <key=value>` - Pass input parameter (can be used multiple times)
 - `--verbose` - Show detailed output
+- `--allow-shell` - Execute reviewed `bash` steps (disabled by default)
 
 ## Purpose
 
-Executes complex automation workflows defined in YAML files. Workflows support sequential and parallel execution, conditional logic, variable substitution, error handling, and rollback mechanisms.
+Executes complex automation workflows defined in YAML files. Workflows support sequential and parallel execution, conditional logic, variable substitution, and guarded confirmation steps.
+
+Shell execution is disabled by default. Review the workflow first, then pass `--allow-shell` only when you trust the file you are running.
+Claude slash-command steps are rejected by the standalone engine unless an explicit verified `commandHandler` is provided by the caller. Shipped workflows avoid slash-command gates and use machine-verifiable bash/manual/confirm steps instead.
 
 ## Workflow
 
@@ -74,6 +78,7 @@ done
 # Add flags
 [[ "$DRY_RUN" == "true" ]] && CMD+=("--dry-run")
 [[ "$VERBOSE" == "true" ]] && CMD+=("--verbose")
+[[ "$ALLOW_SHELL" == "true" ]] && CMD+=("--allow-shell")
 
 # Execute
 "${CMD[@]}"
@@ -106,8 +111,8 @@ exit $EXIT_CODE
 # List available workflows
 /workflow --list
 
-# Run production release workflow
-/workflow production-release
+# Run production release workflow after review
+/workflow production-release --allow-shell
 
 # Run with input parameters
 /workflow production-release --input version_type=minor
@@ -122,7 +127,7 @@ exit $EXIT_CODE
 /workflow ci-pipeline --verbose
 
 # Combined options
-/workflow deploy --input env=prod --dry-run --verbose
+/workflow deploy --input env=prod --dry-run --verbose --allow-shell
 ```
 
 ## Available Workflows
@@ -136,9 +141,9 @@ Complete production release workflow with quality checks, testing, versioning, a
 - `skip_tests` (boolean): Skip test suite (default: false)
 
 **Steps:**
-1. Quality checks (/audit-code --strict)
+1. Quality checks (`npm audit --omit=dev` and `npm run lint`)
 2. Build and test (npm run build && npm test)
-3. Release (/release ${version_type})
+3. Release (`npm version ${version_type}` plus tag creation)
 4. Deploy (npm run deploy:production)
 
 **Usage:**
@@ -154,7 +159,7 @@ Continuous integration pipeline for automated testing and validation.
 
 **Steps:**
 1. Install dependencies (npm ci)
-2. Parallel: Lint, type-check, audit-code
+2. Parallel: Lint, type-check, dependency audit
 3. Run tests with coverage
 4. Build project
 
@@ -171,8 +176,8 @@ Daily automated maintenance tasks.
 
 **Steps:**
 1. Update dependencies (npm update)
-2. Clean caches (/clean cache temp)
-3. Generate code quality report (/audit-code --report)
+2. Clean caches (reviewed shell step)
+3. Generate code quality report (reviewed shell step)
 
 **Usage:**
 ```bash
@@ -227,7 +232,7 @@ steps:
     steps:
       - bash: npm run lint
       - bash: npm run type-check
-      - command: /audit-code
+      - bash: npm audit --omit=dev
 ```
 
 ### Conditional Logic
@@ -253,18 +258,17 @@ inputs:
 
 steps:
   - name: "Deploy"
-    bash: npm run deploy:${inputs.environment}
+    bash: npm run deploy:${{ inputs.environment }}
 ```
 
 ### Error Handling
 
-Automatic rollback on failure:
+Safe failure handling:
 
 ```yaml
 on_failure:
-  - command: /clean build
-  - bash: git reset --hard HEAD
-  - message: "Deployment failed - changes rolled back"
+  - message: "Deployment failed"
+  - message: "Inspect git status before any manual cleanup"
 
 on_success:
   - message: "Deployment successful!"
@@ -362,15 +366,16 @@ cp .claude/workflows/ci-pipeline.yml .claude/workflows/my-pipeline.yml
 2. **Add error handlers** - Define on_failure steps
 3. **Set timeouts** - Prevent infinite hangs
 4. **Use manual checkpoints** - For critical operations
-5. **Test incrementally** - Build workflows step by step
-6. **Version control** - Commit workflows to git
-7. **Document inputs** - Clear descriptions for all parameters
+5. **Avoid slash-command steps in shared workflows** - Prefer bash/manual/confirm unless you have a verified external handler
+6. **Test incrementally** - Build workflows step by step
+7. **Version control** - Commit workflows to git
+8. **Document inputs** - Clear descriptions for all parameters
 
 ## Safety Features
 
 - ✅ YAML syntax validation
 - ✅ Input validation with type checking
-- ✅ Automatic rollback on failure
+- ✅ Fail-closed rejection for unhandled slash-command steps
 - ✅ Timeout protection
 - ✅ Dry-run mode
 - ✅ Step-by-step execution logging
@@ -407,6 +412,12 @@ Solution: Increase timeout
 steps:
   - bash: long-command
     timeout: 3600000  # Increase to 1 hour
+```
+
+**Error: "slash-command workflow steps require an explicit commandHandler"**
+```
+Solution: Replace the slash-command step with a machine-verifiable bash/manual flow,
+or embed the workflow engine in a caller that provides a verified commandHandler.
 ```
 
 ## Related Commands

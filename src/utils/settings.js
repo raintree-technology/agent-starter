@@ -66,7 +66,7 @@ export function generateSettings(skills, options = {}) {
 export function generateLocalSettings() {
   const localSettings = {
     "$schema": "https://code.claude.com/schemas/settings.schema.json",
-    "description": "Local overrides - add to .gitignore",
+    "description": "Local overrides for machine-specific trust settings - add to .gitignore",
     "hooks": {
       "pre-tool": {
         "enabled": false

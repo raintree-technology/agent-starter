@@ -42,13 +42,17 @@ steps:
   - name: "Quality Checks"
     type: sequential
     steps:
-      - name: "Audit Code"
-        command: /audit-code --strict
+      - name: "Dependency Audit"
+        bash: |
+          echo "Auditing production dependencies..."
+          npm audit --omit=dev
         fail_on_error: true
 
-      - name: "Optimize Check"
-        command: /optimize session
-        fail_on_error: false
+      - name: "Lint"
+        bash: |
+          echo "Running linter..."
+          npm run lint
+        fail_on_error: true
 
   - name: "Build and Test"
     when: ${{ inputs.skip_tests == false }}
@@ -63,8 +67,8 @@ steps:
 
   - name: "Version Bump"
     bash: |
-      echo "Bumping version: ${inputs.version_type}"
-      npm version ${inputs.version_type} --no-git-tag-version
+      echo "Bumping version: ${{ inputs.version_type }}"
+      npm version ${{ inputs.version_type }} --no-git-tag-version
       NEW_VERSION=$(node -p "require('./package.json').version")
       echo "New version: $NEW_VERSION"
     fail_on_error: true
@@ -97,11 +101,8 @@ on_failure:
   - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   - message: "❌ Production release failed"
   - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  - command: /clean build
-  - bash: |
-      git reset --hard HEAD~1
-      git tag -d $(git describe --tags --abbrev=0) 2>/dev/null || true
-  - message: "Changes rolled back. Review errors above."
+  - message: "Automatic rollback is disabled for safety."
+  - message: "Inspect git status, package.json/package-lock.json, and any local tags before retrying."
 
 on_success:
   - message: "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

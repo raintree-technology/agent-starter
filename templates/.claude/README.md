@@ -32,6 +32,9 @@ pipx install docpull
 docpull https://docs.stripe.com -o .claude/skills/stripe/docs
 ```
 
+The shared `.claude/settings.json` stays fail-closed on purpose.
+Put executable hooks, elevated permissions, and workflow trust overrides in `.claude/settings.local.json` after review.
+
 ### Try it immediately
 
 ```bash
@@ -247,7 +250,7 @@ touch .claude/commands/your-command.md
 
 ### Enable hooks (optional)
 
-**Edit `settings.json`:**
+**Edit `.claude/settings.local.json`:**
 ```json
 {
   "hooks": {
@@ -383,4 +386,3 @@ settings.local.json     # Local overrides (gitignored)
 Copy the directory to add expertise to any project. Pull docs separately as needed.
 
 ---
-

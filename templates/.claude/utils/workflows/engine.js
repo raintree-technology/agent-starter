@@ -11,13 +11,18 @@ import { WorkflowState } from './state-manager.js';
 import { WorkflowLogger } from './logger.js';
 import fs from 'fs';
 import path from 'path';
+import readline from 'readline';
 
 export class WorkflowEngine {
   constructor(options = {}) {
+    this.options = {
+      allowShell: false,
+      ...options
+    };
     this.parser = new WorkflowParser();
-    this.stepRunner = new StepRunner(options);
+    this.stepRunner = new StepRunner(this.options);
     this.logger = new WorkflowLogger();
-    this.options = options;
+    this.confirmationHandler = this.options.confirmationHandler;
   }
 
   /**
@@ -139,6 +144,13 @@ export class WorkflowEngine {
       }
     }
 
+    if (step.confirm) {
+      const approved = await this.confirmStep(step, state);
+      if (!approved) {
+        throw new Error(`Confirmation rejected for step: ${step.name || 'unnamed step'}`);
+      }
+    }
+
     // Execute step based on type
     if (step.type === 'parallel') {
       return await this.executeParallelStep(step, state, verbose);
@@ -153,6 +165,65 @@ export class WorkflowEngine {
     } else {
       throw new Error(`Unknown step type: ${JSON.stringify(step)}`);
     }
+  }
+
+  describeStep(step, state) {
+    if (step.bash) {
+      return state.substituteVariables(step.bash).trim();
+    }
+
+    if (step.command) {
+      return state.substituteVariables(step.command).trim();
+    }
+
+    if (step.manual) {
+      return state.substituteVariables(step.manual).trim();
+    }
+
+    return '';
+  }
+
+  async promptForConfirmation(step, state) {
+    if (!process.stdin.isTTY || !process.stdout.isTTY) {
+      throw new Error('Confirmation required, but no interactive terminal is available');
+    }
+
+    const preview = this.describeStep(step, state);
+
+    console.log('');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('⚠️  STEP CONFIRMATION REQUIRED');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('');
+    console.log(`Step: ${step.name || 'Unnamed step'}`);
+
+    if (preview) {
+      console.log('');
+      console.log(preview);
+    }
+
+    console.log('');
+
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    return new Promise((resolve) => {
+      rl.question('Approve this step? (y/N) ', (answer) => {
+        rl.close();
+        console.log('');
+        resolve(/^(y|yes)$/i.test(answer.trim()));
+      });
+    });
+  }
+
+  async confirmStep(step, state) {
+    if (typeof this.confirmationHandler === 'function') {
+      return this.confirmationHandler(step, state);
+    }
+
+    return this.promptForConfirmation(step, state);
   }
 
   /**
@@ -295,6 +366,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error('  --input key=value    Pass input parameter');
     console.error('  --dry-run            Preview without execution');
     console.error('  --verbose            Verbose output');
+    console.error('  --allow-shell        Execute reviewed bash steps (disabled by default)');
     console.error('  --list               List available workflows');
     process.exit(1);
   }
@@ -326,12 +398,15 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const inputs = {};
   let dryRun = false;
   let verbose = false;
+  let allowShell = false;
 
   for (let i = 1; i < args.length; i++) {
     if (args[i] === '--dry-run') {
       dryRun = true;
     } else if (args[i] === '--verbose') {
       verbose = true;
+    } else if (args[i] === '--allow-shell') {
+      allowShell = true;
     } else if (args[i] === '--input' && args[i + 1]) {
       const [key, ...valueParts] = args[i + 1].split('=');
       inputs[key] = valueParts.join('=');
@@ -340,7 +415,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   }
 
   // Execute
-  const engine = new WorkflowEngine();
+  const engine = new WorkflowEngine({ allowShell });
   const result = await engine.execute(workflowPath, inputs, { dryRun, verbose });
 
   process.exit(result.status === 'success' || result.status === 'dry_run' ? 0 : 1);
