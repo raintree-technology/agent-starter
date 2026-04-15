@@ -27,9 +27,11 @@ if [[ "$FILE_PATH" =~ (node_modules|vendor|generated|dist|build|\.next|\.nuxt)/ 
   exit 0
 fi
 
-# Track changes in temp file to avoid spamming
-TRACK_FILE="/tmp/claude-optimize-suggestions.txt"
-SESSION_FILE="/tmp/claude-session-changes.txt"
+# SECURITY: Use per-user cache directory to prevent symlink attacks on predictable /tmp/ paths
+CACHE_DIR="${HOME}/.cache/claude-starter"
+mkdir -p "$CACHE_DIR" && chmod 0700 "$CACHE_DIR"
+TRACK_FILE="${CACHE_DIR}/optimize-suggestions.txt"
+SESSION_FILE="${CACHE_DIR}/session-changes.txt"
 
 # Initialize tracking files if they don't exist
 touch "$TRACK_FILE" "$SESSION_FILE"

@@ -65,7 +65,8 @@ export class StepRunner {
       );
     }
 
-    const command = state.substituteVariables(step.bash);
+    // SECURITY: Shell-escape substituted variable values to prevent injection
+    const command = state.substituteVariables(step.bash, { shellEscape: true });
     const timeout = step.timeout || 120000; // 2 minutes default
 
     const startTime = Date.now();

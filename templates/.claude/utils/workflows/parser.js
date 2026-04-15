@@ -27,6 +27,12 @@ export class WorkflowParser {
       throw new Error(`Workflow file not found: ${filePath}`);
     }
 
+    // SECURITY: Check file size before parsing (prevent YAML bomb DoS)
+    const stats = fs.statSync(filePath);
+    if (stats.size > 5 * 1024 * 1024) { // 5MB limit
+      throw new Error(`Workflow file too large (${stats.size} bytes, max 5MB): ${filePath}`);
+    }
+
     const content = fs.readFileSync(filePath, 'utf8');
 
     try {

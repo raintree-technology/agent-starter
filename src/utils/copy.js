@@ -2,7 +2,7 @@ import { copy, pathExists, remove, ensureDir } from "fs-extra";
 import { lstat } from "fs/promises";
 import { join, dirname, resolve } from "path";
 import { fileURLToPath } from "url";
-import { isValidSkillPath, isPathSafe } from "./security.js";
+import { isValidSkillPath, isPathSafe, isValidCommandName } from "./security.js";
 import chalk from 'chalk';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -54,6 +54,11 @@ export async function copyAll(targetDir, options = {}) {
           return false;
         }
       } catch {
+        return false;
+      }
+
+      // SECURITY: Never auto-copy settings.local.json — users must explicitly opt in
+      if (src.endsWith('settings.local.json') || src.endsWith('settings.local.json.example')) {
         return false;
       }
 
@@ -208,8 +213,20 @@ export async function copyCommands(targetDir, commandNames, options = {}) {
   await ensureDir(commandsDir);
 
   for (const commandName of commandNames) {
+    // SECURITY: Validate command name to prevent path traversal
+    if (!isValidCommandName(commandName)) {
+      console.warn(chalk.yellow(`Warning: Invalid command name: ${commandName}`));
+      continue;
+    }
+
     const srcPath = join(templatesDir, "commands", `${commandName}.md`);
     const destPath = join(commandsDir, `${commandName}.md`);
+
+    // SECURITY: Verify paths stay within expected directories
+    if (!isPathSafe(srcPath, join(templatesDir, "commands"))) {
+      console.warn(chalk.yellow(`Warning: Command path escapes templates directory: ${commandName}`));
+      continue;
+    }
 
     if (await pathExists(srcPath)) {
       await copy(srcPath, destPath, { overwrite: options.force });

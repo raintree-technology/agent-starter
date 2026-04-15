@@ -71,11 +71,24 @@ export class WorkflowState {
   }
 
   /**
+   * Escape a value for safe use in shell commands
+   * Wraps in single quotes and escapes embedded single quotes
+   * @param {string} str - Value to escape
+   * @returns {string} Shell-safe value
+   */
+  static shellEscape(str) {
+    if (typeof str !== 'string') return String(str);
+    return "'" + str.replace(/'/g, "'\\''") + "'";
+  }
+
+  /**
    * Substitute variables in text
    * @param {string} text - Text with ${{}expressions
+   * @param {object} options - Options
+   * @param {boolean} options.shellEscape - Shell-escape substituted values (use for bash contexts)
    * @returns {string} Substituted text
    */
-  substituteVariables(text) {
+  substituteVariables(text, options = {}) {
     if (typeof text !== 'string') {
       return text;
     }
@@ -83,7 +96,13 @@ export class WorkflowState {
     return text.replace(/\$\{\{\s*(.+?)\s*\}\}/g, (match, expr) => {
       try {
         const value = this.evaluate(expr);
-        return value !== undefined ? String(value) : match;
+        if (value === undefined) return match;
+        const strValue = String(value);
+        // SECURITY: Shell-escape substituted values when destined for bash
+        if (options.shellEscape) {
+          return WorkflowState.shellEscape(strValue);
+        }
+        return strValue;
       } catch (error) {
         console.warn(`Failed to evaluate expression: ${expr}`);
         return match;
@@ -233,8 +252,18 @@ export class WorkflowState {
     const parts = path.split('.');
     let value = context;
 
+    // SECURITY: Block prototype traversal keys
+    const BLOCKED_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
     for (const part of parts) {
       if (value === undefined || value === null) {
+        return undefined;
+      }
+      // SECURITY: Prevent prototype pollution / traversal
+      if (BLOCKED_KEYS.has(part)) {
+        return undefined;
+      }
+      if (typeof value !== 'object' || !Object.prototype.hasOwnProperty.call(value, part)) {
         return undefined;
       }
       value = value[part];

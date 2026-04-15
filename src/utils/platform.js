@@ -1,5 +1,6 @@
 import os from 'os';
-import { existsSync, symlinkSync, unlinkSync } from 'fs';
+import { existsSync, readFileSync, symlinkSync, unlinkSync } from 'fs';
+import { createHash } from 'crypto';
 import { join } from 'path';
 
 /**
@@ -62,6 +63,32 @@ export function setupToonBinary(claudeDir) {
       error: `No TOON binary for platform: ${os.platform()}-${os.arch()}`,
       suggestion: 'TOON binary not found. The package may need platform-specific binaries.'
     };
+  }
+
+  // SECURITY: Verify binary integrity against known checksums
+  const checksumsPath = join(binDir, 'checksums.json');
+  if (existsSync(checksumsPath)) {
+    try {
+      const checksums = JSON.parse(readFileSync(checksumsPath, 'utf-8'));
+      const expectedHash = checksums[binaryName];
+      if (expectedHash) {
+        const fileBuffer = readFileSync(binaryPath);
+        const actualHash = createHash('sha256').update(fileBuffer).digest('hex');
+        if (actualHash !== expectedHash) {
+          return {
+            success: false,
+            error: `TOON binary integrity check failed for ${binaryName}`,
+            expected: expectedHash,
+            actual: actualHash
+          };
+        }
+      }
+    } catch (e) {
+      return {
+        success: false,
+        error: `Failed to verify TOON binary checksum: ${e.message}`
+      };
+    }
   }
 
   // Remove existing symlink if present

@@ -29,13 +29,44 @@ export function isValidUrl(str) {
 
     // Block localhost and private IPs (SSRF prevention)
     const hostname = url.hostname.toLowerCase();
+
+    // Direct localhost variants (IPv4, IPv6, hex, octal)
     if (
       hostname === 'localhost' ||
       hostname === '127.0.0.1' ||
       hostname === '0.0.0.0' ||
-      hostname.startsWith('192.168.') ||
-      hostname.startsWith('10.') ||
-      hostname.startsWith('172.16.') ||
+      hostname === '[::1]' ||
+      hostname === '::1' ||
+      hostname === '0x7f000001' ||
+      hostname === '0177.0.0.1'
+    ) {
+      return false;
+    }
+
+    // Private IPv4 ranges (RFC 1918 + loopback + link-local)
+    if (
+      hostname.startsWith('192.168.') ||       // 192.168.0.0/16
+      hostname.startsWith('10.') ||             // 10.0.0.0/8
+      hostname.startsWith('169.254.') ||        // 169.254.0.0/16 link-local
+      hostname.startsWith('127.')               // 127.0.0.0/8 full loopback
+    ) {
+      return false;
+    }
+
+    // 172.16.0.0/12 = 172.16.x.x through 172.31.x.x
+    const match172 = hostname.match(/^172\.(\d+)\./);
+    if (match172) {
+      const second = parseInt(match172[1], 10);
+      if (second >= 16 && second <= 31) {
+        return false;
+      }
+    }
+
+    // IPv6 private (fc00::/7) and link-local (fe80::/10), mDNS (.local)
+    if (
+      hostname.startsWith('fc') ||
+      hostname.startsWith('fd') ||
+      hostname.startsWith('fe80') ||
       hostname.endsWith('.local')
     ) {
       return false;
@@ -148,6 +179,35 @@ export function isValidSkillId(skillId) {
   // Alphanumeric, hyphens, underscores only (no slashes)
   const validPattern = /^[a-zA-Z0-9_\-]+$/;
   if (!validPattern.test(skillId)) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Validate command name format
+ * Must be alphanumeric with hyphens/underscores, no path separators
+ * SECURITY: Protected against path traversal and ReDoS
+ */
+export function isValidCommandName(commandName) {
+  if (!commandName || typeof commandName !== 'string') {
+    return false;
+  }
+
+  // CRITICAL: Length check BEFORE regex to prevent ReDoS
+  if (commandName.length > 64) {
+    return false;
+  }
+
+  // No null bytes
+  if (commandName.includes('\0')) {
+    return false;
+  }
+
+  // Alphanumeric, hyphens, underscores only (no slashes, dots, or path separators)
+  const validPattern = /^[a-zA-Z0-9_\-]+$/;
+  if (!validPattern.test(commandName)) {
     return false;
   }
 

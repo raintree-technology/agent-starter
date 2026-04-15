@@ -77,6 +77,12 @@ function extractSkillInfo(skillMdPath) {
   try {
     const content = readFileSync(skillMdPath, 'utf-8');
 
+    // SECURITY: Defense-in-depth length limit for regex input
+    if (content.length > 1024 * 1024) { // 1MB limit
+      console.warn(`Warning: skill.md too large, skipping metadata extraction: ${skillMdPath}`);
+      return { name: null, description: '', keywords: [] };
+    }
+
     // Extract name from first # heading
     const nameMatch = content.match(/^#\s+(.+)$/m);
     const name = nameMatch ? nameMatch[1].trim() : null;

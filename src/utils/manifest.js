@@ -45,13 +45,37 @@ export function readManifest(templatesDir) {
 
 /**
  * Read manifest from installed .claude directory
+ * Security: Validates size and structure (matching readManifest safeguards)
  */
 export function readInstalledManifest(targetDir = ".") {
   const manifestPath = join(targetDir, ".claude", "manifest.json");
   if (!existsSync(manifestPath)) {
     return null;
   }
-  return JSON.parse(readFileSync(manifestPath, "utf-8"));
+
+  // SECURITY: Check file size before parsing (prevent JSON bomb DoS)
+  const stats = statSync(manifestPath);
+  if (stats.size > 10 * 1024 * 1024) { // 10MB limit
+    console.warn('Warning: Installed manifest file too large (>10MB), ignoring');
+    return null;
+  }
+
+  let manifest;
+  try {
+    manifest = JSON.parse(readFileSync(manifestPath, "utf-8"));
+  } catch (e) {
+    console.warn(`Warning: Invalid JSON in installed manifest: ${e.message}`);
+    return null;
+  }
+
+  // Security: Validate manifest structure
+  const validation = validateManifest(manifest);
+  if (!validation.valid) {
+    console.warn(`Warning: Invalid installed manifest: ${validation.errors.join(", ")}`);
+    return null;
+  }
+
+  return manifest;
 }
 
 /**

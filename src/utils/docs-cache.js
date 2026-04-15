@@ -3,7 +3,7 @@
  */
 
 import { pathExists } from 'fs-extra';
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile, mkdir, stat } from 'fs/promises';
 import { resolve, dirname } from 'path';
 import { homedir } from 'os';
 
@@ -29,6 +29,17 @@ export async function readDocsCache() {
   }
 
   try {
+    // SECURITY: Check file size before parsing (prevent JSON bomb DoS)
+    const fileStats = await stat(cachePath);
+    if (fileStats.size > 5 * 1024 * 1024) { // 5MB limit
+      console.warn('Warning: Docs cache file too large (>5MB), resetting');
+      return {
+        version: '1.0.0',
+        lastUpdated: new Date().toISOString(),
+        docs: {}
+      };
+    }
+
     const content = await readFile(cachePath, 'utf-8');
     return JSON.parse(content);
   } catch {
