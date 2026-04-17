@@ -1,6 +1,6 @@
 # claude-starter
 
-Advanced Claude Code framework with 40+ skills, meta-commands, skill orchestration, workflow automation, and TOON format support.
+Advanced Claude Code framework with 49+ skills, meta-commands, skill orchestration, workflow automation, and TOON format support.
 
 [![npm version](https://img.shields.io/npm/v/create-claude-starter.svg)](https://www.npmjs.com/package/create-claude-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -21,6 +21,10 @@ npx add-skill raintree-technology/claude-starter --skill claude-mcp-expert
 npx add-skill raintree-technology/claude-starter --skill move-prover
 npx add-skill raintree-technology/claude-starter --skill helius
 
+# Code quality (multi-language cleanup pipeline)
+npx add-skill raintree-technology/claude-starter --skill code-quality/cleanup-unused
+npx add-skill raintree-technology/claude-starter --skill code-quality/cleanup-all
+
 # List all available skills
 npx add-skill raintree-technology/claude-starter --list
 ```
@@ -29,7 +33,7 @@ npx add-skill raintree-technology/claude-starter --list
 
 The most advanced `.claude/` configuration framework for [Claude Code](https://code.claude.com) that provides:
 
-- **40 Skills** - Auto-activating expertise (Stripe, Supabase, Aptos, Expo, Plaid, Whop, Shopify, iOS)
+- **49 Skills** - Auto-activating expertise (Stripe, Supabase, Aptos, Expo, Plaid, Whop, Shopify, iOS, Code Quality)
 - **Meta-Commands** - Create custom commands from templates in <2 minutes
 - **Skill Orchestration** - Multi-skill collaboration with semantic matching
 - **Workflow Automation** - YAML-based workflows (GitHub Actions-inspired)
@@ -144,8 +148,9 @@ Compress JSON/data files by 30-60%:
 | **Mobile** | Expo (+ 3 sub-skills), iOS | 814 files |
 | **AI** | Anthropic API, Claude Code (+ 5 sub-skills) | 400 files |
 | **Data** | TOON Formatter | Tools + spec |
+| **Code Quality** | Cleanup pipeline: unused, cycles, dedupe, types, weak-types, defensive, legacy, slop, all (orchestrator) | Tool-driven |
 
-**Total:** 40 skills, 8,225 documentation files (pulled separately)
+**Total:** 49 skills, 8,225 documentation files (pulled separately)
 
 ## CLI Commands
 

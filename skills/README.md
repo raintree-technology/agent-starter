@@ -21,6 +21,15 @@ These skills are compatible with `npx skills add` and follow the [Agent Skills s
 | **helius** | Solana RPC, DAS API, LaserStream | Blockchain |
 | **plaid** | Banking API for fintech apps | Fintech |
 | **whop** | Memberships, courses, digital products | Monetization |
+| **code-quality/cleanup-unused** | Detect & delete dead code, unused exports/files/deps | Code Quality |
+| **code-quality/cleanup-cycles** | Detect & break circular dependencies | Code Quality |
+| **code-quality/cleanup-dedupe** | Find duplicate code, extract to shared utils | Code Quality |
+| **code-quality/cleanup-types** | Consolidate duplicate type/interface definitions | Code Quality |
+| **code-quality/cleanup-weak-types** | Replace `any`/`unknown`/`interface{}` with strong types | Code Quality |
+| **code-quality/cleanup-defensive** | Remove pointless try/catch & error-hiding fallbacks | Code Quality |
+| **code-quality/cleanup-legacy** | Remove deprecated code & dead fallback branches | Code Quality |
+| **code-quality/cleanup-slop** | Strip AI slop, narration & restated-code comments | Code Quality |
+| **code-quality/cleanup-all** | Orchestrator: run all 8 cleanup skills in sequence | Code Quality |
 
 ## Installation
 
@@ -195,6 +204,93 @@ npx skills add raintree-technology/claude-starter --skill whop
 
 ---
 
+### Code Quality
+
+A bundle of 8 cleanup skills + 1 orchestrator. Each follows the same contract: **detect → critical assessment → auto-apply HIGH-confidence fixes → verify**. Skills write a markdown report to `.claude/cleanup-reports/` and only auto-apply changes that pass strict confidence rules. Verify step (typecheck + tests + lint) reverts on failure. Multi-language: TS/JS, Python, Go, Rust.
+
+#### code-quality/cleanup-unused
+Detect and delete unused code, exports, files, and dependencies. Runs `knip` (TS), `vulture` (Py), `staticcheck` (Go), `cargo-machete` (Rust). Auto-deletes only items with zero references and no dynamic-import risk.
+
+```bash
+npx skills add raintree-technology/claude-starter --skill code-quality/cleanup-unused
+```
+
+**Triggers:** unused code, dead code, knip, unused exports, unused dependencies, dead-code analysis
+
+#### code-quality/cleanup-cycles
+Detect and untangle circular import dependencies. Runs `madge`/`skott` (TS), `pycycle` (Py), or compiler-only checks (Go/Rust). Auto-extracts leaf-level cycles; reports core-module cycles for human review.
+
+```bash
+npx skills add raintree-technology/claude-starter --skill code-quality/cleanup-cycles
+```
+
+**Triggers:** circular imports, dependency cycles, madge, untangle modules
+
+#### code-quality/cleanup-dedupe
+Find duplicated code blocks via `jscpd` and extract to shared utils where it reduces complexity. Auto-extracts only token-identical blocks ≥30 LOC; smaller or divergent duplicates flagged for review.
+
+```bash
+npx skills add raintree-technology/claude-starter --skill code-quality/cleanup-dedupe
+```
+
+**Triggers:** deduplicate, DRY, copy-paste, jscpd, consolidate logic
+
+#### code-quality/cleanup-types
+Consolidate duplicate type/interface/dataclass/struct definitions into a shared module. Auto-consolidates structurally identical types with the same name; defers similar-but-divergent shapes.
+
+```bash
+npx skills add raintree-technology/claude-starter --skill code-quality/cleanup-types
+```
+
+**Triggers:** consolidate types, duplicate interfaces, shared types module
+
+#### code-quality/cleanup-weak-types
+Replace weak types (`any`, `unknown`, `interface{}`, untyped Python) with strong inferred types. Per-occurrence verification — each replacement is typechecked individually and reverted if it breaks.
+
+```bash
+npx skills add raintree-technology/claude-starter --skill code-quality/cleanup-weak-types
+```
+
+**Triggers:** any, unknown, weak types, strict typing, noImplicitAny, type safety
+
+#### code-quality/cleanup-defensive
+Remove pointless try/catch and defensive guards that hide errors. Preserves catches at true system boundaries (HTTP handlers, CLI entry, message consumers).
+
+```bash
+npx skills add raintree-technology/claude-starter --skill code-quality/cleanup-defensive
+```
+
+**Triggers:** try/catch, error hiding, defensive code, swallowed errors, useless catch
+
+#### code-quality/cleanup-legacy
+Find and remove deprecated/legacy code with zero callers, plus unreachable fallback branches (e.g., feature-flag defaults that have flipped, version checks for unsupported runtimes).
+
+```bash
+npx skills add raintree-technology/claude-starter --skill code-quality/cleanup-legacy
+```
+
+**Triggers:** deprecated code, legacy paths, dead branches, fallback removal, @deprecated
+
+#### code-quality/cleanup-slop
+Strip AI slop, narration comments (`// removed X`, `// updated to Y`), restated-code comments, stub markers, and AI platitudes. Preserves comments that explain WHY (workarounds, invariants, citations).
+
+```bash
+npx skills add raintree-technology/claude-starter --skill code-quality/cleanup-slop
+```
+
+**Triggers:** AI slop, useless comments, narration comments, comment cleanup
+
+#### code-quality/cleanup-all
+Orchestrator that runs the 8 cleanup skills in a deliberate order: unused → cycles → dedupe → types → weak-types → defensive → legacy → slop. Each step verifies before the next runs; halts on first failure with a consolidated report.
+
+```bash
+npx skills add raintree-technology/claude-starter --skill code-quality/cleanup-all
+```
+
+**Triggers:** clean up codebase, full code-quality pass, sweep the repo, run all cleanups
+
+---
+
 ## Directory Structure
 
 ```
@@ -229,6 +325,16 @@ skills/
 │   └── SKILL.md
 ├── whop/
 │   └── SKILL.md
+├── code-quality/
+│   ├── cleanup-unused/SKILL.md
+│   ├── cleanup-cycles/SKILL.md
+│   ├── cleanup-dedupe/SKILL.md
+│   ├── cleanup-types/SKILL.md
+│   ├── cleanup-weak-types/SKILL.md
+│   ├── cleanup-defensive/SKILL.md
+│   ├── cleanup-legacy/SKILL.md
+│   ├── cleanup-slop/SKILL.md
+│   └── cleanup-all/SKILL.md
 └── README.md
 ```
 
@@ -251,6 +357,7 @@ skills/
 | **helius** | Platform-specific Solana infrastructure |
 | **plaid** | Comprehensive fintech banking API |
 | **whop** | Digital product monetization platform |
+| **code-quality/*** | Reusable code-quality cleanup pipeline applicable to any language/repo |
 
 ## License
 
