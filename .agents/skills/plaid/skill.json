@@ -1,0 +1,38 @@
+{
+  "id": "plaid",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["plaid", "banking", "financial-data", "transactions", "ach"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://plaid.com/docs",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["bank_connection", "transaction_data", "account_verification"],
+    "secondary": ["ach_transfers", "identity_verification", "balance_checking"],
+    "domains": ["fintech", "banking", "payments", "verification"]
+  },
+  "capabilities": {
+    "inputs": ["bank_credentials", "account_id", "transfer_amount"],
+    "outputs": ["transaction_list", "account_balance", "identity_data", "ach_confirmation"],
+    "actions": ["link_bank_account", "fetch_transactions", "verify_identity", "initiate_ach", "check_balance"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "medium",
+    "parallelizable": false,
+    "estimatedTokens": 4000,
+    "activationThreshold": 0.75
+  },
+  "dependencies": {
+    "recommended": ["supabase", "stripe"],
+    "complements": ["anthropic"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["supabase", "stripe"],
+    "canConsumeDataFrom": ["supabase"],
+    "sharedContext": ["user_id", "account_id", "transaction_id"]
+  }
+}

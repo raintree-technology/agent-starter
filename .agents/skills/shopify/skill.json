@@ -1,0 +1,38 @@
+{
+  "id": "shopify",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["shopify", "e-commerce", "store", "graphql", "liquid", "hydrogen"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://shopify.dev/docs",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["e-commerce", "online_store", "product_management"],
+    "secondary": ["inventory", "orders", "customers", "themes", "apps"],
+    "domains": ["retail", "saas", "e-commerce", "fintech"]
+  },
+  "capabilities": {
+    "inputs": ["product_data", "customer_info", "order_details"],
+    "outputs": ["store_config", "product_listings", "checkout_flow"],
+    "actions": ["create_store", "manage_products", "process_orders", "customize_theme", "install_apps"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 4000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["stripe"],
+    "complements": ["whop", "supabase"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["stripe", "supabase", "plaid"],
+    "canConsumeDataFrom": ["stripe", "supabase"],
+    "sharedContext": ["customer_id", "order_id", "payment_method", "product_id"]
+  }
+}

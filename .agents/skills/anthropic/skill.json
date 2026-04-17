@@ -1,0 +1,38 @@
+{
+  "id": "anthropic",
+  "version": "1.0.0",
+  "category": "ai",
+  "keywords": ["anthropic", "claude", "api", "messages", "embeddings", "prompt-caching"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://docs.anthropic.com",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["ai_integration", "language_model", "message_api"],
+    "secondary": ["embeddings", "prompt_caching", "tool_use", "batch_processing"],
+    "domains": ["ai", "automation", "analysis", "generation"]
+  },
+  "capabilities": {
+    "inputs": ["user_message", "system_prompt", "tool_definitions", "text_to_embed"],
+    "outputs": ["ai_response", "embedding_vector", "tool_call", "batch_result"],
+    "actions": ["send_message", "create_embedding", "cache_prompt", "process_batch", "use_tools"]
+  },
+  "orchestration": {
+    "priority": 8,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 3500,
+    "activationThreshold": 0.8
+  },
+  "dependencies": {
+    "recommended": ["supabase"],
+    "complements": ["expo", "stripe", "whop"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["supabase", "expo"],
+    "canConsumeDataFrom": ["supabase", "stripe", "plaid"],
+    "sharedContext": ["conversation_id", "user_id", "context_cache"]
+  }
+}

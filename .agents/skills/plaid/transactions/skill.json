@@ -1,0 +1,34 @@
+{
+  "id": "plaid-transactions",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["plaid", "transactions", "history", "sync"],
+  "dependencies": ["plaid"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["transaction_data", "transaction_history", "transaction_sync"],
+    "secondary": ["categorization", "merchant_data", "transaction_stream"],
+    "domains": ["fintech", "banking", "data", "analytics"]
+  },
+  "capabilities": {
+    "inputs": ["access_token", "date_range"],
+    "outputs": ["transactions", "categories", "merchant_info"],
+    "actions": ["fetch_transactions", "sync_transactions", "categorize_transactions", "analyze_spending", "stream_updates"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 4000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["plaid"],
+    "complements": ["plaid-accounts", "supabase", "anthropic"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["supabase", "anthropic"],
+    "canConsumeDataFrom": ["plaid", "plaid-auth"],
+    "sharedContext": ["account_id", "transaction_id", "categories", "access_token"]
+  }
+}

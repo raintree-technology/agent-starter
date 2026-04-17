@@ -1,0 +1,38 @@
+{
+  "id": "decibel",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["decibel", "perpetuals", "trading", "aptos", "orderbook"],
+  "dependencies": ["aptos"],
+  "docs": {
+    "url": "https://docs.decibel.trading",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["perpetuals_trading", "orderbook", "defi_trading"],
+    "secondary": ["leverage", "margin_trading", "trading_pairs"],
+    "domains": ["blockchain", "defi", "trading", "fintech"]
+  },
+  "capabilities": {
+    "inputs": ["trading_strategies", "market_data"],
+    "outputs": ["trading_implementations", "order_management", "position_tracking"],
+    "actions": ["place_orders", "manage_positions", "calculate_pnl", "handle_liquidations", "integrate_orderbook"]
+  },
+  "orchestration": {
+    "priority": 6,
+    "cooperationLevel": "medium",
+    "parallelizable": true,
+    "estimatedTokens": 4000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["aptos"],
+    "complements": ["aptos-dapp-integration", "supabase"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["supabase", "aptos-dapp-integration"],
+    "canConsumeDataFrom": ["aptos"],
+    "sharedContext": ["trading_account", "positions", "orders", "market_data"]
+  }
+}

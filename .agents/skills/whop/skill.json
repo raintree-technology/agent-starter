@@ -1,0 +1,38 @@
+{
+  "id": "whop",
+  "version": "1.0.0",
+  "category": "payments",
+  "keywords": ["whop", "memberships", "courses", "communities", "digital-products"],
+  "dependencies": [],
+  "docs": {
+    "url": "https://docs.whop.com",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["membership_management", "digital_products", "content_access"],
+    "secondary": ["subscriptions", "licensing", "community", "courses"],
+    "domains": ["saas", "education", "content", "fintech"]
+  },
+  "capabilities": {
+    "inputs": ["membership_tiers", "product_info", "user_access"],
+    "outputs": ["membership_status", "access_tokens", "licensing_keys"],
+    "actions": ["create_membership", "manage_access", "process_payments", "deliver_content", "track_usage"]
+  },
+  "orchestration": {
+    "priority": 6,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 3500,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["stripe", "supabase"],
+    "complements": ["shopify", "expo"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["stripe", "supabase"],
+    "canConsumeDataFrom": ["stripe", "supabase"],
+    "sharedContext": ["user_id", "subscription_id", "payment_method", "access_level"]
+  }
+}

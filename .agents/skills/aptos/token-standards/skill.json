@@ -1,0 +1,34 @@
+{
+  "id": "aptos-token-standards",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "token", "nft", "fungible-asset"],
+  "dependencies": ["aptos"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["token_standards", "nfts", "fungible_assets"],
+    "secondary": ["digital_assets", "collections", "metadata"],
+    "domains": ["blockchain", "nft", "defi", "web3"]
+  },
+  "capabilities": {
+    "inputs": ["token_requirements", "asset_specs"],
+    "outputs": ["token_contracts", "nft_collections", "asset_definitions"],
+    "actions": ["create_tokens", "mint_nfts", "manage_collections", "set_metadata", "implement_standards"]
+  },
+  "orchestration": {
+    "priority": 7,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 4500,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["aptos", "aptos-object-model"],
+    "complements": ["aptos-framework", "aptos-dapp-integration"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["aptos-dapp-integration", "aptos"],
+    "canConsumeDataFrom": ["aptos-object-model", "aptos-framework"],
+    "sharedContext": ["token_address", "collection_data", "metadata"]
+  }
+}

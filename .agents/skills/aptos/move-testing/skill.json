@@ -1,0 +1,34 @@
+{
+  "id": "aptos-move-testing",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "move", "testing", "unit-tests"],
+  "dependencies": ["aptos"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["testing", "unit_tests", "move_testing"],
+    "secondary": ["test_coverage", "assertions", "test_scenarios"],
+    "domains": ["blockchain", "testing", "quality_assurance"]
+  },
+  "capabilities": {
+    "inputs": ["move_code", "test_requirements"],
+    "outputs": ["test_modules", "test_results", "coverage_reports"],
+    "actions": ["write_tests", "run_tests", "assert_conditions", "mock_scenarios", "measure_coverage"]
+  },
+  "orchestration": {
+    "priority": 6,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 4000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["aptos", "aptos-move-language"],
+    "complements": ["aptos-move-prover", "aptos-gas-optimization"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["aptos-move-prover"],
+    "canConsumeDataFrom": ["aptos-move-language"],
+    "sharedContext": ["test_code", "module_under_test", "test_results"]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "aptos-move-prover",
+  "version": "1.0.0",
+  "category": "blockchain",
+  "keywords": ["aptos", "move", "prover", "formal-verification"],
+  "dependencies": ["aptos"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["formal_verification", "move_prover", "correctness_proofs"],
+    "secondary": ["specifications", "invariants", "pre_post_conditions"],
+    "domains": ["blockchain", "verification", "security"]
+  },
+  "capabilities": {
+    "inputs": ["move_code", "specifications"],
+    "outputs": ["verification_results", "proofs", "counterexamples"],
+    "actions": ["write_specs", "verify_invariants", "prove_correctness", "find_bugs", "check_conditions"]
+  },
+  "orchestration": {
+    "priority": 5,
+    "cooperationLevel": "medium",
+    "parallelizable": true,
+    "estimatedTokens": 4000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["aptos", "aptos-move-language"],
+    "complements": ["aptos-move-testing"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["aptos-move-testing"],
+    "canConsumeDataFrom": ["aptos-move-language"],
+    "sharedContext": ["move_code", "specifications", "verification_status"]
+  }
+}

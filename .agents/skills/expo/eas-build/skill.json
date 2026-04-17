@@ -1,0 +1,34 @@
+{
+  "id": "expo-eas-build",
+  "version": "1.0.0",
+  "category": "mobile",
+  "keywords": ["expo", "eas", "build", "ios", "android"],
+  "dependencies": ["expo"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["mobile_builds", "cloud_compilation", "native_builds"],
+    "secondary": ["ios_builds", "android_builds", "app_signing", "build_profiles"],
+    "domains": ["mobile", "ci_cd", "devops"]
+  },
+  "capabilities": {
+    "inputs": ["app_code", "build_configs", "credentials"],
+    "outputs": ["build_artifacts", "ipa_files", "apk_files", "aab_files"],
+    "actions": ["configure_builds", "trigger_builds", "manage_credentials", "distribute_builds", "debug_build_issues"]
+  },
+  "orchestration": {
+    "priority": 6,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 4000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["expo"],
+    "complements": ["expo-eas-update", "ios"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["expo-eas-update"],
+    "canConsumeDataFrom": ["expo"],
+    "sharedContext": ["build_id", "app_version", "credentials", "build_profile"]
+  }
+}

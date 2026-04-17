@@ -1,0 +1,38 @@
+{
+  "id": "claude-code",
+  "version": "1.0.0",
+  "category": "ai",
+  "keywords": ["claude-code", "skills", "commands", "hooks", "mcp"],
+  "dependencies": ["anthropic"],
+  "docs": {
+    "url": "https://docs.anthropic.com/en/docs/claude-code",
+    "lastPulled": null,
+    "hash": null
+  },
+  "semanticTags": {
+    "primary": ["claude_code", "development_framework", "ai_coding"],
+    "secondary": ["skills", "commands", "hooks", "mcp_servers", "workflows"],
+    "domains": ["ai", "development", "automation", "tools"]
+  },
+  "capabilities": {
+    "inputs": ["code_requirements", "project_context"],
+    "outputs": ["code_implementations", "skills", "commands", "hooks"],
+    "actions": ["create_skills", "build_commands", "setup_hooks", "configure_mcp", "manage_workflows"]
+  },
+  "orchestration": {
+    "priority": 8,
+    "cooperationLevel": "high",
+    "parallelizable": true,
+    "estimatedTokens": 6000,
+    "activationThreshold": 0.7
+  },
+  "dependencies": {
+    "recommended": ["anthropic"],
+    "complements": ["*"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["*"],
+    "canConsumeDataFrom": ["*"],
+    "sharedContext": ["project_structure", "configuration", "code_patterns"]
+  }
+}
