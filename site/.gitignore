@@ -1,0 +1,49 @@
+# macOS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# User-specific settings (keep settings.json template)
+.claude/settings.local.json
+
+# Logs
+*.log
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+/playwright-report
+/test-results
+
+# next.js
+/.next/
+/out/
+tsconfig.tsbuildinfo
+
+# database
+/migrations/*.sql
+local.db
+
+# production
+/build
+
+# misc
+*.pem
+
+# env files
+.env*
+!.env.example
+
+# security audit notes
+/security/
+
+# vercel
+.vercel

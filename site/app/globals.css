@@ -1,0 +1,238 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apple HIG-inspired Design System */
+
+@layer base {
+  :root {
+    /* Typography - SF Pro inspired */
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    
+    /* Colors - Light Mode (Apple-like neutrals) */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 12%;
+    --primary: 0 0% 12%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 12%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 12%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 91%;
+    --input: 0 0% 91%;
+    --ring: 220 70% 55%;
+    
+    /* Chart colors - Muted pastels */
+    --chart-1: 220 45% 60%;
+    --chart-2: 160 35% 50%;
+    --chart-3: 35 45% 60%;
+    --chart-4: 280 35% 60%;
+    --chart-5: 340 40% 60%;
+    
+    /* Apple-style radius */
+    --radius: 12px;
+    
+    /* Shadows - Layered for depth */
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+    --shadow-xl: 0 24px 80px rgba(0,0,0,0.16), 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  .dark {
+    --background: 0 0% 6%;
+    --foreground: 0 0% 92%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 92%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 92%;
+    --primary: 0 0% 92%;
+    --primary-foreground: 0 0% 6%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 92%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 0 0% 16%;
+    --accent-foreground: 0 0% 92%;
+    --destructive: 0 55% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 220 60% 60%;
+    
+    /* Dark mode shadows */
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.25);
+    --shadow-xl: 0 24px 80px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    font-variation-settings: "opsz" 32;
+  }
+}
+
+@layer components {
+  /* Glass effect — borrowed from docpull */
+  .glass {
+    background: hsl(var(--card) / 0.6);
+    backdrop-filter: blur(32px) saturate(160%);
+    -webkit-backdrop-filter: blur(32px) saturate(160%);
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 hsl(var(--foreground) / 0.04);
+  }
+  .dark .glass {
+    background: hsla(0, 0%, 8%, 0.6);
+    border: 1px solid hsla(0, 0%, 100%, 0.08);
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 hsla(0, 0%, 100%, 0.06);
+  }
+
+  /* Terminal — dark regardless of theme (like docpull) */
+  .terminal {
+    background: rgba(10, 10, 10, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .terminal-header {
+    background: rgba(15, 15, 15, 0.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Apple-style elevated card */
+  .card-elevated {
+    @apply bg-card rounded-xl;
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Apple-style grouped list */
+  .list-grouped {
+    @apply bg-card rounded-xl overflow-hidden divide-y divide-border;
+  }
+
+  /* Smooth transitions - Apple uses 0.3s with ease */
+  .transition-apple {
+    transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  /* Apple-style hover lift */
+  .hover-lift {
+    @apply transition-apple;
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Apple-style pressed state */
+  .press-scale:active {
+    transform: scale(0.98);
+  }
+
+  /* Typography hierarchy - Apple style */
+  .text-headline {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+
+  .text-title {
+    @apply text-lg font-semibold tracking-tight;
+  }
+
+  .text-body {
+    @apply text-base leading-relaxed;
+  }
+
+  .text-caption {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .text-footnote {
+    @apply text-xs text-muted-foreground;
+  }
+}
+
+@layer utilities {
+  /* Subtle grid background */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--border) / 0.4) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.4) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* Radial mask for hero background fade */
+  .mask-radial {
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  }
+
+  /* Pulse glow used for "live" dots */
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .animate-pulse-dot { animation: pulse-dot 1.8s ease-in-out infinite; }
+
+  /* Terminal caret */
+  @keyframes blink { 50% { opacity: 0; } }
+  .animate-caret { animation: blink 1s step-end infinite; }
+
+  /* Marquee for logos strip */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .animate-marquee { animation: marquee 40s linear infinite; }
+
+  /* Apple-style section spacing */
+  .section-gap {
+    @apply py-8 md:py-12;
+  }
+
+  /* Content max-width like Apple */
+  .content-width {
+    @apply max-w-5xl mx-auto px-4 md:px-6;
+  }
+
+  /* Safe area insets for iOS */
+  .safe-area-inset {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
