@@ -14,6 +14,7 @@ export default function Home() {
         <Hero />
         <Inside />
         <Skills />
+        <Benchmarks />
         <Install />
       </main>
       <Footer />
@@ -86,17 +87,17 @@ function Hero() {
         </pre>
       </div>
       <h1 className="font-mono text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-        Drop in skills.<br />
-        <span className="text-muted-foreground">Ship with Claude.</span>
+        Six deep skills.<br />
+        <span className="text-muted-foreground">Measured token savings.</span>
       </h1>
-      <p className="mx-auto mt-6 max-w-lg text-base text-muted-foreground sm:text-lg">
-        A <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.claude/</code>{" "}
-        starter for Claude Code, Codex, and opencode.
+      <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
+        Opinionated <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.claude/</code>{" "}
+        pack for fintech and Anthropic power-users. Handwritten skills for Stripe, Supabase, Plaid, Expo, and Claude Code meta-tooling — plus a TOON wrapper that cuts input tokens 40–60% on tabular data.
       </p>
 
       <div className="mt-10 inline-flex items-center gap-0 overflow-hidden rounded-lg border border-border/60 bg-muted/40 font-mono text-sm">
         <span className="select-none border-r border-border/60 px-3 py-2.5 text-muted-foreground">$</span>
-        <code className="px-4 py-2.5">git clone github.com/raintree-technology/claude-starter</code>
+        <code className="px-4 py-2.5">npx create-claude-starter@latest</code>
       </div>
 
       <div className="mt-6 flex justify-center">
@@ -119,15 +120,17 @@ function Hero() {
 function Inside() {
   const rows: Array<{ path: string; note?: string; dim?: boolean }> = [
     { path: ".claude/" },
-    { path: "├── skills/",       note: "auto-invoked experts" },
-    { path: "│   ├── anthropic/", dim: true },
-    { path: "│   ├── stripe/",    dim: true },
-    { path: "│   ├── supabase/",  dim: true },
-    { path: "│   └── …",          dim: true },
-    { path: "├── commands/",     note: "slash commands" },
-    { path: "├── hooks/",        note: "secret-guard, pre/post-tool" },
-    { path: "├── utils/toon/",   note: "token-optimized format" },
-    { path: "└── settings.json", note: "permissions, env, MCP" },
+    { path: "├── skills/",           note: "6 deep, auto-invoked experts" },
+    { path: "│   ├── stripe/",        dim: true },
+    { path: "│   ├── supabase/",      dim: true },
+    { path: "│   ├── plaid/",         dim: true },
+    { path: "│   ├── expo/",          dim: true },
+    { path: "│   ├── anthropic/",     dim: true },
+    { path: "│   └── toon-formatter/", dim: true },
+    { path: "├── commands/",          note: "slash commands (TOON + SkillsMP)" },
+    { path: "├── hooks/",             note: "opt-in post-tool automation" },
+    { path: "├── utils/toon/",        note: "90-line wrapper around @toon-format/toon" },
+    { path: "└── settings.json",      note: "fail-closed defaults" },
   ];
   return (
     <section className="border-t border-border/60">
@@ -152,35 +155,59 @@ function Inside() {
 
 /* ---------------- Skills ---------------- */
 
-type Skill = { name: string; slug?: string };
+type Skill = { name: string; slug?: string; blurb: string };
 
 function Skills() {
   const groups: { group: string; items: Skill[] }[] = [
-    { group: "AI",         items: [{ name: "anthropic", slug: "anthropic" }, { name: "toon-formatter" }] },
-    { group: "Payments",   items: [{ name: "stripe", slug: "stripe" }, { name: "whop" }, { name: "shopify", slug: "shopify" }, { name: "plaid", slug: "plaid" }] },
-    { group: "Backend",    items: [{ name: "supabase", slug: "supabase" }, { name: "helius" }] },
-    { group: "Mobile",     items: [{ name: "expo", slug: "expo" }, { name: "ios", slug: "apple" }, { name: "HIG Doctor" }] },
-    { group: "Blockchain", items: [{ name: "aptos", slug: "aptos" }, { name: "aptos/shelby", slug: "aptos" }, { name: "decibel" }] },
+    {
+      group: "Fintech",
+      items: [
+        { name: "stripe", slug: "stripe", blurb: "2,100+ lines: Checkout, Payment Intents, subscriptions, Connect, Terminal, Radar, Treasury, webhooks." },
+        { name: "plaid", slug: "plaid", blurb: "Link flow, Auth (ACH), Transactions sync, Identity (KYC), Accounts. One consolidated skill." },
+      ],
+    },
+    {
+      group: "Backend",
+      items: [
+        { name: "supabase", slug: "supabase", blurb: "Postgres + RLS, Auth with SSR cookies, Realtime, Storage, Edge Functions, pgvector." },
+      ],
+    },
+    {
+      group: "Mobile",
+      items: [
+        { name: "expo", slug: "expo", blurb: "EAS Build (eas.json, credentials, CI), EAS Update (OTA, channels, staged rollouts), Expo Router." },
+      ],
+    },
+    {
+      group: "Claude tooling",
+      items: [
+        { name: "anthropic", slug: "anthropic", blurb: "Claude API + 6 Claude Code meta-tooling sub-skills: skill/command/hook/MCP/settings builders." },
+        { name: "toon-formatter", blurb: "When to reach for TOON, when not. Wraps @toon-format/toon." },
+      ],
+    },
   ];
   return (
     <section className="border-t border-border/60">
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Skills</SectionLabel>
+        <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
+          Six hand-maintained skills. No filler — each one earns its place. Anthropic already ships 17 general-purpose skills and a wide community marketplace covers the rest; this pack goes deep on the verticals where depth matters.
+        </p>
         <div className="mt-8 space-y-6">
           {groups.map((g) => (
-            <div key={g.group} className="grid gap-4 md:grid-cols-[140px_1fr]">
+            <div key={g.group} className="grid gap-4 md:grid-cols-[160px_1fr]">
               <h3 className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
                 {g.group}
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="space-y-3">
                 {g.items.map((it) => (
-                  <span
-                    key={it.name}
-                    className="inline-flex items-center gap-2 rounded-md border border-border/60 px-2.5 py-1.5 font-mono text-sm"
-                  >
-                    <SkillLogo item={it} />
-                    {it.name}
-                  </span>
+                  <div key={it.name} className="rounded-md border border-border/60 px-3 py-2.5">
+                    <div className="flex items-center gap-2 font-mono text-sm">
+                      <SkillLogo item={it} />
+                      {it.name}
+                    </div>
+                    <p className="mt-1 text-sm text-muted-foreground">{it.blurb}</p>
+                  </div>
                 ))}
               </div>
             </div>
@@ -206,11 +233,77 @@ function SkillLogo({ item }: { item: Skill }) {
       />
     );
   }
-  const letter = item.name.replace(/^aptos\//, "").charAt(0).toUpperCase();
+  const letter = item.name.charAt(0).toUpperCase();
   return (
     <span className="grid h-3.5 w-3.5 place-items-center rounded-sm border border-border/80 font-mono text-[8px] font-bold leading-none">
       {letter}
     </span>
+  );
+}
+
+/* ---------------- Benchmarks ---------------- */
+
+type Row = { workload: string; jsonTokens: number; toonTokens: number; savings: string };
+
+function Benchmarks() {
+  const rows: Row[] = [
+    { workload: "API response (50 users)",    jsonTokens: 4133,  toonTokens: 2128, savings: "48.5%" },
+    { workload: "DB transactions (100 rows)", jsonTokens: 5708,  toonTokens: 2252, savings: "60.5%" },
+    { workload: "Logs (200 events)",          jsonTokens: 13052, toonTokens: 6266, savings: "52.0%" },
+    { workload: "Metrics (288 points)",       jsonTokens: 13537, toonTokens: 4622, savings: "65.9%" },
+    { workload: "Irregular nested",           jsonTokens: 135,   toonTokens: 80,   savings: "40.7%" },
+    { workload: "Small array (3 items)",      jsonTokens: 62,    toonTokens: 27,   savings: "56.5%" },
+  ];
+  return (
+    <section className="border-t border-border/60">
+      <div className="mx-auto max-w-4xl px-6 py-20">
+        <SectionLabel>Measured savings</SectionLabel>
+        <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
+          Real token counts from{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono">gpt-tokenizer</code>{" "}
+          (OpenAI BPE — directional proxy for Claude&apos;s tokenizer). Run{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono">node bench/run.mjs</code>{" "}
+          locally to reproduce. Workloads are seeded and deterministic.
+        </p>
+        <div className="mt-8 overflow-x-auto rounded-md border border-border/60">
+          <table className="w-full font-mono text-sm">
+            <thead className="bg-muted/40 text-left text-muted-foreground">
+              <tr>
+                <th className="px-4 py-2.5 font-normal">Workload</th>
+                <th className="px-4 py-2.5 text-right font-normal">JSON tokens</th>
+                <th className="px-4 py-2.5 text-right font-normal">TOON tokens</th>
+                <th className="px-4 py-2.5 text-right font-normal">Savings</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.workload} className="border-t border-border/60">
+                  <td className="px-4 py-2.5">{r.workload}</td>
+                  <td className="px-4 py-2.5 text-right text-muted-foreground">{r.jsonTokens.toLocaleString()}</td>
+                  <td className="px-4 py-2.5 text-right">{r.toonTokens.toLocaleString()}</td>
+                  <td className="px-4 py-2.5 text-right font-semibold">{r.savings}</td>
+                </tr>
+              ))}
+              <tr className="border-t border-border/60 bg-muted/30">
+                <td className="px-4 py-2.5 font-semibold">Aggregate</td>
+                <td className="px-4 py-2.5 text-right text-muted-foreground">36,627</td>
+                <td className="px-4 py-2.5 text-right">15,375</td>
+                <td className="px-4 py-2.5 text-right font-semibold">58.0%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-4 text-xs text-muted-foreground">
+          Full methodology + raw data:{" "}
+          <Link href={`${REPO}/blob/main/bench/RESULTS.md`} target="_blank" rel="noreferrer" className="underline hover:text-foreground">
+            bench/RESULTS.md
+          </Link>
+          . For exact Claude token counts, use Anthropic&apos;s{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono">/v1/messages/count_tokens</code>{" "}
+          endpoint.
+        </p>
+      </div>
+    </section>
   );
 }
 
@@ -222,9 +315,9 @@ function Install() {
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Install</SectionLabel>
         <ol className="mt-8 space-y-5 font-mono text-sm">
-          <Snippet step="1" code="git clone https://github.com/raintree-technology/claude-starter" />
-          <Snippet step="2" code="cp -r claude-starter/.claude ./" />
-          <Snippet step="3" code="docpull https://docs.stripe.com -o .claude/skills/stripe/docs" hint="optional · pull docs" />
+          <Snippet step="1" code="npx create-claude-starter@latest" hint="into current directory" />
+          <Snippet step="2" code="npm i @toon-format/toon gpt-tokenizer" hint="for the /toon-* commands" />
+          <Snippet step="3" code="docpull https://docs.stripe.com -o .claude/skills/stripe/docs" hint="optional · deep docs for the skills" />
         </ol>
       </div>
     </section>

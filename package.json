@@ -1,7 +1,7 @@
 {
   "name": "create-claude-starter",
-  "version": "2.0.0",
-  "description": "Advanced Claude Code framework with 40+ skills, meta-commands, skill orchestration, workflow automation, and TOON format support",
+  "version": "3.0.0",
+  "description": "Opinionated Claude Code skill pack for fintech and Anthropic power-users: deep skills for Stripe, Supabase, Plaid, Expo, and Claude Code meta-tooling, plus a TOON command wrapper for input-token savings.",
   "type": "module",
   "main": "src/index.js",
   "bin": {
@@ -18,24 +18,22 @@
   "scripts": {
     "test": "node --test",
     "test:security": "node --test test/*.test.js",
-    "lint": "eslint src/ templates/.claude/utils/workflows/ test/",
+    "lint": "eslint src/ test/",
     "prepublishOnly": "npm run lint && npm run test:security"
   },
   "keywords": [
     "claude",
     "claude-code",
-    "ai",
-    "llm",
+    "claude-skills",
     "anthropic",
-    "skills",
-    "orchestration",
-    "workflows",
-    "automation",
-    "meta-commands",
-    "starter",
-    "template",
+    "stripe",
+    "supabase",
+    "plaid",
+    "expo",
+    "mcp",
     "toon",
-    "docpull"
+    "token-efficiency",
+    "starter"
   ],
   "author": "Raintree",
   "license": "MIT",
@@ -61,6 +59,8 @@
     "ora": "^9.0.0"
   },
   "devDependencies": {
-    "eslint": "^9.0.0"
+    "@toon-format/toon": "^2.1.0",
+    "eslint": "^9.0.0",
+    "gpt-tokenizer": "^3.0.0"
   }
 }

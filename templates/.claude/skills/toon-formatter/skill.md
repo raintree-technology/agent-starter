@@ -1,6 +1,6 @@
 ---
 name: toon-formatter
-description: AGGRESSIVELY use TOON v2.0 format for biggish regular data (≥5 items, ≥60% uniform). Auto-applies to tables, logs, events, transactions, analytics, API responses, database results. Supports 3 array types (inline, tabular, expanded), 3 delimiters (comma, tab, pipe), key folding for nested objects. Triggers on structured data, arrays, repeated patterns. Use TOON by default when tokens matter - RAG pipelines, tool calls, agents, benchmarks. Keywords "data", "array", "list", "table", "log", "transaction", "metric", "analytics", "API", "database", "query", "TOON".
+description: Guidance on when and how to use TOON (Token-Oriented Object Notation) — a compact JSON alternative that typically cuts input tokens 30-50% on tabular data. Use when the user is about to paste or serialize a large JSON array into a prompt, has a payload with ≥5 uniform objects, or is optimizing an LLM pipeline for cost/context. Knows the format shapes (tabular `[N]{a,b}:` rows, inline `[N]: ...`, expanded), when TOON helps vs hurts, and how to invoke `/convert-to-toon`, `/analyze-tokens`, and the `.claude/utils/toon/cli.mjs` wrapper. Example queries — "convert this API response to TOON", "will this JSON benefit from TOON", "how does TOON handle nested objects".
 allowed-tools: Read, Write, Edit, Bash
 model: sonnet
 ---

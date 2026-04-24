@@ -8,13 +8,13 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://claude.raintree.technology"),
-  title: "claude-starter — Raintree Technology",
+  title: "claude-starter — deep skills for Claude Code",
   description:
-    "A production-ready Claude Code starter: 40+ domain skills, TOON token optimization, and a clean pattern for extension.",
+    "Opinionated Claude Code skill pack for fintech and Anthropic power-users. Six deep, handwritten skills (Stripe, Supabase, Plaid, Expo, Anthropic tooling) plus a TOON command wrapper that cuts input tokens 40–60% on tabular data.",
   openGraph: {
-    title: "claude-starter — Raintree Technology",
+    title: "claude-starter — deep skills for Claude Code",
     description:
-      "Drop-in .claude/ config with 40+ skills, slash commands, and token optimization.",
+      "Six deep, handwritten Claude Code skills + a TOON wrapper that measurably cuts input tokens 40–60% on tabular data.",
     url: "https://claude.raintree.technology",
     siteName: "claude.raintree.technology",
     type: "website",

@@ -2,26 +2,5 @@
   "$schema": "https://code.claude.com/schemas/settings.schema.json",
   "version": "1.0.0",
   "description": "Safe shared Claude Code defaults for claude-starter. Keep executable hooks, elevated permissions, and other machine-specific trust settings in .claude/settings.local.json.",
-  "model": "claude-sonnet-4-5",
-  "orchestration": {
-    "enabled": true,
-    "semanticMatching": true,
-    "multiSkillWorkflows": true,
-    "maxActiveSkills": 5,
-    "semanticThreshold": 0.7,
-    "cacheEmbeddings": true,
-    "embeddingProvider": "openai"
-  },
-  "workflows": {
-    "enabled": true,
-    "defaultTimeout": 300000,
-    "saveLog": true,
-    "logDirectory": ".claude/logs/workflows"
-  },
-  "metaCommands": {
-    "enabled": true,
-    "autoValidate": true,
-    "preventConflicts": true,
-    "registryPath": ".claude/command-registry.json"
-  }
+  "model": "claude-sonnet-4-5"
 }

@@ -1,236 +1,108 @@
 # claude-starter
 
-Advanced Claude Code framework with 49+ skills, meta-commands, skill orchestration, workflow automation, and TOON format support.
+An opinionated [Claude Code](https://code.claude.com) skill pack for fintech devs and Anthropic power-users. Six deep, handwritten skills plus a thin CLI for [TOON](https://toonformat.dev) — a JSON compression format that typically cuts input tokens 40–60% on tabular data.
+
+No orchestration framework. No aspirational YAML. Just skills that activate when you need them.
 
 [![npm version](https://img.shields.io/npm/v/create-claude-starter.svg)](https://www.npmjs.com/package/create-claude-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Quick Install (npx add-skill)
+## What you get
 
-Install individual skills directly:
+**6 top-level skills** — auto-activate on keywords:
+
+| Skill | Covers |
+|---|---|
+| **stripe** | Checkout, Payment Intents, subscriptions, Connect/marketplace, Terminal, Radar, Treasury, Issuing, webhooks (signature + idempotency) — 2,100+ lines of real patterns |
+| **supabase** | Postgres + RLS, Auth (OAuth + SSR cookies), Realtime, Storage, Edge Functions, pgvector |
+| **plaid** | Link flow, Auth (ACH routing/account numbers), Transactions sync, Identity (KYC), Accounts + balance |
+| **expo** | EAS Build (`eas.json`, credentials, CI), EAS Update (OTA, channels, staged rollouts), Expo Router (file-based routing, dynamic segments, layout groups) |
+| **anthropic** | Anthropic Claude API — Messages API, prompt caching, tool use, vision, model migration. Includes 6 Claude Code meta-tooling sub-skills: skill-builder, command-builder, hook-builder, mcp-expert, settings-expert, claude-code |
+| **toon-formatter** | When TOON helps, when it doesn't, how to wire the commands |
+
+**5 slash commands** for TOON:
+- `/convert-to-toon <file>` — encode + report measured savings
+- `/analyze-tokens <file>` — compare JSON vs TOON token counts without writing a file
+- `/toon-encode <file>`, `/toon-decode <file>`, `/toon-validate <file>`
+
+All TOON commands shell out to the canonical [`@toon-format/toon`](https://www.npmjs.com/package/@toon-format/toon) npm library via a 90-line wrapper at `.claude/utils/toon/cli.mjs`, and use [`gpt-tokenizer`](https://www.npmjs.com/package/gpt-tokenizer) for real token counts (OpenAI BPE — directionally accurate proxy for Claude; for exact counts use Anthropic's `/v1/messages/count_tokens` endpoint).
+
+## Install
 
 ```bash
-# Token optimization
-npx add-skill raintree-technology/claude-starter --skill toon-formatter
-
-# Claude Code meta-tools
-npx add-skill raintree-technology/claude-starter --skill claude-skill-builder
-npx add-skill raintree-technology/claude-starter --skill claude-mcp-expert
-
-# Blockchain
-npx add-skill raintree-technology/claude-starter --skill move-prover
-npx add-skill raintree-technology/claude-starter --skill helius
-
-# Code quality (multi-language cleanup pipeline)
-npx add-skill raintree-technology/claude-starter --skill code-quality/cleanup-unused
-npx add-skill raintree-technology/claude-starter --skill code-quality/cleanup-all
-
-# List all available skills
-npx add-skill raintree-technology/claude-starter --list
-```
-
-## What is this?
-
-The most advanced `.claude/` configuration framework for [Claude Code](https://code.claude.com) that provides:
-
-- **49 Skills** - Auto-activating expertise (Stripe, Supabase, Aptos, Expo, Plaid, Whop, Shopify, iOS, Code Quality)
-- **Meta-Commands** - Create custom commands from templates in <2 minutes
-- **Skill Orchestration** - Multi-skill collaboration with semantic matching
-- **Workflow Automation** - YAML-based workflows (GitHub Actions-inspired)
-- **TOON Format** - 30-60% token savings for tabular data
-- **14 Commands** - Meta-commands, debugging, TOON, workflows
-- **Templates** - Build your own skills and commands
-
-This is configuration, not code. No library, no framework, no runtime dependencies.
-
-## Installation
-
-### Option 1: NPX (Recommended)
-```bash
-# Install to current project
+# Into current project
 npx create-claude-starter@latest
 
-# Install specific skills
-npx create-claude-starter --skills stripe,supabase,expo
-
-# Install with profile
-npx create-claude-starter --profile web-saas
+# Into a specific dir, no prompts
+npx create-claude-starter@latest ./my-app --yes
 ```
 
-### Option 2: Plugin Marketplace (Within Claude Code)
+For TOON commands, add the runtime deps to your project:
 ```bash
-# Install everything
-/plugin marketplace add raintree-technology/claude-starter
-
-# Install specific categories
-/plugin marketplace add raintree-technology/claude-starter/stripe-payments
-/plugin marketplace add raintree-technology/claude-starter/expo-mobile
-/plugin marketplace add raintree-technology/claude-starter/meta-commands
+npm i @toon-format/toon gpt-tokenizer
 ```
 
-### Option 3: Manual Copy
-```bash
-git clone https://github.com/raintree-technology/claude-starter.git
-cp -r claude-starter/templates/.claude your-project/.claude
-```
+## Use
 
-Manual copy now ships a fail-closed `.claude/settings.json`.
-Keep executable hooks, elevated permissions, and any workflow trust overrides in `.claude/settings.local.json` after review.
-
-### Option 4: Discover on SkillsMP
-Browse 40+ skills at [SkillsMP](https://skillsmp.com/) and install individually:
-```bash
-/discover-skills
-/install-skill <github-url>
-```
-
-## Usage
-
-Skills auto-activate based on context:
+Skills auto-activate on context:
 
 ```
-You: "How do I create a Stripe subscription?"
-Claude: [Activates Stripe skill and provides implementation]
+User: How do I verify a Stripe webhook signature?
+Claude: [stripe-expert activates] Use stripe.webhooks.constructEvent...
 
-You: "Build a Whop membership backend"
-Claude: [Activates Whop and provides code]
+User: Convert api-response.json to TOON
+Claude: [runs /convert-to-toon api-response.json]
+  ✓ Wrote api-response.toon
+  Tokenizer: gpt-tokenizer (OpenAI BPE — approximate proxy for Claude)
+  JSON:      4,587 tokens (12,840 bytes)
+  TOON:      2,759 tokens (7,128 bytes)
+  Saved:     1,828 tokens (39.8%)
 ```
 
-### Optional: Pull Documentation
+## Why this exists
 
-Skills work immediately with built-in knowledge. Optionally pull comprehensive API docs for enhanced accuracy:
+The Claude Code skill market is fragmented: Anthropic ships 17 general-purpose skills and nothing for fintech or platform integrations. Community mega-packs (`awesome-claude-code-toolkit`, `antigravity-awesome-skills`) compete on volume — 1,400+ skills with razor-thin depth.
 
-```bash
-# Install docpull
-brew install pipx && pipx install docpull
+This pack goes the other way: **6 skills, hand-maintained, each genuinely better than what's out there.** The Stripe skill alone is 2,100+ lines of tested integration patterns. If you're building a fintech app or extending Claude itself, this is the starting point.
 
-# Pull documentation (stored locally, never committed)
-docpull https://docs.stripe.com -o .claude/skills/stripe/docs
-docpull https://supabase.com/docs -o .claude/skills/supabase/docs
-```
+## Not in this repo (and why)
 
-**Important notes:**
-- Documentation is **optional** - skills work without it
-- Docs are stored in `.claude/skills/*/docs/` (**gitignored**, never committed)
-- Total size: ~8GB across all skills
-- Pulled once, persistent across sessions
-- Use CLI for easier management: `npx claude-starter docs pull`
-- Workflow shell steps are disabled by default; only enable them after reviewing the workflow you plan to run
-
-**Advanced: Custom doc location**
-```bash
-# Pull to /tmp (lost on restart, auto-cleanup)
-docpull https://docs.stripe.com -o /tmp/claude-docs/stripe
-
-# Or use symlink for separation
-mkdir -p ~/claude-docs/stripe
-ln -s ~/claude-docs/stripe .claude/skills/stripe/docs
-docpull https://docs.stripe.com -o ~/claude-docs/stripe
-```
-
-### TOON Format
-
-Compress JSON/data files by 30-60%:
-
-```bash
-/convert-to-toon api-response.json
-/analyze-tokens data.json
-```
-
-## What's Included
-
-| Category | Skills | Documentation |
-|----------|--------|---------------|
-| **Payments** | Stripe, Whop, Shopify | 3,490 files |
-| **Backend** | Supabase | 2,616 files |
-| **Banking** | Plaid (+ 4 sub-skills) | 659 files |
-| **Blockchain** | Aptos, Shelby, Decibel | 246 files |
-| **Mobile** | Expo (+ 3 sub-skills), iOS | 814 files |
-| **AI** | Anthropic API, Claude Code (+ 5 sub-skills) | 400 files |
-| **Data** | TOON Formatter | Tools + spec |
-| **Code Quality** | Cleanup pipeline: unused, cycles, dedupe, types, weak-types, defensive, legacy, slop, all (orchestrator) | Tool-driven |
-
-**Total:** 49 skills, 8,225 documentation files (pulled separately)
-
-## CLI Commands
-
-```bash
-# Manage installation
-npx claude-starter list                    # List available skills
-npx claude-starter add expo ios            # Add skills
-npx claude-starter update                  # Update installed skills
-
-# Manage documentation
-npx claude-starter docs pull stripe        # Pull specific docs
-npx claude-starter docs pull               # Pull all docs
-npx claude-starter docs status             # Check status
-npx claude-starter docs update             # Update stale docs
-```
-
-## Installation Profiles
-
-```bash
-npx create-claude-starter --profile web-saas      # stripe, supabase, expo
-npx create-claude-starter --profile blockchain    # aptos, shelby, decibel
-npx create-claude-starter --profile minimal       # toon-formatter only
-```
+- **Orchestration / semantic matching / multi-skill workflows** — removed. Claude Code selects skills natively via frontmatter `description`; the previous TypeScript orchestration engine was placeholder code.
+- **YAML workflow engine** — removed. Out of scope for a skill pack.
+- **Meta-commands / command registry / validators** — removed. Claude Code's built-in `/skill` and plugin system handle this.
+- **Native Zig TOON binary** — removed. The canonical `@toon-format/toon` npm package (1.8M downloads/month) ships pure JS, cross-platform.
+- **Blockchain / iOS / Shopify / Whop skills** — removed. Niche or thin; if you need them, spin a focused pack.
+- **Duplicated code-quality skills** — removed. Anthropic already ships `cleanup-unused`, `cleanup-slop`, etc. natively.
 
 ## Structure
 
 ```
 .claude/
-├── skills/          # 40 auto-activating skills
-├── commands/        # 7 slash commands
-├── hooks/           # 5 automation hooks (disabled by default)
-├── utils/toon/      # TOON encoder/decoder (Zig binary + source)
-└── settings.json    # Configuration
+├── skills/
+│   ├── stripe/        # 2,100+ lines
+│   ├── supabase/
+│   ├── plaid/         # consolidated: Link + Auth + Transactions + Identity + Accounts
+│   ├── expo/          # consolidated: core + EAS Build + EAS Update + Expo Router
+│   ├── anthropic/     # 1 main skill + 6 Claude Code meta-tooling sub-skills
+│   └── toon-formatter/
+├── commands/
+│   ├── convert-to-toon.md
+│   ├── analyze-tokens.md
+│   ├── toon-{encode,decode,validate}.md
+│   └── {discover,install}-skills.md
+└── utils/toon/cli.mjs # 90-line wrapper around @toon-format/toon + gpt-tokenizer
 ```
 
-## Building Custom Skills
+## Benchmarks
 
-```markdown
-<!-- .claude/skills/my-api/skill.md -->
-# My Company API
-
-Auto-activates when: user mentions "my-api"
-
-## Endpoints
-- POST /api/v1/users - Create user
-- GET /api/v1/users/:id - Get user
-```
-
-See [docs/creating-components.md](docs/creating-components.md) for templates.
-
-## Documentation
-
-- [Quick Start](.claude/README.md)
-- [Complete Reference](.claude/DIRECTORY.md)
-- [Building Skills](docs/creating-components.md)
-- [Examples](docs/examples.md)
-- [FAQ](docs/FAQ.md)
+Real measured token counts for a handful of representative workloads are in [`bench/`](bench/). Numbers use `gpt-tokenizer`, not a claimed heuristic.
 
 ## Requirements
 
-- **Node.js** >= 18.0.0
-- **Claude Code** >= 1.0.0
-- **docpull** (optional) - For pulling documentation
-
-## Security
-
-See [SECURITY.md](SECURITY.md) for vulnerability disclosure and security measures.
-
-## Legal
-
-All third-party trademarks are property of their respective owners. See [TRADEMARKS.md](TRADEMARKS.md).
-
-Not affiliated with or endorsed by Stripe, Anthropic, Supabase, Expo, Plaid, Shopify, or Whop.
+- Node.js ≥ 18
+- Claude Code ≥ 1.0
+- (Optional) `@toon-format/toon` and `gpt-tokenizer` in your project for TOON commands
 
 ## License
 
-MIT - See [LICENSE](LICENSE)
-
-## Resources
-
-- [Claude Code Documentation](https://code.claude.com/docs)
-- [TOON Format Specification](https://toonformat.dev)
-- [Skills Marketplace](https://skillsmp.com)
+MIT. Not affiliated with Stripe, Supabase, Plaid, Expo, or Anthropic.

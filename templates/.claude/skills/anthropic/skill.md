@@ -1,6 +1,6 @@
 ---
 name: anthropic-expert
-description: Expert on Anthropic Claude API, models, prompt engineering, function calling, vision, and best practices. Triggers on anthropic, claude, api, prompt, function calling, vision, messages api, embeddings
+description: Expert on the Anthropic Claude API — Messages API, model selection (Opus/Sonnet/Haiku), prompt caching, tool use/function calling, vision, streaming, structured output, token counting, batch API, Files API, and migrating between Claude model versions. Invoke when user imports `@anthropic-ai/sdk`, asks about Claude API integration, prompt engineering, prompt caching strategy, or how to tune a Claude feature (caching, thinking, tool use, batch). Example queries — "set up prompt caching for a long system prompt", "switch this Sonnet call to Opus with the 1M context window", "stream a response with tool calling", "migrate from claude-3-5-sonnet to claude-sonnet-4-6".
 allowed-tools: Read, Grep, Glob
 model: sonnet
 ---

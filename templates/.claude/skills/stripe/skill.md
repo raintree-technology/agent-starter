@@ -1,6 +1,6 @@
 ---
 name: stripe-expert
-description: Comprehensive Stripe API expert with access to 3,253 official documentation files covering all payment processing, billing, subscriptions, webhooks, Connect, Terminal, Radar, Identity, Tax, Climate, and integrations. Invoke when user mentions Stripe, payments, subscriptions, billing, payment processing, checkout, invoices, or any payment-related features.
+description: Deep Stripe integration expert — Checkout, Payment Intents, Elements, subscriptions (including metered and tiered), Connect (Express/Standard/Custom + marketplace flows), Terminal, Radar, Identity, Tax, Issuing, Treasury, Climate, webhooks (signature verification, idempotency keys, retries). Invoke when user mentions Stripe, payments, subscriptions, checkout, webhooks, Connect/marketplace, refunds, invoices, or 3DS. Example queries — "accept a card payment with Payment Intents", "set up a metered subscription for usage-based billing", "build a marketplace where sellers onboard via Express", "verify a webhook signature and handle payment_intent.succeeded".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash, WebFetch
 model: sonnet
 ---

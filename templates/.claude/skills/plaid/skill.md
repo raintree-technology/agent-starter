@@ -1,6 +1,6 @@
 ---
 name: plaid-expert
-description: Expert guidance for Plaid banking API integration including Link, Auth, Transactions, Identity, and webhook handling. Invoke when user mentions Plaid, bank connections, financial data, ACH, or banking APIs.
+description: Expert guidance for Plaid banking API integration — Link flow, Auth (routing/account numbers for ACH), Transactions (sync/categorize), Identity (KYC/account holder), Accounts (balance/types), and webhook handling. Invoke when user mentions Plaid, bank connections, ACH verification, account ownership, transaction history, KYC, or Plaid webhooks. Example queries — "connect a bank account with Plaid", "retrieve ACH routing numbers", "sync transactions since last webhook", "verify user identity via Plaid".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash, WebFetch
 model: sonnet
 ---
@@ -517,3 +517,69 @@ export async function POST(req: Request) {
 - [ ] Request production access
 - [ ] Implement error handling and retry logic
 - [ ] Add proper user consent/disclosure
+
+## Product API Reference
+
+### Auth — ACH routing and account numbers
+
+```typescript
+const response = await client.authGet({ access_token });
+
+const { accounts, numbers } = response.data;
+// numbers.ach: [{ account, routing, account_id }]
+// Use for ACH transfers, direct deposit enrollment, payout verification.
+```
+
+Verification methods, in order of preference:
+1. **Instant verification** (preferred) — credentials flow via Link, Auth returns numbers immediately.
+2. **Same-day micro-deposits** — falls back when instant is unavailable.
+3. **Manual micro-deposits** — 1–2 business days.
+
+### Transactions — sync pattern (preferred over `/transactions/get`)
+
+```typescript
+// Use cursor-based sync; idempotent and handles pagination + updates.
+let cursor = loadCursor(itemId);
+let hasMore = true;
+while (hasMore) {
+  const res = await client.transactionsSync({ access_token, cursor });
+  saveTransactions(res.data.added, res.data.modified, res.data.removed);
+  cursor = res.data.next_cursor;
+  hasMore = res.data.has_more;
+}
+saveCursor(itemId, cursor);
+```
+
+Webhook: listen for `SYNC_UPDATES_AVAILABLE` → call `transactionsSync` with stored cursor. Do not use deprecated `TRANSACTIONS_INITIAL_UPDATE`/`HISTORICAL_UPDATE` for new integrations.
+
+### Identity — KYC data from the bank
+
+```typescript
+const response = await client.identityGet({ access_token });
+
+for (const account of response.data.accounts) {
+  for (const owner of account.owners) {
+    // owner.names: string[]
+    // owner.emails: [{ data, primary, type }]
+    // owner.phone_numbers: [{ data, primary, type }]
+    // owner.addresses: [{ data: { street, city, region, postal_code, country }, primary }]
+  }
+}
+```
+
+Use for KYC, fraud prevention (compare bank-reported name vs. user-entered). Not a replacement for full KYC providers — Plaid Identity returns what the bank has on file, which may be stale.
+
+### Accounts — balance and account types
+
+```typescript
+// Live balance (slower, makes a request to the bank):
+const balRes = await client.accountsBalanceGet({ access_token });
+
+// Cached balance (faster, from Plaid's last refresh):
+const accRes = await client.accountsGet({ access_token });
+
+// account.type: 'depository' | 'credit' | 'loan' | 'investment' | 'brokerage' | 'other'
+// account.subtype: 'checking' | 'savings' | 'credit card' | '401k' | 'mortgage' | ...
+```
+
+Preflight an ACH debit by calling `accountsBalanceGet` first; compare `balances.available` vs. the debit amount to avoid NSF. Handle `PRODUCT_NOT_READY` on first call after Link (retry with backoff).

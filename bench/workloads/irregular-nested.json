@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "version": "3.2.1",
+    "generator": "internal",
+    "nested": {
+      "level2": {
+        "level3": {
+          "level4": "deep"
+        }
+      }
+    }
+  },
+  "sections": [
+    {
+      "title": "Intro",
+      "words": 240,
+      "refs": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "title": "Body",
+      "subtitle": "Details",
+      "paragraphs": 5
+    },
+    {
+      "heading": "Conclusion"
+    }
+  ]
+}

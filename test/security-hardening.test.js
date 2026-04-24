@@ -11,7 +11,6 @@ import {
   isPathSafe
 } from '../src/utils/security.js';
 import { readInstalledManifest } from '../src/utils/manifest.js';
-import { WorkflowState } from '../templates/.claude/utils/workflows/state-manager.js';
 
 // ── FIX 10: Expanded SSRF blocklist ─────────────────────────────────────
 
@@ -154,76 +153,6 @@ test('readInstalledManifest accepts valid manifest', () => {
   } finally {
     rmSync(tempDir, { recursive: true, force: true });
   }
-});
-
-// ── FIX 9: Prototype traversal blocked in WorkflowState ─────────────────
-
-test('resolveValue blocks __proto__ traversal', () => {
-  const state = new WorkflowState({
-    workflow: { name: 'test', steps: [], inputs: {} },
-    inputs: {},
-  });
-  // Attempting to access __proto__ should return undefined, not Object prototype
-  const result = state.substituteVariables('${{ __proto__.toString }}');
-  // Should remain unsubstituted since __proto__ is blocked
-  assert.ok(!result.includes('[object'));
-});
-
-test('resolveValue blocks constructor traversal', () => {
-  const state = new WorkflowState({
-    workflow: { name: 'test', steps: [], inputs: {} },
-    inputs: {},
-  });
-  const result = state.substituteVariables('${{ constructor.name }}');
-  assert.ok(!result.includes('Object'));
-});
-
-test('resolveValue blocks prototype traversal', () => {
-  const state = new WorkflowState({
-    workflow: { name: 'test', steps: [], inputs: {} },
-    inputs: {},
-  });
-  const result = state.substituteVariables('${{ prototype.hasOwnProperty }}');
-  assert.ok(!result.includes('function'));
-});
-
-// ── FIX 2: Shell escape in substituteVariables ──────────────────────────
-
-test('shellEscape wraps values in single quotes', () => {
-  assert.equal(WorkflowState.shellEscape('hello'), "'hello'");
-});
-
-test('shellEscape escapes embedded single quotes', () => {
-  assert.equal(WorkflowState.shellEscape("it's"), "'it'\\''s'");
-});
-
-test('shellEscape neutralizes $() injection', () => {
-  const escaped = WorkflowState.shellEscape('$(rm -rf /)');
-  // In single quotes, $() is literal, not executed
-  assert.equal(escaped, "'$(rm -rf /)'");
-});
-
-test('shellEscape neutralizes backtick injection', () => {
-  const escaped = WorkflowState.shellEscape('`whoami`');
-  assert.equal(escaped, "'`whoami`'");
-});
-
-test('substituteVariables applies shellEscape when option is set', () => {
-  const state = new WorkflowState({
-    workflow: { name: 'test', steps: [], inputs: { cmd: { type: 'string' } } },
-    inputs: { cmd: '$(malicious)' },
-  });
-  const result = state.substituteVariables('echo ${{ inputs.cmd }}', { shellEscape: true });
-  assert.equal(result, "echo '$(malicious)'");
-});
-
-test('substituteVariables does NOT shellEscape without option', () => {
-  const state = new WorkflowState({
-    workflow: { name: 'test', steps: [], inputs: { name: { type: 'string' } } },
-    inputs: { name: 'hello' },
-  });
-  const result = state.substituteVariables('echo ${{ inputs.name }}');
-  assert.equal(result, 'echo hello');
 });
 
 // ── FIX 4: settings.local.json renamed to .example ─────────────────────
