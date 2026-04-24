@@ -1,0 +1,624 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-12-17",
+  "totalSkills": 40,
+  "categories": {
+    "ai": {
+      "name": "AI & Claude Code",
+      "description": "AI development and Claude Code skills",
+      "skillCount": 7
+    },
+    "blockchain": {
+      "name": "Blockchain & Web3",
+      "description": "Aptos, Move language, and blockchain development",
+      "skillCount": 18
+    },
+    "mobile": {
+      "name": "Mobile Development",
+      "description": "Expo, React Native, and iOS development",
+      "skillCount": 5
+    },
+    "payments": {
+      "name": "Payments & Commerce",
+      "description": "Payment processing and e-commerce platforms",
+      "skillCount": 3
+    },
+    "banking": {
+      "name": "Banking & Fintech",
+      "description": "Banking APIs and financial data",
+      "skillCount": 5
+    },
+    "backend": {
+      "name": "Backend & Databases",
+      "description": "Backend services and databases",
+      "skillCount": 1
+    },
+    "utilities": {
+      "name": "Developer Utilities",
+      "description": "Tools and utilities",
+      "skillCount": 1
+    }
+  },
+  "skills": [
+    {
+      "id": "anthropic",
+      "name": "Anthropic API Expert",
+      "category": "ai",
+      "path": "anthropic",
+      "description": "## Purpose",
+      "keywords": [
+        "anthropic"
+      ],
+      "docs": {
+        "url": "https://docs.anthropic.com",
+        "required": false,
+        "files": 199,
+        "size": "3.4MB"
+      }
+    },
+    {
+      "id": "anthropic-claude-code",
+      "name": "Claude Code Expert",
+      "category": "ai",
+      "path": "anthropic/claude-code",
+      "description": "## Purpose",
+      "keywords": [
+        "claude-code"
+      ],
+      "docs": {
+        "url": "https://docs.anthropic.com",
+        "required": false,
+        "files": 199,
+        "size": "3.4MB"
+      }
+    },
+    {
+      "id": "anthropic-claude-command-builder",
+      "name": "Claude Code Command Builder",
+      "category": "ai",
+      "path": "anthropic/claude-command-builder",
+      "description": "## Purpose",
+      "keywords": [
+        "claude-command-builder"
+      ],
+      "docs": {
+        "url": "https://docs.anthropic.com",
+        "required": false,
+        "files": 199,
+        "size": "3.4MB"
+      }
+    },
+    {
+      "id": "anthropic-claude-hook-builder",
+      "name": "Claude Code Hook Builder",
+      "category": "ai",
+      "path": "anthropic/claude-hook-builder",
+      "description": "## Purpose",
+      "keywords": [
+        "claude-hook-builder"
+      ],
+      "docs": {
+        "url": "https://docs.anthropic.com",
+        "required": false,
+        "files": 199,
+        "size": "3.4MB"
+      }
+    },
+    {
+      "id": "anthropic-claude-mcp-expert",
+      "name": "Claude Code MCP Expert",
+      "category": "ai",
+      "path": "anthropic/claude-mcp-expert",
+      "description": "## Purpose",
+      "keywords": [
+        "claude-mcp-expert"
+      ],
+      "docs": {
+        "url": "https://docs.anthropic.com",
+        "required": false,
+        "files": 199,
+        "size": "3.4MB"
+      }
+    },
+    {
+      "id": "anthropic-claude-settings-expert",
+      "name": "Claude Code Settings Expert",
+      "category": "ai",
+      "path": "anthropic/claude-settings-expert",
+      "description": "## Purpose",
+      "keywords": [
+        "claude-settings-expert"
+      ],
+      "docs": {
+        "url": "https://docs.anthropic.com",
+        "required": false,
+        "files": 199,
+        "size": "3.4MB"
+      }
+    },
+    {
+      "id": "anthropic-claude-skill-builder",
+      "name": "Claude Code Skill Builder",
+      "category": "ai",
+      "path": "anthropic/claude-skill-builder",
+      "description": "## Purpose",
+      "keywords": [
+        "claude-skill-builder"
+      ],
+      "docs": {
+        "url": "https://docs.anthropic.com",
+        "required": false,
+        "files": 199,
+        "size": "3.4MB"
+      }
+    },
+    {
+      "id": "aptos",
+      "name": "Aptos Blockchain Expert",
+      "category": "blockchain",
+      "path": "aptos",
+      "description": "## Purpose",
+      "keywords": [
+        "aptos"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-dapp-integration",
+      "name": "Aptos DApp Integration Expert",
+      "category": "blockchain",
+      "path": "aptos/dapp-integration",
+      "description": "## Purpose",
+      "keywords": [
+        "dapp-integration"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-decibel",
+      "name": "Decibel Trading Platform Expert",
+      "category": "blockchain",
+      "path": "aptos/decibel",
+      "description": "## Purpose",
+      "keywords": [
+        "decibel"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-framework",
+      "name": "Aptos Framework Expert",
+      "category": "blockchain",
+      "path": "aptos/framework",
+      "description": "## Purpose",
+      "keywords": [
+        "framework"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-gas-optimization",
+      "name": "Aptos Gas & Performance Optimization Expert",
+      "category": "blockchain",
+      "path": "aptos/gas-optimization",
+      "description": "## Purpose",
+      "keywords": [
+        "gas-optimization"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-move-language",
+      "name": "Move Language Expert",
+      "category": "blockchain",
+      "path": "aptos/move-language",
+      "description": "## Purpose",
+      "keywords": [
+        "move-language"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-move-prover",
+      "name": "Move Prover Expert",
+      "category": "blockchain",
+      "path": "aptos/move-prover",
+      "description": "## Purpose",
+      "keywords": [
+        "move-prover"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-move-testing",
+      "name": "Aptos Move Testing Expert",
+      "category": "blockchain",
+      "path": "aptos/move-testing",
+      "description": "## Purpose",
+      "keywords": [
+        "move-testing"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-object-model",
+      "name": "Aptos Object Model Expert",
+      "category": "blockchain",
+      "path": "aptos/object-model",
+      "description": "## Purpose",
+      "keywords": [
+        "object-model"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-shelby",
+      "name": "Shelby Protocol Expert",
+      "category": "blockchain",
+      "path": "aptos/shelby",
+      "description": "## Purpose",
+      "keywords": [
+        "shelby"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-shelby-cli-assistant",
+      "name": "Shelby CLI Assistant",
+      "category": "blockchain",
+      "path": "aptos/shelby/cli-assistant",
+      "description": "## Purpose",
+      "keywords": [
+        "cli-assistant"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-shelby-dapp-builder",
+      "name": "Shelby DApp Builder",
+      "category": "blockchain",
+      "path": "aptos/shelby/dapp-builder",
+      "description": "## Purpose",
+      "keywords": [
+        "dapp-builder"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-shelby-network-rpc",
+      "name": "Shelby Network & RPC Expert",
+      "category": "blockchain",
+      "path": "aptos/shelby/network-rpc",
+      "description": "## Purpose",
+      "keywords": [
+        "network-rpc"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-shelby-protocol-expert",
+      "name": "Shelby Protocol Expert",
+      "category": "blockchain",
+      "path": "aptos/shelby/protocol-expert",
+      "description": "## Purpose",
+      "keywords": [
+        "protocol-expert"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-shelby-sdk-developer",
+      "name": "Shelby SDK Developer",
+      "category": "blockchain",
+      "path": "aptos/shelby/sdk-developer",
+      "description": "## Purpose",
+      "keywords": [
+        "sdk-developer"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-shelby-smart-contracts",
+      "name": "Shelby Smart Contract Developer",
+      "category": "blockchain",
+      "path": "aptos/shelby/smart-contracts",
+      "description": "## Purpose",
+      "keywords": [
+        "smart-contracts"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-shelby-storage-integration",
+      "name": "Shelby Storage Integration Expert",
+      "category": "blockchain",
+      "path": "aptos/shelby/storage-integration",
+      "description": "## Purpose",
+      "keywords": [
+        "storage-integration"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "aptos-token-standards",
+      "name": "Aptos Token Standards Expert",
+      "category": "blockchain",
+      "path": "aptos/token-standards",
+      "description": "## Purpose",
+      "keywords": [
+        "token-standards"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "expo",
+      "name": "Expo Integration Expert",
+      "category": "mobile",
+      "path": "expo",
+      "description": "## Purpose",
+      "keywords": [
+        "expo"
+      ],
+      "docs": {
+        "url": "https://docs.expo.dev",
+        "required": false,
+        "files": 810,
+        "size": "11MB"
+      }
+    },
+    {
+      "id": "expo-eas-build",
+      "name": "EAS Build Expert",
+      "category": "mobile",
+      "path": "expo/eas-build",
+      "description": "## Purpose",
+      "keywords": [
+        "eas-build"
+      ],
+      "docs": {
+        "url": "https://docs.expo.dev",
+        "required": false,
+        "files": 810,
+        "size": "11MB"
+      }
+    },
+    {
+      "id": "expo-eas-update",
+      "name": "EAS Update Expert",
+      "category": "mobile",
+      "path": "expo/eas-update",
+      "description": "## Purpose",
+      "keywords": [
+        "eas-update"
+      ],
+      "docs": {
+        "url": "https://docs.expo.dev",
+        "required": false,
+        "files": 810,
+        "size": "11MB"
+      }
+    },
+    {
+      "id": "expo-expo-router",
+      "name": "Expo Router Expert",
+      "category": "mobile",
+      "path": "expo/expo-router",
+      "description": "## Purpose",
+      "keywords": [
+        "expo-router"
+      ],
+      "docs": {
+        "url": "https://docs.expo.dev",
+        "required": false,
+        "files": 810,
+        "size": "11MB"
+      }
+    },
+    {
+      "id": "ios",
+      "name": "iOS Development Expert",
+      "category": "mobile",
+      "path": "ios",
+      "description": "## Purpose",
+      "keywords": [
+        "ios"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "plaid",
+      "name": "Plaid Integration Expert",
+      "category": "banking",
+      "path": "plaid",
+      "description": "## Purpose",
+      "keywords": [
+        "plaid"
+      ],
+      "docs": {
+        "url": "https://plaid.com/docs",
+        "required": false,
+        "files": 659,
+        "size": "15MB"
+      }
+    },
+    {
+      "id": "plaid-accounts",
+      "name": "Plaid Accounts Expert",
+      "category": "banking",
+      "path": "plaid/accounts",
+      "description": "## Purpose",
+      "keywords": [
+        "accounts"
+      ],
+      "docs": {
+        "url": "https://plaid.com/docs",
+        "required": false,
+        "files": 659,
+        "size": "15MB"
+      }
+    },
+    {
+      "id": "plaid-auth",
+      "name": "Plaid Auth Expert",
+      "category": "banking",
+      "path": "plaid/auth",
+      "description": "## Purpose",
+      "keywords": [
+        "auth"
+      ],
+      "docs": {
+        "url": "https://plaid.com/docs",
+        "required": false,
+        "files": 659,
+        "size": "15MB"
+      }
+    },
+    {
+      "id": "plaid-identity",
+      "name": "Plaid Identity Expert",
+      "category": "banking",
+      "path": "plaid/identity",
+      "description": "## Purpose",
+      "keywords": [
+        "identity"
+      ],
+      "docs": {
+        "url": "https://plaid.com/docs",
+        "required": false,
+        "files": 659,
+        "size": "15MB"
+      }
+    },
+    {
+      "id": "plaid-transactions",
+      "name": "Plaid Transactions Expert",
+      "category": "banking",
+      "path": "plaid/transactions",
+      "description": "## Purpose",
+      "keywords": [
+        "transactions"
+      ],
+      "docs": {
+        "url": "https://plaid.com/docs",
+        "required": false,
+        "files": 659,
+        "size": "15MB"
+      }
+    },
+    {
+      "id": "shopify",
+      "name": "Shopify Development Expert",
+      "category": "payments",
+      "path": "shopify",
+      "description": "## Purpose",
+      "keywords": [
+        "shopify"
+      ],
+      "docs": {
+        "url": "https://shopify.dev/docs",
+        "required": false,
+        "files": 25,
+        "size": "280KB"
+      }
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe Integration Expert",
+      "category": "payments",
+      "path": "stripe",
+      "description": "## Purpose",
+      "keywords": [
+        "stripe"
+      ],
+      "docs": {
+        "url": "https://docs.stripe.com",
+        "required": false,
+        "files": 3253,
+        "size": "33MB"
+      }
+    },
+    {
+      "id": "supabase",
+      "name": "Supabase Integration Expert",
+      "category": "backend",
+      "path": "supabase",
+      "description": "## Purpose",
+      "keywords": [
+        "supabase"
+      ],
+      "docs": {
+        "url": "https://supabase.com/docs",
+        "required": false,
+        "files": 2616,
+        "size": "111MB"
+      }
+    },
+    {
+      "id": "toon-formatter",
+      "name": "TOON v2.0 Formatter",
+      "category": "utilities",
+      "path": "toon-formatter",
+      "description": "**AGGRESSIVELY** apply TOON format to save 30-60% tokens on structured data.",
+      "keywords": [
+        "toon-formatter"
+      ],
+      "docs": {
+        "required": false
+      }
+    },
+    {
+      "id": "whop",
+      "name": "Whop Platform Expert",
+      "category": "payments",
+      "path": "whop",
+      "description": "## Purpose",
+      "keywords": [
+        "whop"
+      ],
+      "docs": {
+        "url": "https://docs.whop.com",
+        "required": false,
+        "files": 212,
+        "size": "2.3MB"
+      }
+    }
+  ]
+}
