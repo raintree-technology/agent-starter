@@ -22,7 +22,6 @@ These were previously scaffolded and have been removed:
 - **Meta-commands** (`/create-command`, `/edit-command`, `/workflow-compose`) and command registry / validators — redundant with Claude Code's built-in skill and plugin system.
 - **Native Zig TOON implementation** — removed in favor of the canonical `@toon-format/toon` npm library (1.8M downloads/month, MIT, pure JS, cross-platform). A 90-line wrapper at `templates/.claude/utils/toon/cli.mjs` shells into it.
 - **Blockchain / iOS / Shopify / Whop / Helius skills** — too niche for this pack's target audience.
-- **Code-quality skills** (`cleanup-*`) — these were forks of Anthropic's official skills with swapped frontmatter. Deleted to avoid conflicts.
 
 If you are tempted to rebuild any of these, check whether Claude Code already solves it natively first.
 
@@ -36,7 +35,7 @@ claude-starter/
 ├── bin/cli.js                      # CLI entry
 ├── src/                            # init/add/list/update/docs commands
 ├── templates/.claude/              # Copied into user's project on install
-│   ├── skills/                     # 6 top-level skills (see below)
+│   ├── skills/                     # 6 domain skills + 9 cleanup skills (see below)
 │   ├── commands/                   # TOON + skill-marketplace commands
 │   ├── hooks/                      # Post-tool automation (disabled by default)
 │   ├── utils/toon/cli.mjs          # TOON wrapper
@@ -45,7 +44,7 @@ claude-starter/
 └── bench/                          # Real measured TOON vs JSON token counts
 ```
 
-## The 6 skills
+## Domain skills (6)
 
 | Skill | Why it's here |
 |---|---|
@@ -55,6 +54,22 @@ claude-starter/
 | `expo/` | Consolidated: core Expo + EAS Build + EAS Update + Expo Router. Previously split 4 ways. |
 | `anthropic/` | Real differentiator. Main skill + 6 Claude Code meta-tooling sub-skills (skill-builder, command-builder, hook-builder, mcp-expert, settings-expert, claude-code). Anthropic doesn't ship an equivalent. |
 | `toon-formatter/` | Tells Claude **when** to reach for TOON and how to invoke the commands. |
+
+## Cleanup skills (9)
+
+First-party, not forks. `cleanup-all` is an orchestrator that runs the 8 child skills in a deliberate order (destructive → constructive → cosmetic), verifying after each step and halting on first failure.
+
+| Skill | What it does |
+|---|---|
+| `cleanup-all/` | Orchestrator. Runs the 8 below in order: unused → cycles → dedupe → types → weak-types → defensive → legacy → slop. |
+| `cleanup-unused/` | Delete dead code, unused exports, unused deps (knip / vulture / staticcheck / cargo-machete). |
+| `cleanup-cycles/` | Detect and untangle circular dependencies (madge / skott / pycycle). |
+| `cleanup-dedupe/` | Extract duplicated blocks to shared utils (jscpd, ≥30 LOC token-identical auto-apply). |
+| `cleanup-types/` | Consolidate duplicated or fragmented type/interface definitions. |
+| `cleanup-weak-types/` | Replace `any`/`unknown`/`interface{}` with inferable strong types. |
+| `cleanup-defensive/` | Remove pointless try/catch and guards; preserve true boundary catches. |
+| `cleanup-legacy/` | Remove deprecated/fallback paths with zero callers. |
+| `cleanup-slop/` | Strip AI-generated narration comments; preserve WHY comments. |
 
 ## TOON integration
 
