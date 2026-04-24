@@ -4,39 +4,7 @@ This directory contains production-ready hooks for your Claude Code setup.
 
 ## Available Hooks
 
-### 1. **Auto-Optimize** (`auto-optimize.sh`)
-Automatically suggests running optimization checks after significant code changes.
-
-- **Event**: `PostToolUse`
-- **Triggers**: Edit, Write operations on source code files
-- **Features**:
-  - Tracks changes per session
-  - Suggests `/optimize` every 5 file changes
-  - Suggests for large files (100+ lines)
-  - Avoids spamming (10-minute cooldown per file)
-  - Skips test files and generated code
-- **Action**: Informational (non-blocking)
-
-**Example suggestion:**
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 Optimization Suggestion
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-You've made 5 code changes this session.
-Consider running: /optimize session
-
-This will check for:
-  • Performance issues
-  • Security vulnerabilities
-  • Code maintainability
-  • Missing tests
-
-Or run '/audit-code' to check for redundancy
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-### 2. **TOON Validator** (`toon-validator.sh`)
+### 1. **TOON Validator** (`toon-validator.sh`)
 Validates TOON format syntax after writing/editing `.toon` files.
 
 - **Event**: `PostToolUse`
@@ -151,11 +119,6 @@ Add to `.claude/settings.json`:
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/file-size-monitor.sh"
-          },
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/auto-optimize.sh",
-            "description": "Suggest optimization checks after code changes"
           }
         ]
       }
@@ -182,7 +145,6 @@ Add to `~/.claude/settings.json` to apply across all projects.
 1. TOON Validator - validates TOON syntax
 2. Markdown Formatter - formats markdown
 3. File Size Monitor - checks size limits
-4. Auto-Optimize - suggests optimization checks (optional)
 
 ## Customization
 

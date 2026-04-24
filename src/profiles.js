@@ -1,228 +1,83 @@
-/**
- * Predefined skill profiles for quick installation
- */
+export const SKILLS = [
+  { id: 'anthropic', category: 'ai', name: 'Anthropic & Claude Code meta-tooling' },
+  { id: 'expo', category: 'mobile', name: 'Expo / React Native' },
+  { id: 'plaid', category: 'banking', name: 'Plaid' },
+  { id: 'stripe', category: 'payments', name: 'Stripe' },
+  { id: 'supabase', category: 'backend', name: 'Supabase' },
+  { id: 'toon-formatter', category: 'utilities', name: 'TOON formatter' },
+];
 
 export const profiles = {
   all: {
-    name: 'All Skills',
-    description: 'Complete collection - 40+ skills across all categories',
-    skills: ['*'], // wildcard = copy everything
+    name: 'All skills',
+    description: 'Every shipped skill',
+    skills: SKILLS.map((s) => s.id),
     toon: true,
     hooks: false,
-    commands: [
-      'analyze-tokens',
-      'convert-to-toon',
-      'toon-decode',
-      'toon-encode',
-      'toon-validate',
-      'discover-skills',
-      'install-skill'
-    ]
+    commands: ['analyze-tokens', 'convert-to-toon', 'toon-decode', 'toon-encode', 'toon-validate'],
   },
 
   'web-saas': {
-    name: 'Web SaaS Starter',
-    description: 'Payments + Backend + Mobile - perfect for SaaS applications',
-    skills: [
-      'stripe',
-      'whop',
-      'supabase',
-      'expo',
-      'toon-formatter'
-    ],
+    name: 'Web SaaS',
+    description: 'Stripe + Supabase + Expo + TOON — common SaaS stack',
+    skills: ['stripe', 'supabase', 'expo', 'toon-formatter'],
     toon: true,
     hooks: false,
-    commands: [
-      'analyze-tokens',
-      'convert-to-toon',
-      'toon-decode',
-      'toon-encode'
-    ]
+    commands: ['analyze-tokens', 'convert-to-toon', 'toon-decode', 'toon-encode'],
   },
 
-  blockchain: {
-    name: 'Blockchain Developer',
-    description: 'Aptos, Move language, Shelby protocol, Decibel trading',
-    skills: [
-      'aptos',
-      'aptos/framework',
-      'aptos/move-language',
-      'aptos/move-testing',
-      'aptos/gas-optimization',
-      'aptos/object-model',
-      'aptos/token-standards',
-      'aptos/dapp-integration',
-      'aptos/shelby',
-      'aptos/shelby/protocol-expert',
-      'aptos/shelby/sdk-developer',
-      'aptos/shelby/cli-assistant',
-      'aptos/shelby/smart-contracts',
-      'aptos/shelby/storage-integration',
-      'aptos/shelby/network-rpc',
-      'aptos/shelby/dapp-builder',
-      'aptos/decibel',
-      'toon-formatter'
-    ],
+  fintech: {
+    name: 'Fintech',
+    description: 'Stripe + Plaid + Supabase',
+    skills: ['stripe', 'plaid', 'supabase', 'toon-formatter'],
     toon: true,
     hooks: false,
-    commands: ['convert-to-toon']
-  },
-
-  'mobile-dev': {
-    name: 'Mobile Developer',
-    description: 'Expo, React Native, iOS development',
-    skills: [
-      'expo',
-      'expo/eas-build',
-      'expo/eas-update',
-      'expo/expo-router',
-      'ios',
-      'supabase',
-      'toon-formatter'
-    ],
-    toon: true,
-    hooks: false,
-    commands: ['convert-to-toon']
-  },
-
-  'fintech': {
-    name: 'Fintech Stack',
-    description: 'Payments, banking APIs, financial infrastructure',
-    skills: [
-      'stripe',
-      'plaid',
-      'plaid/auth',
-      'plaid/transactions',
-      'plaid/identity',
-      'plaid/accounts',
-      'supabase',
-      'toon-formatter'
-    ],
-    toon: true,
-    hooks: false,
-    commands: ['convert-to-toon']
+    commands: ['convert-to-toon'],
   },
 
   minimal: {
-    name: 'Minimal (TOON Only)',
-    description: 'Just token optimization utilities - no skills',
+    name: 'Minimal (TOON only)',
+    description: 'Just TOON token-optimization utilities',
     skills: ['toon-formatter'],
     toon: true,
     hooks: false,
-    commands: [
-      'analyze-tokens',
-      'convert-to-toon',
-      'toon-decode',
-      'toon-encode',
-      'toon-validate'
-    ]
+    commands: ['analyze-tokens', 'convert-to-toon', 'toon-decode', 'toon-encode', 'toon-validate'],
   },
 
   custom: {
-    name: 'Custom Selection',
-    description: 'Interactively pick which skills you want',
-    skills: [], // Will prompt user
+    name: 'Custom',
+    description: 'Pick skills interactively',
+    skills: [],
     toon: true,
     hooks: false,
-    commands: []
-  }
+    commands: [],
+  },
 };
 
-/**
- * Get all available profiles
- */
 export function getProfiles() {
   return profiles;
 }
 
-/**
- * Get a specific profile by ID
- */
 export function getProfile(id) {
   return profiles[id];
 }
 
-/**
- * Get profile names for display
- */
 export function getProfileChoices() {
   return Object.entries(profiles).map(([id, profile]) => ({
-    name: `${profile.name} - ${profile.description}`,
+    name: `${profile.name} — ${profile.description}`,
     value: id,
-    short: profile.name
+    short: profile.name,
   }));
 }
 
-/**
- * Skill categories for custom selection
- */
-export const skillCategories = {
-  'Payments & Commerce': [
-    'stripe',
-    'whop',
-    'shopify'
-  ],
-  'Backend & Databases': [
-    'supabase'
-  ],
-  'Banking': [
-    'plaid',
-    'plaid/auth',
-    'plaid/transactions',
-    'plaid/identity',
-    'plaid/accounts'
-  ],
-  'Blockchain': [
-    'aptos',
-    'aptos/framework',
-    'aptos/move-language',
-    'aptos/move-testing',
-    'aptos/move-prover',
-    'aptos/gas-optimization',
-    'aptos/object-model',
-    'aptos/token-standards',
-    'aptos/dapp-integration',
-    'aptos/shelby',
-    'aptos/shelby/protocol-expert',
-    'aptos/shelby/sdk-developer',
-    'aptos/shelby/cli-assistant',
-    'aptos/shelby/smart-contracts',
-    'aptos/shelby/storage-integration',
-    'aptos/shelby/network-rpc',
-    'aptos/shelby/dapp-builder',
-    'aptos/decibel'
-  ],
-  'Mobile': [
-    'expo',
-    'expo/eas-build',
-    'expo/eas-update',
-    'expo/expo-router',
-    'ios'
-  ],
-  'Utilities': [
-    'toon-formatter'
-  ]
-};
-
-/**
- * Get skill choices grouped by category for interactive selection
- */
 export function getSkillChoices() {
-  const choices = [];
+  return SKILLS.map((s) => ({
+    name: `${s.id} — ${s.name}`,
+    value: s.id,
+    short: s.id,
+  }));
+}
 
-  Object.entries(skillCategories).forEach(([category, skills]) => {
-    choices.push({ type: 'separator', line: `─── ${category} ───` });
-
-    skills.forEach(skillId => {
-      const parts = skillId.split('/');
-      const indent = '  '.repeat(parts.length - 1);
-      choices.push({
-        name: `${indent}${parts[parts.length - 1]}`,
-        value: skillId,
-        short: skillId
-      });
-    });
-  });
-
-  return choices;
+export function skillIdToPath(skillId) {
+  return `skills/${skillId}`;
 }

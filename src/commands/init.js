@@ -4,10 +4,9 @@ import inquirer from 'inquirer';
 import { resolve } from 'path';
 import { pathExists } from 'fs-extra';
 import { writeFile } from 'fs/promises';
-import { copyAll, copySkills, copyEssentials, copyCommands, copyHooks, getTemplatesDir } from '../utils/copy.js';
-import { readManifest, findSkill, getAllDependencies } from '../utils/manifest.js';
+import { copyAll, copySkills, copyEssentials, copyCommands, copyHooks } from '../utils/copy.js';
 import { setupToonBinary } from '../utils/platform.js';
-import { getProfiles, getProfile, getProfileChoices, getSkillChoices } from '../profiles.js';
+import { getProfiles, getProfile, getProfileChoices, getSkillChoices, skillIdToPath, SKILLS } from '../profiles.js';
 import { generateSettings } from '../utils/settings.js';
 
 export async function init(dir = '.', options = {}) {
@@ -16,7 +15,6 @@ export async function init(dir = '.', options = {}) {
 
   console.log(chalk.bold('\nClaude Starter\n'));
 
-  // Check if .claude already exists
   if (await pathExists(claudeDir)) {
     if (!options.force && !options.yes) {
       const { action } = await inquirer.prompt([{
@@ -26,8 +24,8 @@ export async function init(dir = '.', options = {}) {
         choices: [
           { name: 'Merge (keep existing, add missing)', value: 'merge' },
           { name: 'Overwrite (replace everything)', value: 'overwrite' },
-          { name: 'Cancel', value: 'cancel' }
-        ]
+          { name: 'Cancel', value: 'cancel' },
+        ],
       }]);
 
       if (action === 'cancel') {
@@ -40,26 +38,24 @@ export async function init(dir = '.', options = {}) {
     }
   }
 
-  // Interactive profile selection if not specified
   if (!options.profile && !options.skills && !options.yes) {
     const { selectedProfile } = await inquirer.prompt([{
       type: 'list',
       name: 'selectedProfile',
       message: 'Which skills do you want to install?',
       choices: getProfileChoices(),
-      default: 'web-saas'
+      default: 'web-saas',
     }]);
 
     options.profile = selectedProfile;
 
-    // If custom profile, let user pick skills
     if (selectedProfile === 'custom') {
       const { selectedSkills } = await inquirer.prompt([{
         type: 'checkbox',
         name: 'selectedSkills',
         message: 'Select skills to install (spacebar to select, enter to continue):',
         choices: getSkillChoices(),
-        pageSize: 20
+        pageSize: 20,
       }]);
 
       if (selectedSkills.length === 0) {
@@ -68,17 +64,15 @@ export async function init(dir = '.', options = {}) {
       }
 
       options.skills = selectedSkills.join(',');
-      options.profile = null; // Don't use profile, use skills
+      options.profile = null;
     }
   }
 
   const spinner = ora('Installing claude-starter...').start();
 
   try {
-    const manifest = readManifest(getTemplatesDir());
     let installedSkills = [];
 
-    // Handle profile selection
     if (options.profile) {
       const profile = getProfile(options.profile);
       if (!profile) {
@@ -89,100 +83,55 @@ export async function init(dir = '.', options = {}) {
 
       spinner.text = `Installing profile: ${profile.name}`;
 
-      // Copy essentials first
       await copyEssentials(targetDir, options);
 
-      // Copy commands if specified in profile
-      if (profile.commands && profile.commands.length > 0) {
+      if (profile.commands?.length > 0) {
         await copyCommands(targetDir, profile.commands, options);
       }
 
-      // Copy hooks if enabled in profile
       if (profile.hooks) {
         await copyHooks(targetDir, options);
       }
 
-      // Handle wildcard (all skills)
-      let skillsToInstall;
-      if (profile.skills.includes('*')) {
-        // Install all skills
+      if (profile.skills.length === SKILLS.length) {
         spinner.text = 'Installing all skills...';
         await copyAll(targetDir, options);
-        installedSkills = manifest.skills?.map(s => s.id) || [];
       } else {
-        // Get all skills with dependencies
-        skillsToInstall = new Set(profile.skills);
-        for (const skillId of profile.skills) {
-          const deps = getAllDependencies(manifest, skillId);
-          deps.forEach(d => skillsToInstall.add(d));
-        }
-
-        // Get skill paths
-        const skillPaths = [...skillsToInstall].map(id => {
-          const skill = findSkill(manifest, id);
-          return skill?.path;
-        }).filter(Boolean);
-
-        await copySkills(targetDir, skillPaths, options);
-        installedSkills = [...skillsToInstall];
+        await copySkills(targetDir, profile.skills.map(skillIdToPath), options);
       }
+      installedSkills = profile.skills;
 
       spinner.succeed(`Installed profile: ${profile.name} (${installedSkills.length} skills)`);
-    }
-    // Handle selective skills
-    else if (options.skills) {
-      const skillIds = options.skills.split(',').map(s => s.trim());
+    } else if (options.skills) {
+      const skillIds = options.skills.split(',').map((s) => s.trim()).filter(Boolean);
 
       spinner.text = `Installing ${skillIds.length} skills...`;
 
-      // Copy essentials first
       await copyEssentials(targetDir, options);
 
-      // Copy hooks if enabled
       if (options.hooks) {
         await copyHooks(targetDir, options);
       }
 
-      // Get all skills with dependencies
-      const skillsToInstall = new Set(skillIds);
-      for (const skillId of skillIds) {
-        const deps = getAllDependencies(manifest, skillId);
-        deps.forEach(d => skillsToInstall.add(d));
-      }
+      await copySkills(targetDir, skillIds.map(skillIdToPath), options);
+      installedSkills = skillIds;
 
-      // Get skill paths
-      const skillPaths = [...skillsToInstall].map(id => {
-        const skill = findSkill(manifest, id);
-        if (!skill) {
-          console.log(chalk.yellow(`\nWarning: Skill not found: ${id}`));
-          return null;
-        }
-        return skill.path;
-      }).filter(Boolean);
-
-      await copySkills(targetDir, skillPaths, options);
-      installedSkills = [...skillsToInstall];
-
-      spinner.succeed(`Installed ${skillPaths.length} skills`);
-    }
-    // Full install
-    else {
+      spinner.succeed(`Installed ${skillIds.length} skills`);
+    } else {
       spinner.text = 'Copying all skills and configurations...';
       await copyAll(targetDir, options);
-      installedSkills = manifest.skills?.map(s => s.id) || [];
+      installedSkills = SKILLS.map((s) => s.id);
       spinner.succeed('Installed all skills and configurations');
     }
 
-    // Generate settings.json
     spinner.start('Generating settings.json...');
     const settings = generateSettings(installedSkills, {
       hooks: options.hooks !== false,
-      toon: options.toon !== false
+      toon: options.toon !== false,
     });
     await writeFile(resolve(claudeDir, 'settings.json'), settings, 'utf-8');
     spinner.succeed('Generated settings.json');
 
-    // Setup TOON binary
     if (options.toon !== false) {
       const toonResult = setupToonBinary(resolve(targetDir, '.claude'));
       if (!toonResult.success) {
@@ -193,16 +142,12 @@ export async function init(dir = '.', options = {}) {
       }
     }
 
-    // Success message
     console.log('\n' + chalk.green('Claude starter installed successfully.') + '\n');
     console.log(chalk.bold('Next steps:'));
-    console.log(chalk.dim('  1. Pull documentation for skills you need:'));
+    console.log(chalk.dim('  Pull external docs for a skill (requires docpull):'));
     console.log(`     ${chalk.cyan('npx claude-starter docs pull stripe')}`);
-    console.log(chalk.dim('  2. Or pull all documentation:'));
-    console.log(`     ${chalk.cyan('npx claude-starter docs pull')}`);
-    console.log(chalk.dim('  3. List available skills:'));
-    console.log(`     ${chalk.cyan('npx claude-starter list')}\n`);
-
+    console.log(chalk.dim('  Or all docs at once:'));
+    console.log(`     ${chalk.cyan('npx claude-starter docs pull')}\n`);
   } catch (error) {
     spinner.fail('Installation failed');
     console.error(chalk.red(`\nError: ${error.message}`));

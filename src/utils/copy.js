@@ -168,30 +168,18 @@ export async function isSkillInstalled(targetDir, skillPath) {
   return pathExists(destPath);
 }
 
-/**
- * Copy manifest.json and essential config files
- */
 export async function copyEssentials(targetDir, options = {}) {
   const templatesDir = getTemplatesDir();
   const claudeDir = join(targetDir, ".claude");
 
   await ensureDir(claudeDir);
 
-  // Copy manifest
-  await copy(
-    join(templatesDir, "manifest.json"),
-    join(claudeDir, "manifest.json"),
-    { overwrite: options.force },
-  );
-
-  // Copy settings
   await copy(
     join(templatesDir, "settings.json"),
     join(claudeDir, "settings.json"),
     { overwrite: options.force },
   );
 
-  // Copy README
   await copy(join(templatesDir, "README.md"), join(claudeDir, "README.md"), {
     overwrite: options.force,
   });

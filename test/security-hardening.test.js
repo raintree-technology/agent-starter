@@ -1,16 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 
 import {
   isValidUrl,
   isValidCommandName,
-  isValidSkillPath,
-  isPathSafe
 } from '../src/utils/security.js';
-import { readInstalledManifest } from '../src/utils/manifest.js';
 
 // ── FIX 10: Expanded SSRF blocklist ─────────────────────────────────────
 
@@ -58,7 +53,7 @@ test('isValidUrl still allows legitimate URLs', () => {
 // ── FIX 5: Command name validation ──────────────────────────────────────
 
 test('isValidCommandName accepts valid names', () => {
-  assert.ok(isValidCommandName('install-skill'));
+  assert.ok(isValidCommandName('toon-encode'));
   assert.ok(isValidCommandName('audit_code'));
   assert.ok(isValidCommandName('test123'));
   assert.ok(isValidCommandName('toon-decode'));
@@ -92,67 +87,6 @@ test('isValidCommandName rejects empty/null/undefined', () => {
 
 test('isValidCommandName rejects null bytes', () => {
   assert.ok(!isValidCommandName('test\0hack'));
-});
-
-// ── FIX 1: readInstalledManifest validation ─────────────────────────────
-
-test('readInstalledManifest returns null for missing manifest', () => {
-  const tempDir = mkdtempSync(join(tmpdir(), 'cs-test-'));
-  try {
-    const result = readInstalledManifest(tempDir);
-    assert.equal(result, null);
-  } finally {
-    rmSync(tempDir, { recursive: true, force: true });
-  }
-});
-
-test('readInstalledManifest returns null for invalid JSON', () => {
-  const tempDir = mkdtempSync(join(tmpdir(), 'cs-test-'));
-  const claudeDir = join(tempDir, '.claude');
-  mkdirSync(claudeDir, { recursive: true });
-  writeFileSync(join(claudeDir, 'manifest.json'), 'not json!!!');
-  try {
-    const result = readInstalledManifest(tempDir);
-    assert.equal(result, null);
-  } finally {
-    rmSync(tempDir, { recursive: true, force: true });
-  }
-});
-
-test('readInstalledManifest returns null for invalid schema', () => {
-  const tempDir = mkdtempSync(join(tmpdir(), 'cs-test-'));
-  const claudeDir = join(tempDir, '.claude');
-  mkdirSync(claudeDir, { recursive: true });
-  // Missing required fields
-  writeFileSync(join(claudeDir, 'manifest.json'), JSON.stringify({ bad: true }));
-  try {
-    const result = readInstalledManifest(tempDir);
-    assert.equal(result, null);
-  } finally {
-    rmSync(tempDir, { recursive: true, force: true });
-  }
-});
-
-test('readInstalledManifest accepts valid manifest', () => {
-  const tempDir = mkdtempSync(join(tmpdir(), 'cs-test-'));
-  const claudeDir = join(tempDir, '.claude');
-  mkdirSync(claudeDir, { recursive: true });
-  const validManifest = {
-    version: '1.0.0',
-    skills: [
-      { id: 'test-skill', path: 'skills/test', category: 'test' }
-    ],
-    categories: {}
-  };
-  writeFileSync(join(claudeDir, 'manifest.json'), JSON.stringify(validManifest));
-  try {
-    const result = readInstalledManifest(tempDir);
-    assert.ok(result);
-    assert.equal(result.version, '1.0.0');
-    assert.equal(result.skills.length, 1);
-  } finally {
-    rmSync(tempDir, { recursive: true, force: true });
-  }
 });
 
 // ── FIX 4: settings.local.json renamed to .example ─────────────────────
