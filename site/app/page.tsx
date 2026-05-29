@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { Github, ArrowRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GitHubStats } from "@/components/github-stats";
@@ -6,7 +7,9 @@ import { GitHubStats } from "@/components/github-stats";
 const REPO = "https://github.com/raintree-technology/claude-starter";
 const DOCPULL = "https://docpull.raintree.technology";
 
-export default function Home() {
+export default async function Home() {
+  await connection();
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -97,7 +100,7 @@ function Hero() {
 
       <div className="mt-10 inline-flex items-center gap-0 overflow-hidden rounded-lg border border-border/60 bg-muted/40 font-mono text-sm">
         <span className="select-none border-r border-border/60 px-3 py-2.5 text-muted-foreground">$</span>
-        <code className="px-4 py-2.5">npx create-claude-starter@latest</code>
+        <code className="px-4 py-2.5">npx create-claude-starter@3.0.0</code>
       </div>
 
       <div className="mt-6 flex justify-center">
@@ -155,33 +158,33 @@ function Inside() {
 
 /* ---------------- Skills ---------------- */
 
-type Skill = { name: string; slug?: string; blurb: string };
+type Skill = { name: string; blurb: string };
 
 function Skills() {
   const groups: { group: string; items: Skill[] }[] = [
     {
       group: "Fintech",
       items: [
-        { name: "stripe", slug: "stripe", blurb: "2,100+ lines: Checkout, Payment Intents, subscriptions, Connect, Terminal, Radar, Treasury, webhooks." },
-        { name: "plaid", slug: "plaid", blurb: "Link flow, Auth (ACH), Transactions sync, Identity (KYC), Accounts. One consolidated skill." },
+        { name: "stripe", blurb: "2,100+ lines: Checkout, Payment Intents, subscriptions, Connect, Terminal, Radar, Treasury, webhooks." },
+        { name: "plaid", blurb: "Link flow, Auth (ACH), Transactions sync, Identity (KYC), Accounts. One consolidated skill." },
       ],
     },
     {
       group: "Backend",
       items: [
-        { name: "supabase", slug: "supabase", blurb: "Postgres + RLS, Auth with SSR cookies, Realtime, Storage, Edge Functions, pgvector." },
+        { name: "supabase", blurb: "Postgres + RLS, Auth with SSR cookies, Realtime, Storage, Edge Functions, pgvector." },
       ],
     },
     {
       group: "Mobile",
       items: [
-        { name: "expo", slug: "expo", blurb: "EAS Build (eas.json, credentials, CI), EAS Update (OTA, channels, staged rollouts), Expo Router." },
+        { name: "expo", blurb: "EAS Build (eas.json, credentials, CI), EAS Update (OTA, channels, staged rollouts), Expo Router." },
       ],
     },
     {
       group: "Claude tooling",
       items: [
-        { name: "anthropic", slug: "anthropic", blurb: "Claude API + 6 Claude Code meta-tooling sub-skills: skill/command/hook/MCP/settings builders." },
+        { name: "anthropic", blurb: "Claude API + 6 Claude Code meta-tooling sub-skills: skill/command/hook/MCP/settings builders." },
         { name: "toon-formatter", blurb: "When to reach for TOON, when not. Wraps @toon-format/toon." },
       ],
     },
@@ -219,20 +222,6 @@ function Skills() {
 }
 
 function SkillLogo({ item }: { item: Skill }) {
-  if (item.slug) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={`https://cdn.simpleicons.org/${item.slug}/currentColor`}
-        alt=""
-        aria-hidden="true"
-        width={14}
-        height={14}
-        className="h-3.5 w-3.5 opacity-80"
-        loading="lazy"
-      />
-    );
-  }
   const letter = item.name.charAt(0).toUpperCase();
   return (
     <span className="grid h-3.5 w-3.5 place-items-center rounded-sm border border-border/80 font-mono text-[8px] font-bold leading-none">
@@ -315,7 +304,7 @@ function Install() {
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Install</SectionLabel>
         <ol className="mt-8 space-y-5 font-mono text-sm">
-          <Snippet step="1" code="npx create-claude-starter@latest" hint="into current directory" />
+          <Snippet step="1" code="npx create-claude-starter@3.0.0" hint="into current directory" />
           <Snippet step="2" code="npm i @toon-format/toon gpt-tokenizer" hint="for the /toon-* commands" />
           <Snippet step="3" code="docpull https://docs.stripe.com -o .claude/skills/stripe/docs" hint="optional · deep docs for the skills" />
         </ol>

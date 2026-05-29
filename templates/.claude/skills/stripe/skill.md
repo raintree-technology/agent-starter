@@ -250,7 +250,10 @@ export async function POST(req: Request) {
       break;
 
     default:
-      console.log(`Unhandled event type: ${event.type}`);
+      await recordUnhandledStripeEvent({
+        eventId: event.id,
+        eventType: event.type,
+      });
   }
 
   return new Response(JSON.stringify({ received: true }));
@@ -1224,8 +1227,8 @@ export function TerminalReader() {
           const { secret } = await res.json();
           return secret;
         },
-        onUnexpectedReaderDisconnect: () => {
-          console.log('Reader disconnected');
+        onUnexpectedReaderDisconnect: async () => {
+          await recordTerminalReaderDisconnect();
         },
       });
 
@@ -1960,10 +1963,12 @@ const invoice = await stripe.invoices.retrieve('in_xxx', {
   expand: ['subscription', 'customer', 'payment_intent'],
 });
 
-// Now access directly
-console.log(invoice.subscription.status);
-console.log(invoice.customer.email);
-console.log(invoice.payment_intent.client_secret);
+await updateInvoiceProjection({
+  invoiceId: invoice.id,
+  subscriptionStatus: invoice.subscription.status,
+  customerId: invoice.customer.id,
+  paymentIntentId: invoice.payment_intent.id,
+});
 ```
 
 ### Batch Operations

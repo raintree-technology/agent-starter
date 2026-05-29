@@ -4,14 +4,28 @@ import inquirer from 'inquirer';
 import { resolve } from 'path';
 import { pathExists } from 'fs-extra';
 import { writeFile } from 'fs/promises';
-import { copyAll, copySkills, copyEssentials, copyCommands, copyHooks } from '../utils/copy.js';
+import { copyAll, copySkills, copyEssentials, copyCommands, copyHooks, copyToonUtils } from '../utils/copy.js';
 import { setupToonBinary } from '../utils/platform.js';
 import { getProfiles, getProfile, getProfileChoices, getSkillChoices, skillIdToPath, SKILLS } from '../profiles.js';
 import { generateSettings } from '../utils/settings.js';
 
+function parseSkillList(skillsList) {
+  return skillsList.split(',').map((skill) => skill.trim()).filter(Boolean);
+}
+
+function validateRequestedSkills(skillIds) {
+  const knownSkillIds = new Set(SKILLS.map((skill) => skill.id));
+  const unknownSkillIds = skillIds.filter((skillId) => !knownSkillIds.has(skillId));
+  if (unknownSkillIds.length > 0) {
+    throw new Error(`Unknown skill(s): ${unknownSkillIds.join(', ')}`);
+  }
+}
+
 export async function init(dir = '.', options = {}) {
   const targetDir = resolve(dir);
   const claudeDir = resolve(targetDir, '.claude');
+  let installedHooks = false;
+  let installedToon = false;
 
   console.log(chalk.bold('\nClaude Starter\n'));
 
@@ -89,8 +103,9 @@ export async function init(dir = '.', options = {}) {
         await copyCommands(targetDir, profile.commands, options);
       }
 
-      if (profile.hooks) {
+      if (profile.hooks && options.hooks !== false) {
         await copyHooks(targetDir, options);
+        installedHooks = true;
       }
 
       if (profile.skills.length === SKILLS.length) {
@@ -100,10 +115,15 @@ export async function init(dir = '.', options = {}) {
         await copySkills(targetDir, profile.skills.map(skillIdToPath), options);
       }
       installedSkills = profile.skills;
+      installedToon = options.toon !== false && installedSkills.includes('toon-formatter');
+      if (installedToon) {
+        await copyToonUtils(targetDir, options);
+      }
 
       spinner.succeed(`Installed profile: ${profile.name} (${installedSkills.length} skills)`);
     } else if (options.skills) {
-      const skillIds = options.skills.split(',').map((s) => s.trim()).filter(Boolean);
+      const skillIds = parseSkillList(options.skills);
+      validateRequestedSkills(skillIds);
 
       spinner.text = `Installing ${skillIds.length} skills...`;
 
@@ -111,34 +131,38 @@ export async function init(dir = '.', options = {}) {
 
       if (options.hooks) {
         await copyHooks(targetDir, options);
+        installedHooks = true;
       }
 
       await copySkills(targetDir, skillIds.map(skillIdToPath), options);
       installedSkills = skillIds;
+      installedToon = options.toon !== false && installedSkills.includes('toon-formatter');
+      if (installedToon) {
+        await copyToonUtils(targetDir, options);
+      }
 
       spinner.succeed(`Installed ${skillIds.length} skills`);
     } else {
       spinner.text = 'Copying all skills and configurations...';
       await copyAll(targetDir, options);
       installedSkills = SKILLS.map((s) => s.id);
+      installedHooks = options.hooks !== false;
+      installedToon = options.toon !== false;
       spinner.succeed('Installed all skills and configurations');
     }
 
     spinner.start('Generating settings.json...');
     const settings = generateSettings(installedSkills, {
-      hooks: options.hooks !== false,
-      toon: options.toon !== false,
+      hooks: installedHooks,
+      toon: installedToon,
     });
     await writeFile(resolve(claudeDir, 'settings.json'), settings, 'utf-8');
     spinner.succeed('Generated settings.json');
 
-    if (options.toon !== false) {
+    if (installedToon) {
       const toonResult = setupToonBinary(resolve(targetDir, '.claude'));
       if (!toonResult.success) {
-        console.log(chalk.yellow(`\nNote: ${toonResult.error}`));
-        if (toonResult.suggestion) {
-          console.log(chalk.dim(toonResult.suggestion));
-        }
+        throw new Error(toonResult.error);
       }
     }
 

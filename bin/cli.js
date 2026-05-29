@@ -17,16 +17,7 @@ program
   .description('Claude Code starter kit: 6 depth-focused skills + TOON utilities');
 
 program
-  .argument('[dir]', 'Target directory', '.')
-  .option('-y, --yes', 'Skip confirmation prompts')
-  .option('-f, --force', 'Overwrite existing files')
-  .option('--profile <name>', 'Use preset profile (all, web-saas, fintech, minimal)')
-  .option('--skills <list>', 'Comma-separated skills to install')
-  .option('--no-toon', 'Skip TOON utilities')
-  .action(init);
-
-program
-  .command('init [dir]')
+  .command('init [dir]', { isDefault: true })
   .description('Initialize claude-starter in directory')
   .option('-y, --yes', 'Skip confirmation prompts')
   .option('-f, --force', 'Overwrite existing files')

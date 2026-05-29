@@ -79,5 +79,5 @@ export function getSkillChoices() {
 }
 
 export function skillIdToPath(skillId) {
-  return `skills/${skillId}`;
+  return skillId;
 }

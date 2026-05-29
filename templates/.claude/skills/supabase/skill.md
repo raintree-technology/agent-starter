@@ -261,13 +261,13 @@ const { error } = await supabase.auth.signOut();
 // Listen to auth changes
 supabase.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_IN') {
-    console.log('User signed in:', session.user);
+    updateAuthSession(session);
   }
   if (event === 'SIGNED_OUT') {
-    console.log('User signed out');
+    clearAuthSession();
   }
   if (event === 'TOKEN_REFRESHED') {
-    console.log('Token refreshed');
+    rotateStoredSession(session);
   }
 });
 ```
@@ -363,9 +363,7 @@ const channel = supabase
       schema: 'public',
       table: 'posts',
     },
-    (payload) => {
-      console.log('Change received:', payload);
-    }
+    (payload) => handlePostChange(payload)
   )
   .subscribe();
 
@@ -387,9 +385,7 @@ const channel = supabase
       table: 'posts',
       filter: `user_id=eq.${userId}`,
     },
-    (payload) => {
-      console.log('New post:', payload.new);
-    }
+    (payload) => addPostToState(payload.new)
   )
   .subscribe();
 ```
@@ -408,7 +404,7 @@ await channel.send({
 
 // Receive messages
 channel.on('broadcast', { event: 'message' }, (payload) => {
-  console.log('Message:', payload.payload);
+  appendChatMessage(payload.payload);
 });
 
 await channel.subscribe();
@@ -423,13 +419,13 @@ const channel = supabase.channel('room-1');
 channel
   .on('presence', { event: 'sync' }, () => {
     const state = channel.presenceState();
-    console.log('Online users:', Object.keys(state).length);
+    updateOnlineUserCount(Object.keys(state).length);
   })
   .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-    console.log('User joined:', newPresences);
+    addPresences(key, newPresences);
   })
   .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-    console.log('User left:', leftPresences);
+    removePresences(key, leftPresences);
   })
   .subscribe(async (status) => {
     if (status === 'SUBSCRIBED') {
@@ -482,7 +478,7 @@ const { data } = supabase.storage
   .from('avatars')
   .getPublicUrl('public/avatar.png');
 
-console.log(data.publicUrl);
+return data.publicUrl;
 ```
 
 ### Signed URLs (Private Files)
@@ -493,7 +489,7 @@ const { data, error } = await supabase.storage
   .from('private-files')
   .createSignedUrl('document.pdf', 3600); // 1 hour
 
-console.log(data.signedUrl);
+return data.signedUrl;
 ```
 
 ### Image Transformations
@@ -605,7 +601,7 @@ const { data, error } = await supabase.functions.invoke('my-function', {
   body: { name: 'World' },
 });
 
-console.log(data);
+return data;
 ```
 
 ## Vector Search (AI/ML)
@@ -1693,10 +1689,10 @@ export function OnlineUsers() {
         setOnlineUsers(users)
       })
       .on('presence', { event: 'join' }, ({ newPresences }) => {
-        console.log('Users joined:', newPresences)
+        addOnlineUsers(newPresences)
       })
       .on('presence', { event: 'leave' }, ({ leftPresences }) => {
-        console.log('Users left:', leftPresences)
+        removeOnlineUsers(leftPresences)
       })
       .subscribe(async (status) => {
         if (status === 'SUBSCRIBED') {
@@ -1782,9 +1778,7 @@ const channel = supabase
       table: 'posts',
       filter: 'id=eq.123',  // Specific row
     },
-    (payload) => {
-      console.log('Post updated:', payload)
-    }
+    (payload) => updatePostInState(payload.new)
   )
   .subscribe()
 

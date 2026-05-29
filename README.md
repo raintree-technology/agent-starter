@@ -31,10 +31,10 @@ All TOON commands shell out to the canonical [`@toon-format/toon`](https://www.n
 
 ```bash
 # Into current project
-npx create-claude-starter@latest
+npx create-claude-starter@3.0.0
 
 # Into a specific dir, no prompts
-npx create-claude-starter@latest ./my-app --yes
+npx create-claude-starter@3.0.0 ./my-app --yes
 ```
 
 For TOON commands, add the runtime deps to your project:

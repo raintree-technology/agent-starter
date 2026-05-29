@@ -42,8 +42,5 @@ local.db
 .env*
 !.env.example
 
-# security audit notes
-/security/
-
 # vercel
 .vercel

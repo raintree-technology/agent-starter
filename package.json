@@ -18,8 +18,8 @@
   "scripts": {
     "test": "node --test",
     "test:security": "node --test test/*.test.js",
-    "lint": "eslint src/ test/",
-    "prepublishOnly": "npm run lint && npm run test:security"
+    "lint": "eslint src/ test/ bin/ bench/ templates/.claude/utils/",
+    "prepublishOnly": "npm run lint && npm test"
   },
   "keywords": [
     "claude",
@@ -49,15 +49,16 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "chalk": "^5.3.0",
-    "commander": "^14.0.2",
-    "fs-extra": "^11.3.3",
-    "inquirer": "^13.1.0",
-    "ora": "^9.0.0"
+    "chalk": "5.3.0",
+    "commander": "14.0.2",
+    "fs-extra": "11.3.3",
+    "inquirer": "13.1.0",
+    "ora": "9.0.0"
   },
   "devDependencies": {
-    "@toon-format/toon": "^2.1.0",
-    "eslint": "^9.0.0",
-    "gpt-tokenizer": "^3.0.0"
+    "@eslint/js": "9.39.4",
+    "@toon-format/toon": "2.1.0",
+    "eslint": "9.39.4",
+    "gpt-tokenizer": "3.0.0"
   }
 }

@@ -68,7 +68,7 @@ Users can install with `/plugin marketplace add`
 
 ### 3. Via NPX
 ```bash
-npx create-claude-starter@latest
+npx create-claude-starter@3.0.0
 ```
 
 ## Structure

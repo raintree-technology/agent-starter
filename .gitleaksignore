@@ -1,0 +1,7 @@
+# Historical false-positive placeholders in Shelby CLI documentation.
+# Current tree uses a non-secret placeholder; keep these exact history fingerprints
+# so history-aware scans can still fail on any new or real secret.
+e81e0fb631c5718e401b476bbed16654b68059fc:.agents/skills/aptos/shelby/cli-assistant/skill.md:generic-api-key:92
+bfb19c2327ad16c4a5d171dacd4a04014dbe8f11:.claude/skills/aptos/shelby/cli-assistant/skill.md:generic-api-key:92
+09e502783ef8dd0cdfc94ed12317ca132b12d9da:.claude/skills/aptos/shelby/cli-assistant/skill.md:generic-api-key:92
+09e502783ef8dd0cdfc94ed12317ca132b12d9da:.claude/skills/aptos/shelby/docs_shelby/tools_cli.md:generic-api-key:101

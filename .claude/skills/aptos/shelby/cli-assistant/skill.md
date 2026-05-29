@@ -89,7 +89,7 @@ contexts:
 
 accounts:
   alice:
-    private_key: ed25519-priv-0x8...
+    private_key: <never-commit-real-private-key>
     address: "0xfcba...a51c"
 
 default_context: shelbynet
