@@ -47,18 +47,17 @@ Created TRADEMARKS.md with proper disclaimers for:
 - Reference official documentation with instructions to pull separately via `docpull`
 - All skill descriptions are original content
 
-**Documentation:**
-- NOT bundled in package
-- Users must pull separately: `docpull https://docs.stripe.com -o .claude/skills/stripe/docs`
+**External Documentation:**
+- Vendor docs are not bundled in the published package
+- Users pull separately through `npx agent-starter docs pull <skill>` for Claude installs or by using the vendor documentation directly
 - Respects robots.txt and ToS of documentation sites
 
-## ✅ Binary Distribution
+## ✅ Tooling Distribution
 
-**TOON Binary (templates/.claude/skills/toon-formatter/bin/toon-darwin-arm64):**
-- Built from source code included (src/toon.zig)
+**TOON command wrapper (`templates/.claude/utils/toon/cli.mjs`):**
+- Thin JavaScript wrapper around declared npm dependencies
 - References open spec: https://github.com/toon-format/spec
-- No proprietary code
-- Source and binary both included for transparency
+- No proprietary code or native binary is bundled
 
 ## ✅ License Compliance
 

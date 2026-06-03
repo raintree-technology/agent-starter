@@ -1,6 +1,6 @@
 ---
-name: anthropic-expert
-description: Expert on the Anthropic Claude API — Messages API, model selection (Opus/Sonnet/Haiku), prompt caching, tool use/function calling, vision, streaming, structured output, token counting, batch API, Files API, and migrating between Claude model versions. Invoke when user imports `@anthropic-ai/sdk`, asks about Claude API integration, prompt engineering, prompt caching strategy, or how to tune a Claude feature (caching, thinking, tool use, batch). Example queries — "set up prompt caching for a long system prompt", "switch this Sonnet call to Opus with the 1M context window", "stream a response with tool calling", "migrate from claude-3-5-sonnet to claude-sonnet-4-6".
+name: anthropic
+description: Expert on the Anthropic Claude API — Messages API, model selection (Opus/Sonnet/Haiku), prompt caching, tool use/function calling, vision, streaming, structured output, token counting, batch API, Files API, and migrating between Claude model versions. Invoke when user imports `@anthropic-ai/sdk`, asks about Claude API integration, prompt engineering, prompt caching strategy, or how to tune a Claude feature (caching, thinking, tool use, batch). Example queries — "set up prompt caching for a long system prompt", "choose the right Claude model for a long-context agent", "stream a response with tool calling", "migrate this app to a current Claude model".
 allowed-tools: Read, Grep, Glob
 model: sonnet
 ---
@@ -9,11 +9,11 @@ model: sonnet
 
 ## Purpose
 
-Provide expert guidance on Anthropic's Claude API, including prompt engineering, function calling, vision capabilities, and best practices based on official Anthropic documentation.
+Provide expert guidance on Anthropic's Claude API, including prompt engineering, tool use, vision capabilities, and best practices. Treat model IDs, pricing, context windows, beta headers, and deprecation dates as current-source facts that must be checked against official docs or the target SDK before changing code.
 
 ## When to Use
 
-Auto-invoke when users mention:
+Use when users mention:
 - **Anthropic** - company, API, platform
 - **Claude** - models (Opus, Sonnet, Haiku), capabilities
 - **API** - Messages API, streaming, embeddings
@@ -22,15 +22,14 @@ Auto-invoke when users mention:
 
 ## Knowledge Base
 
-**Full access to official Anthropic documentation (when available):**
+**Full access to official Anthropic documentation when pulled locally:**
 - **Location:** `docs/`
-- **Files:** 199 markdown files
-- **Format:** `.md` files
+- **Format:** `.md` files from the docs snapshot pulled for the target environment
 
 **Note:** Documentation must be pulled separately:
 ```bash
 pipx install docpull
-docpull https://docs.anthropic.com -o .claude/skills/anthropic/docs
+docpull https://docs.anthropic.com -o <installed-skill-dir>/docs
 ```
 
 ## Process
@@ -51,6 +50,8 @@ Common topics:
 - Rate limits and pricing
 - Error handling
 ```
+
+Model names and aliases change. Verify the current model list before recommending or hardcoding an ID.
 
 ### 2. Search Documentation
 

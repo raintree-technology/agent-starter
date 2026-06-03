@@ -1,5 +1,5 @@
 ---
-name: claude-code-expert
+name: claude-code
 description: Expert on Claude Code CLI, skills, commands, hooks, plugins, MCP, settings, and workflows. Triggers on claude code, cli, skill, command, hook, plugin, mcp, slash command, settings
 allowed-tools: Read, Grep, Glob
 model: sonnet
@@ -13,7 +13,7 @@ Provide expert guidance on Claude Code CLI features, including skills, commands,
 
 ## When to Use
 
-Auto-invoke when users mention:
+Use when users mention:
 - **Claude Code** - CLI tool, features, usage
 - **Skills** - creating, using, configuring skills
 - **Commands** - slash commands, custom commands
@@ -146,7 +146,7 @@ User: "How do I use MCP plugins with Claude Code?"
 **Directory Structure:**
 ```
 .claude/
-├── skills/           # Auto-invoked skills
+├── skills/           # Project skills
 ├── commands/         # Slash commands
 ├── hooks/            # Validation hooks
 ├── docs/             # Documentation

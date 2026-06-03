@@ -94,7 +94,7 @@ function Hero() {
         <span className="text-muted-foreground">Three agent targets.</span>
       </h1>
       <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-        Opinionated skill templates for Claude Code, Codex, and Cursor. Install the same seven handwritten skills into{" "}
+        Opinionated skill templates for Claude Code, Codex, and Cursor. Install the same shipped skills into{" "}
         <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.claude/</code>,{" "}
         <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.codex/</code>, and{" "}
         <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.cursor/rules/</code>.
@@ -163,7 +163,7 @@ function Skills() {
     {
       group: "Fintech",
       items: [
-        { name: "stripe", blurb: "2,100+ lines: Checkout, Payment Intents, subscriptions, Connect, Terminal, Radar, Treasury, webhooks." },
+        { name: "stripe", blurb: "Checkout, Payment Intents, subscriptions, Connect, Terminal, Radar, Treasury, webhooks, with detailed references." },
         { name: "plaid", blurb: "Link flow, Auth (ACH), Transactions sync, Identity (KYC), Accounts. One consolidated skill." },
       ],
     },
@@ -192,13 +192,21 @@ function Skills() {
         { name: "toon-formatter", blurb: "When to reach for TOON, when not. Wraps @toon-format/toon." },
       ],
     },
+    {
+      group: "Cleanup",
+      items: [
+        { name: "cleanup-all", blurb: "Runs the ordered cleanup pipeline across unused code, cycles, dedupe, types, defensive code, legacy paths, and comments." },
+        { name: "cleanup-unused", blurb: "Finds high-confidence dead code, exports, files, and dependencies before applying verified removals." },
+        { name: "cleanup-slop", blurb: "Removes AI narration and restated-code comments while preserving useful WHY comments." },
+      ],
+    },
   ];
   return (
     <section className="border-t border-border/60">
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Skills</SectionLabel>
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
-          Seven hand-maintained skills generated into each agent&apos;s native project shape. Claude gets skills and slash commands, Codex gets `AGENTS.md` plus local `SKILL.md` files, and Cursor gets `.mdc` project rules.
+          Sixteen hand-maintained skills generated into each agent&apos;s native project shape. Claude gets skills and slash commands, Codex gets `AGENTS.md` plus local `SKILL.md` files, and Cursor gets `.mdc` project rules.
         </p>
         <div className="mt-8 space-y-6">
           {groups.map((g) => (

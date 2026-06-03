@@ -2,18 +2,60 @@
   "id": "claude-hook-builder",
   "version": "1.0.0",
   "category": "ai",
-  "keywords": ["claude-code", "hook", "automation", "post-tool"],
-  "dependencies": ["claude-code"],
+  "keywords": [
+    "claude-code",
+    "hook",
+    "automation",
+    "post-tool"
+  ],
+  "dependencies": {
+    "required": [
+      "claude-code"
+    ],
+    "recommended": [
+      "claude-code"
+    ],
+    "complements": [
+      "claude-command-builder",
+      "claude-settings-expert"
+    ]
+  },
   "docs": null,
   "semanticTags": {
-    "primary": ["hook_creation", "automation_hooks", "post_tool_actions"],
-    "secondary": ["bash_scripts", "event_triggers", "tool_matchers"],
-    "domains": ["ai", "automation", "development", "devops"]
+    "primary": [
+      "hook_creation",
+      "automation_hooks",
+      "post_tool_actions"
+    ],
+    "secondary": [
+      "bash_scripts",
+      "event_triggers",
+      "tool_matchers"
+    ],
+    "domains": [
+      "ai",
+      "automation",
+      "development",
+      "devops"
+    ]
   },
   "capabilities": {
-    "inputs": ["automation_requirements", "trigger_conditions"],
-    "outputs": ["hook_scripts", "automation_logic", "hook_config"],
-    "actions": ["create_hook", "write_bash_script", "define_matcher", "configure_triggers", "test_hook"]
+    "inputs": [
+      "automation_requirements",
+      "trigger_conditions"
+    ],
+    "outputs": [
+      "hook_scripts",
+      "automation_logic",
+      "hook_config"
+    ],
+    "actions": [
+      "create_hook",
+      "write_bash_script",
+      "define_matcher",
+      "configure_triggers",
+      "test_hook"
+    ]
   },
   "orchestration": {
     "priority": 6,
@@ -22,13 +64,17 @@
     "estimatedTokens": 4000,
     "activationThreshold": 0.7
   },
-  "dependencies": {
-    "recommended": ["claude-code"],
-    "complements": ["claude-command-builder", "claude-settings-expert"]
-  },
   "collaboration": {
-    "canProvideDataTo": ["claude-code"],
-    "canConsumeDataFrom": ["claude-code"],
-    "sharedContext": ["hook_config", "matchers", "automation_scripts"]
+    "canProvideDataTo": [
+      "claude-code"
+    ],
+    "canConsumeDataFrom": [
+      "claude-code"
+    ],
+    "sharedContext": [
+      "hook_config",
+      "matchers",
+      "automation_scripts"
+    ]
   }
 }
