@@ -102,7 +102,7 @@ function Hero() {
 
       <div className="mt-10 inline-flex items-center gap-0 overflow-hidden rounded-lg border border-border/60 bg-muted/40 font-mono text-sm">
         <span className="select-none border-r border-border/60 px-3 py-2.5 text-muted-foreground">$</span>
-        <code className="px-4 py-2.5">npx create-agent-starter@3.0.0 --agent all</code>
+        <code className="px-4 py-2.5">npx create-agent-starter@3.0.1 --agent all</code>
       </div>
 
       <div className="mt-6 flex justify-center">
@@ -308,8 +308,8 @@ function Install() {
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Install</SectionLabel>
         <ol className="mt-8 space-y-5 font-mono text-sm">
-          <Snippet step="1" code="npx create-agent-starter@3.0.0 --agent all" hint="all supported agents" />
-          <Snippet step="2" code="npx create-agent-starter@3.0.0 --agent codex,cursor --skills stripe,copywriting-frameworks" hint="targeted install" />
+          <Snippet step="1" code="npx create-agent-starter@3.0.1 --agent all" hint="all supported agents" />
+          <Snippet step="2" code="npx create-agent-starter@3.0.1 --agent codex,cursor --skills stripe,copywriting-frameworks" hint="targeted install" />
           <Snippet step="3" code="npm i @toon-format/toon gpt-tokenizer" hint="for Claude /toon-* commands" />
         </ol>
       </div>
