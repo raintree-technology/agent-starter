@@ -1,13 +1,22 @@
 #!/bin/bash
 # Check all skill files for proper frontmatter structure
 
-cd /Users/zach/Documents/raintree/claude-starter
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(cd -- "$SCRIPT_DIR/../.." && pwd)}"
+SKILLS_DIR="$PROJECT_DIR/.claude/skills"
+
+if [[ ! -d "$SKILLS_DIR" ]]; then
+    echo "ERROR: Skills directory not found: $SKILLS_DIR" >&2
+    exit 2
+fi
 
 echo "Checking all skill files..."
 echo "=================================="
 echo ""
 
-find .claude/skills -name "skill.md" -type f | sort | while IFS= read -r file; do
+find "$SKILLS_DIR" -name "skill.md" -type f | sort | while IFS= read -r file; do
     echo "File: $file"
 
     # Extract name and description

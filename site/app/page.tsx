@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { Github, ArrowRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GitHubStats } from "@/components/github-stats";
@@ -6,7 +7,9 @@ import { GitHubStats } from "@/components/github-stats";
 const REPO = "https://github.com/raintree-technology/claude-starter";
 const DOCPULL = "https://docpull.raintree.technology";
 
-export default function Home() {
+export default async function Home() {
+  await connection();
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -30,7 +33,7 @@ function Header() {
       <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-3.5">
         <Link href="/" className="flex items-center gap-2">
           <LogoMark />
-          <span className="font-mono text-sm font-semibold tracking-tight">claude-starter</span>
+          <span className="font-mono text-sm font-semibold tracking-tight">agent-starter</span>
         </Link>
         <div className="flex items-center gap-2">
           <Link
@@ -72,12 +75,12 @@ function LogoMark() {
 
 function Hero() {
   const wordmark = [
-    " ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗",
-    "██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝",
-    "██║     ██║     ███████║██║   ██║██║  ██║█████╗  ",
-    "██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝  ",
-    "╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗",
-    " ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝",
+    " █████╗  ██████╗ ███████╗███╗   ██╗████████╗",
+    "██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝",
+    "███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   ",
+    "██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ",
+    "██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ",
+    "╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ",
   ].join("\n");
   return (
     <section className="mx-auto max-w-4xl px-6 pb-20 pt-20 text-center sm:pt-28">
@@ -87,17 +90,19 @@ function Hero() {
         </pre>
       </div>
       <h1 className="font-mono text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-        Six deep skills.<br />
-        <span className="text-muted-foreground">Measured token savings.</span>
+        One skill pack.<br />
+        <span className="text-muted-foreground">Three agent targets.</span>
       </h1>
       <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-        Opinionated <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.claude/</code>{" "}
-        pack for fintech and Anthropic power-users. Handwritten skills for Stripe, Supabase, Plaid, Expo, and Claude Code meta-tooling — plus a TOON wrapper that cuts input tokens 40–60% on tabular data.
+        Opinionated skill templates for Claude Code, Codex, and Cursor. Install the same seven handwritten skills into{" "}
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.claude/</code>,{" "}
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.codex/</code>, and{" "}
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.cursor/rules/</code>.
       </p>
 
       <div className="mt-10 inline-flex items-center gap-0 overflow-hidden rounded-lg border border-border/60 bg-muted/40 font-mono text-sm">
         <span className="select-none border-r border-border/60 px-3 py-2.5 text-muted-foreground">$</span>
-        <code className="px-4 py-2.5">npx create-claude-starter@latest</code>
+        <code className="px-4 py-2.5">npx create-agent-starter@3.0.0 --agent all</code>
       </div>
 
       <div className="mt-6 flex justify-center">
@@ -115,27 +120,23 @@ function Hero() {
   );
 }
 
-/* ---------------- Inside .claude/ ---------------- */
+/* ---------------- Agent targets ---------------- */
 
 function Inside() {
   const rows: Array<{ path: string; note?: string; dim?: boolean }> = [
-    { path: ".claude/" },
-    { path: "├── skills/",           note: "6 deep, auto-invoked experts" },
-    { path: "│   ├── stripe/",        dim: true },
-    { path: "│   ├── supabase/",      dim: true },
-    { path: "│   ├── plaid/",         dim: true },
-    { path: "│   ├── expo/",          dim: true },
-    { path: "│   ├── anthropic/",     dim: true },
-    { path: "│   └── toon-formatter/", dim: true },
-    { path: "├── commands/",          note: "slash commands (TOON + SkillsMP)" },
-    { path: "├── hooks/",             note: "opt-in post-tool automation" },
-    { path: "├── utils/toon/",        note: "90-line wrapper around @toon-format/toon" },
-    { path: "└── settings.json",      note: "fail-closed defaults" },
+    { path: ".claude/",               note: "Claude Code skills, commands, settings" },
+    { path: ".codex/",                note: "Codex local skill files" },
+    { path: "AGENTS.md",              note: "Codex project guidance" },
+    { path: ".cursor/rules/",         note: "Cursor project rules" },
+    { path: "├── agent-starter.mdc",  dim: true },
+    { path: "├── stripe.mdc",         dim: true },
+    { path: "├── copywriting-frameworks.mdc", dim: true },
+    { path: "└── ...",                dim: true },
   ];
   return (
     <section className="border-t border-border/60">
       <div className="mx-auto max-w-4xl px-6 py-20">
-        <SectionLabel>Inside .claude/</SectionLabel>
+        <SectionLabel>Agent targets</SectionLabel>
         <pre className="mt-8 overflow-x-auto font-mono text-[13px] leading-[1.9]">
           {rows.map((r, i) => (
             <div key={i} className="flex items-center justify-between gap-6">
@@ -155,33 +156,39 @@ function Inside() {
 
 /* ---------------- Skills ---------------- */
 
-type Skill = { name: string; slug?: string; blurb: string };
+type Skill = { name: string; blurb: string };
 
 function Skills() {
   const groups: { group: string; items: Skill[] }[] = [
     {
       group: "Fintech",
       items: [
-        { name: "stripe", slug: "stripe", blurb: "2,100+ lines: Checkout, Payment Intents, subscriptions, Connect, Terminal, Radar, Treasury, webhooks." },
-        { name: "plaid", slug: "plaid", blurb: "Link flow, Auth (ACH), Transactions sync, Identity (KYC), Accounts. One consolidated skill." },
+        { name: "stripe", blurb: "2,100+ lines: Checkout, Payment Intents, subscriptions, Connect, Terminal, Radar, Treasury, webhooks." },
+        { name: "plaid", blurb: "Link flow, Auth (ACH), Transactions sync, Identity (KYC), Accounts. One consolidated skill." },
       ],
     },
     {
       group: "Backend",
       items: [
-        { name: "supabase", slug: "supabase", blurb: "Postgres + RLS, Auth with SSR cookies, Realtime, Storage, Edge Functions, pgvector." },
+        { name: "supabase", blurb: "Postgres + RLS, Auth with SSR cookies, Realtime, Storage, Edge Functions, pgvector." },
       ],
     },
     {
       group: "Mobile",
       items: [
-        { name: "expo", slug: "expo", blurb: "EAS Build (eas.json, credentials, CI), EAS Update (OTA, channels, staged rollouts), Expo Router." },
+        { name: "expo", blurb: "EAS Build (eas.json, credentials, CI), EAS Update (OTA, channels, staged rollouts), Expo Router." },
       ],
     },
     {
-      group: "Claude tooling",
+      group: "Growth",
       items: [
-        { name: "anthropic", slug: "anthropic", blurb: "Claude API + 6 Claude Code meta-tooling sub-skills: skill/command/hook/MCP/settings builders." },
+        { name: "copywriting-frameworks", blurb: "Direct-response workflows for headlines, ads, landing pages, emails, CTAs, objections, and critiques." },
+      ],
+    },
+    {
+      group: "Agent tooling",
+      items: [
+        { name: "anthropic", blurb: "Claude API + 6 agent meta-tooling sub-skills: skill/command/hook/MCP/settings builders." },
         { name: "toon-formatter", blurb: "When to reach for TOON, when not. Wraps @toon-format/toon." },
       ],
     },
@@ -191,7 +198,7 @@ function Skills() {
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Skills</SectionLabel>
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
-          Six hand-maintained skills. No filler — each one earns its place. Anthropic already ships 17 general-purpose skills and a wide community marketplace covers the rest; this pack goes deep on the verticals where depth matters.
+          Seven hand-maintained skills generated into each agent&apos;s native project shape. Claude gets skills and slash commands, Codex gets `AGENTS.md` plus local `SKILL.md` files, and Cursor gets `.mdc` project rules.
         </p>
         <div className="mt-8 space-y-6">
           {groups.map((g) => (
@@ -219,20 +226,6 @@ function Skills() {
 }
 
 function SkillLogo({ item }: { item: Skill }) {
-  if (item.slug) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={`https://cdn.simpleicons.org/${item.slug}/currentColor`}
-        alt=""
-        aria-hidden="true"
-        width={14}
-        height={14}
-        className="h-3.5 w-3.5 opacity-80"
-        loading="lazy"
-      />
-    );
-  }
   const letter = item.name.charAt(0).toUpperCase();
   return (
     <span className="grid h-3.5 w-3.5 place-items-center rounded-sm border border-border/80 font-mono text-[8px] font-bold leading-none">
@@ -315,9 +308,9 @@ function Install() {
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Install</SectionLabel>
         <ol className="mt-8 space-y-5 font-mono text-sm">
-          <Snippet step="1" code="npx create-claude-starter@latest" hint="into current directory" />
-          <Snippet step="2" code="npm i @toon-format/toon gpt-tokenizer" hint="for the /toon-* commands" />
-          <Snippet step="3" code="docpull https://docs.stripe.com -o .claude/skills/stripe/docs" hint="optional · deep docs for the skills" />
+          <Snippet step="1" code="npx create-agent-starter@3.0.0 --agent all" hint="all supported agents" />
+          <Snippet step="2" code="npx create-agent-starter@3.0.0 --agent codex,cursor --skills stripe,copywriting-frameworks" hint="targeted install" />
+          <Snippet step="3" code="npm i @toon-format/toon gpt-tokenizer" hint="for Claude /toon-* commands" />
         </ol>
       </div>
     </section>
@@ -345,8 +338,8 @@ function Footer() {
       <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-4 px-6 py-8 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
           <LogoMark />
-          <span className="font-mono">claude-starter</span>
-          <span>· MIT</span>
+          <span className="font-mono">agent-starter</span>
+          <span>- MIT</span>
         </div>
         <div className="flex items-center gap-5">
           <Link href={REPO} target="_blank" rel="noreferrer" className="hover:text-foreground">

@@ -12,24 +12,16 @@ const __dirname = dirname(__filename);
 const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
 
 program
-  .name('claude-starter')
+  .name('agent-starter')
   .version(pkg.version)
-  .description('Claude Code starter kit: 6 depth-focused skills + TOON utilities');
+  .description('Agent starter kit: 7 depth-focused skills for Claude Code, Codex, and Cursor');
 
 program
-  .argument('[dir]', 'Target directory', '.')
+  .command('init [dir]', { isDefault: true })
+  .description('Initialize agent-starter in directory')
   .option('-y, --yes', 'Skip confirmation prompts')
   .option('-f, --force', 'Overwrite existing files')
-  .option('--profile <name>', 'Use preset profile (all, web-saas, fintech, minimal)')
-  .option('--skills <list>', 'Comma-separated skills to install')
-  .option('--no-toon', 'Skip TOON utilities')
-  .action(init);
-
-program
-  .command('init [dir]')
-  .description('Initialize claude-starter in directory')
-  .option('-y, --yes', 'Skip confirmation prompts')
-  .option('-f, --force', 'Overwrite existing files')
+  .option('--agent <list>', 'Agent target(s): claude, codex, cursor, or all', 'claude')
   .option('--profile <name>', 'Use preset profile (all, web-saas, fintech, minimal)')
   .option('--skills <list>', 'Comma-separated skills to install')
   .option('--no-toon', 'Skip TOON utilities')

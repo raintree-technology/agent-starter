@@ -6,12 +6,44 @@ import { pathExists } from 'fs-extra';
 import { readFile, writeFile, mkdir, stat } from 'fs/promises';
 import { resolve, dirname } from 'path';
 import { homedir } from 'os';
+import { isValidSkillId, sanitizeForLog } from './security.js';
+
+const CACHE_VERSION = '1.0.0';
+const MAX_CACHE_BYTES = 5 * 1024 * 1024;
+const CACHE_DIRECTORY_MODE = 0o700;
+const CACHE_FILE_MODE = 0o600;
+const DEFAULT_STALE_DAYS = 7;
+const HOURS_PER_DAY = 24;
+const MINUTES_PER_HOUR = 60;
+const SECONDS_PER_MINUTE = 60;
+const MILLISECONDS_PER_SECOND = 1000;
+const MILLISECONDS_PER_DAY = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
+
+function emptyCache() {
+  return {
+    version: CACHE_VERSION,
+    lastUpdated: new Date().toISOString(),
+    docs: {}
+  };
+}
+
+function isPlainRecord(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function isValidCache(cache) {
+  if (!isPlainRecord(cache) || !isPlainRecord(cache.docs)) {
+    return false;
+  }
+
+  return Object.keys(cache.docs).every(isValidSkillId);
+}
 
 /**
  * Get path to global docs cache file
  */
 function getCachePath() {
-  return resolve(homedir(), '.claude-starter', 'docs-cache.json');
+  return resolve(homedir(), '.agent-starter', 'docs-cache.json');
 }
 
 /**
@@ -21,33 +53,26 @@ export async function readDocsCache() {
   const cachePath = getCachePath();
 
   if (!(await pathExists(cachePath))) {
-    return {
-      version: '1.0.0',
-      lastUpdated: new Date().toISOString(),
-      docs: {}
-    };
+    return emptyCache();
   }
 
   try {
-    // SECURITY: Check file size before parsing (prevent JSON bomb DoS)
     const fileStats = await stat(cachePath);
-    if (fileStats.size > 5 * 1024 * 1024) { // 5MB limit
-      console.warn('Warning: Docs cache file too large (>5MB), resetting');
-      return {
-        version: '1.0.0',
-        lastUpdated: new Date().toISOString(),
-        docs: {}
-      };
+    if (fileStats.size > MAX_CACHE_BYTES) {
+      console.warn(`Warning: Docs cache file too large (${fileStats.size} bytes), resetting`);
+      return emptyCache();
     }
 
     const content = await readFile(cachePath, 'utf-8');
-    return JSON.parse(content);
-  } catch {
-    return {
-      version: '1.0.0',
-      lastUpdated: new Date().toISOString(),
-      docs: {}
-    };
+    const parsed = JSON.parse(content);
+    if (!isValidCache(parsed)) {
+      console.warn('Warning: Docs cache schema is invalid, resetting');
+      return emptyCache();
+    }
+    return parsed;
+  } catch (error) {
+    console.warn(`Warning: Unable to read docs cache, resetting: ${sanitizeForLog(error.message)}`);
+    return emptyCache();
   }
 }
 
@@ -57,17 +82,27 @@ export async function readDocsCache() {
 export async function writeDocsCache(cache) {
   const cachePath = getCachePath();
 
-  // Ensure directory exists
-  await mkdir(dirname(cachePath), { recursive: true });
+  if (!isValidCache(cache)) {
+    throw new Error('Refusing to write invalid docs cache data');
+  }
+
+  await mkdir(dirname(cachePath), { recursive: true, mode: CACHE_DIRECTORY_MODE });
 
   cache.lastUpdated = new Date().toISOString();
-  await writeFile(cachePath, JSON.stringify(cache, null, 2), 'utf-8');
+  await writeFile(cachePath, JSON.stringify(cache, null, 2), {
+    encoding: 'utf-8',
+    mode: CACHE_FILE_MODE,
+  });
 }
 
 /**
  * Record that docs were pulled for a skill
  */
 export async function recordDocsPulled(skillId, metadata = {}) {
+  if (!isValidSkillId(skillId)) {
+    throw new Error(`Invalid skill id for docs cache: ${sanitizeForLog(String(skillId))}`);
+  }
+
   const cache = await readDocsCache();
 
   cache.docs[skillId] = {
@@ -85,6 +120,10 @@ export async function recordDocsPulled(skillId, metadata = {}) {
  * Get info about when docs were last pulled
  */
 export async function getDocsInfo(skillId) {
+  if (!isValidSkillId(skillId)) {
+    throw new Error(`Invalid skill id for docs cache: ${sanitizeForLog(String(skillId))}`);
+  }
+
   const cache = await readDocsCache();
   return cache.docs[skillId] || null;
 }
@@ -92,16 +131,20 @@ export async function getDocsInfo(skillId) {
 /**
  * Check if docs are stale (older than N days)
  */
-export async function areDocsStale(skillId, staleDays = 7) {
+export async function areDocsStale(skillId, staleDays = DEFAULT_STALE_DAYS) {
   const info = await getDocsInfo(skillId);
 
   if (!info || !info.pulledAt) {
-    return true; // Never pulled = stale
+    return true;
   }
 
   const pulledDate = new Date(info.pulledAt);
+  if (Number.isNaN(pulledDate.getTime())) {
+    return true;
+  }
+
   const now = new Date();
-  const daysSincePull = (now - pulledDate) / (1000 * 60 * 60 * 24);
+  const daysSincePull = (now - pulledDate) / MILLISECONDS_PER_DAY;
 
   return daysSincePull > staleDays;
 }
@@ -109,18 +152,21 @@ export async function areDocsStale(skillId, staleDays = 7) {
 /**
  * Get all stale docs
  */
-export async function getStaleSkills(staleDays = 7) {
+export async function getStaleSkills(staleDays = DEFAULT_STALE_DAYS) {
   const cache = await readDocsCache();
   const staleSkills = [];
 
   for (const [skillId, info] of Object.entries(cache.docs)) {
-    if (await areDocsStale(skillId, staleDays)) {
+    const pulledAtMs = info.pulledAt ? new Date(info.pulledAt).getTime() : Number.NaN;
+    const daysSincePull = info.pulledAt
+      ? Math.floor((Date.now() - pulledAtMs) / MILLISECONDS_PER_DAY)
+      : null;
+
+    if (!info.pulledAt || Number.isNaN(daysSincePull) || daysSincePull > staleDays) {
       staleSkills.push({
         id: skillId,
         ...info,
-        daysSincePull: info.pulledAt
-          ? Math.floor((new Date() - new Date(info.pulledAt)) / (1000 * 60 * 60 * 24))
-          : null
+        daysSincePull
       });
     }
   }
@@ -140,6 +186,10 @@ export async function getSkillsWithDocs() {
  * Clear docs cache entry for a skill
  */
 export async function clearDocsCache(skillId) {
+  if (!isValidSkillId(skillId)) {
+    throw new Error(`Invalid skill id for docs cache: ${sanitizeForLog(String(skillId))}`);
+  }
+
   const cache = await readDocsCache();
   delete cache.docs[skillId];
   await writeDocsCache(cache);
@@ -149,8 +199,5 @@ export async function clearDocsCache(skillId) {
  * Clear entire docs cache
  */
 export async function clearAllDocsCache() {
-  await writeDocsCache({
-    version: '1.0.0',
-    docs: {}
-  });
+  await writeDocsCache(emptyCache());
 }

@@ -1,6 +1,6 @@
 # Claude Code configuration
 
-This directory is dropped into your project by `npx create-claude-starter`. It gives Claude Code six deep skills plus a thin TOON (Token-Oriented Object Notation) command layer.
+This directory is dropped into your project by `npx create-agent-starter --agent claude` or `--agent all`. It gives Claude Code seven deep skills plus a thin TOON (Token-Oriented Object Notation) command layer.
 
 ## What's here
 
@@ -10,6 +10,7 @@ This directory is dropped into your project by `npx create-claude-starter`. It g
 | `skills/supabase/` | Postgres + RLS, Auth, Realtime, Storage, Edge Functions, pgvector. |
 | `skills/plaid/` | Link flow + Auth + Transactions + Identity + Accounts (single consolidated skill). |
 | `skills/expo/` | Core Expo + EAS Build + EAS Update + Expo Router (single consolidated skill). |
+| `skills/copywriting-frameworks/` | Direct-response copywriting for headlines, ads, landing pages, emails, CTAs, and critiques. |
 | `skills/anthropic/` | Anthropic API expert + 6 Claude Code meta-tooling sub-skills (skill/command/hook/MCP/settings builders). |
 | `skills/toon-formatter/` | When to reach for TOON; how to invoke the commands. |
 | `commands/convert-to-toon.md` etc. | 5 TOON slash commands + `/discover-skills` + `/install-skill`. |

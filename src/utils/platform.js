@@ -1,117 +1,57 @@
 import os from 'os';
-import { existsSync, readFileSync, symlinkSync, unlinkSync } from 'fs';
-import { createHash } from 'crypto';
+import { existsSync, lstatSync } from 'fs';
 import { join } from 'path';
 
-/**
- * Get the TOON binary name for the current platform
- */
+const TOON_WRAPPER_RELATIVE_PATH = ['utils', 'toon', 'cli.mjs'];
+
 export function getToonBinaryName() {
-  const platform = os.platform();  // darwin, linux, win32
-  const arch = os.arch();          // arm64, x64
-
-  if (platform === 'win32') {
-    return `toon-windows-${arch}.exe`;
-  }
-
-  return `toon-${platform}-${arch}`;
+  return TOON_WRAPPER_RELATIVE_PATH.at(-1);
 }
 
-/**
- * Get supported platforms
- */
 export function getSupportedPlatforms() {
-  return [
-    'darwin-arm64',
-    'darwin-x64',
-    'linux-x64',
-    'linux-arm64'
-  ];
+  return ['node'];
 }
 
-/**
- * Check if current platform is supported
- */
 export function isPlatformSupported() {
-  const platform = os.platform();
-  const arch = os.arch();
-  const key = `${platform}-${arch}`;
-  return getSupportedPlatforms().includes(key);
+  return true;
 }
 
-/**
- * Setup TOON binary symlink for the current platform
- */
 export function setupToonBinary(claudeDir) {
-  // TOON binary is in skills/toon-formatter/bin/
-  const binDir = join(claudeDir, 'skills', 'toon-formatter', 'bin');
-  const binaryName = getToonBinaryName();
-  const binaryPath = join(binDir, binaryName);
-  const symlinkPath = join(binDir, 'toon');
+  const wrapperPath = join(claudeDir, ...TOON_WRAPPER_RELATIVE_PATH);
 
-  // Check if platform-specific binary exists
-  if (!existsSync(binaryPath)) {
-    // Try old location for backwards compatibility
-    const oldBinDir = join(claudeDir, 'utils', 'toon', 'bin');
-    const oldBinaryPath = join(oldBinDir, binaryName);
-    if (existsSync(oldBinaryPath)) {
-      return { success: true, path: oldBinaryPath, note: 'Using binary from utils/toon' };
-    }
-
+  if (!existsSync(wrapperPath)) {
     return {
       success: false,
-      error: `No TOON binary for platform: ${os.platform()}-${os.arch()}`,
-      suggestion: 'TOON binary not found. The package may need platform-specific binaries.'
+      error: `TOON wrapper missing at ${wrapperPath}`,
     };
   }
 
-  // SECURITY: Verify binary integrity against known checksums
-  const checksumsPath = join(binDir, 'checksums.json');
-  if (existsSync(checksumsPath)) {
-    try {
-      const checksums = JSON.parse(readFileSync(checksumsPath, 'utf-8'));
-      const expectedHash = checksums[binaryName];
-      if (expectedHash) {
-        const fileBuffer = readFileSync(binaryPath);
-        const actualHash = createHash('sha256').update(fileBuffer).digest('hex');
-        if (actualHash !== expectedHash) {
-          return {
-            success: false,
-            error: `TOON binary integrity check failed for ${binaryName}`,
-            expected: expectedHash,
-            actual: actualHash
-          };
-        }
-      }
-    } catch (e) {
-      return {
-        success: false,
-        error: `Failed to verify TOON binary checksum: ${e.message}`
-      };
-    }
-  }
-
-  // Remove existing symlink if present
-  if (existsSync(symlinkPath)) {
-    try {
-      unlinkSync(symlinkPath);
-    } catch (e) {
-      // Ignore errors
-    }
-  }
-
-  // Create symlink
+  let stats;
   try {
-    symlinkSync(binaryPath, symlinkPath);
-    return { success: true, path: symlinkPath };
+    stats = lstatSync(wrapperPath);
   } catch (error) {
-    return { success: false, error: error.message };
+    return {
+      success: false,
+      error: `Unable to inspect TOON wrapper: ${error.message}`,
+    };
   }
+  if (stats.isSymbolicLink()) {
+    return {
+      success: false,
+      error: `TOON wrapper must be a regular file: ${wrapperPath}`,
+    };
+  }
+
+  if (!stats.isFile()) {
+    return {
+      success: false,
+      error: `TOON wrapper is not a file: ${wrapperPath}`,
+    };
+  }
+
+  return { success: true, path: wrapperPath };
 }
 
-/**
- * Get platform info for display
- */
 export function getPlatformInfo() {
   return {
     platform: os.platform(),

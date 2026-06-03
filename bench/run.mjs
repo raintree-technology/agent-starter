@@ -22,11 +22,15 @@ const rows = files.map((f) => {
   const raw = readFileSync(path, 'utf8');
   const data = JSON.parse(raw);
 
-  let toonStr, toonTokens, savedPct;
+  let toonStr;
+  let toonTokens;
+  let savedPct;
+  let encodeError = null;
   try {
     toonStr = toonEncode(data);
     toonTokens = countTokens(toonStr);
-  } catch (e) {
+  } catch (error) {
+    encodeError = error.message;
     toonStr = null;
     toonTokens = null;
   }
@@ -43,6 +47,7 @@ const rows = files.map((f) => {
     toonTokens,
     delta,
     savedPct,
+    encodeError,
   };
 });
 
@@ -50,11 +55,11 @@ const fmt = (n) => (n === null ? '—' : n.toLocaleString());
 const fmtPct = (n) => (n === null ? '—' : `${n.toFixed(1)}%`);
 
 const table = [
-  '| Workload | JSON bytes | TOON bytes | JSON tokens | TOON tokens | Δ | Savings |',
-  '|---|---:|---:|---:|---:|---:|---:|',
+  '| Workload | JSON bytes | TOON bytes | JSON tokens | TOON tokens | Δ | Savings | Encode error |',
+  '|---|---:|---:|---:|---:|---:|---:|---|',
   ...rows.map(
     (r) =>
-      `| \`${r.file}\` | ${fmt(r.jsonBytes)} | ${fmt(r.toonBytes)} | ${fmt(r.jsonTokens)} | ${fmt(r.toonTokens)} | ${fmt(r.delta)} | ${fmtPct(r.savedPct)} |`,
+      `| \`${r.file}\` | ${fmt(r.jsonBytes)} | ${fmt(r.toonBytes)} | ${fmt(r.jsonTokens)} | ${fmt(r.toonTokens)} | ${fmt(r.delta)} | ${fmtPct(r.savedPct)} | ${r.encodeError ?? '—'} |`,
   ),
 ].join('\n');
 

@@ -1,86 +1,154 @@
+import { lookup } from 'dns/promises';
+import { isIP } from 'net';
 import { resolve, relative, isAbsolute } from 'path';
+
+const MAX_SKILL_PATH_LENGTH = 256;
+const MAX_SKILL_ID_LENGTH = 64;
+const MAX_COMMAND_NAME_LENGTH = 64;
+const MAX_HOSTNAME_LENGTH = 253;
+
+const BLOCKED_HOSTNAMES = new Set([
+  'localhost',
+  'localhost.localdomain',
+]);
+
+const BLOCKED_HOSTNAME_SUFFIXES = [
+  '.local',
+  '.localhost',
+  '.home.arpa',
+  '.internal',
+  '.invalid',
+  '.test',
+];
+
+function normalizeHostname(hostname) {
+  return hostname
+    .toLowerCase()
+    .replace(/^\[/, '')
+    .replace(/\]$/, '')
+    .replace(/\.$/, '');
+}
+
+function isPrivateIpv4Address(address) {
+  const parts = address.split('.').map((part) => Number(part));
+  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) {
+    return true;
+  }
+
+  const [first, second] = parts;
+  return (
+    first === 0 ||
+    first === 10 ||
+    first === 127 ||
+    (first === 100 && second >= 64 && second <= 127) ||
+    (first === 169 && second === 254) ||
+    (first === 172 && second >= 16 && second <= 31) ||
+    (first === 192 && second === 168) ||
+    (first === 198 && (second === 18 || second === 19)) ||
+    first >= 224
+  );
+}
+
+function isPrivateIpv6Address(address) {
+  const normalized = normalizeHostname(address);
+
+  return (
+    normalized === '::' ||
+    normalized === '::1' ||
+    normalized.startsWith('::ffff:') ||
+    normalized.startsWith('fc') ||
+    normalized.startsWith('fd') ||
+    normalized.startsWith('fe80') ||
+    normalized.startsWith('ff') ||
+    normalized.startsWith('2001:db8')
+  );
+}
+
+export function isPrivateIpAddress(address) {
+  const version = isIP(normalizeHostname(address));
+  if (version === 4) {
+    return isPrivateIpv4Address(address);
+  }
+  if (version === 6) {
+    return isPrivateIpv6Address(address);
+  }
+  return true;
+}
+
+export function getUrlValidationError(str) {
+  if (!str || typeof str !== 'string') {
+    return 'URL must be a non-empty string';
+  }
+
+  let url;
+  try {
+    url = new URL(str);
+  } catch (error) {
+    return `Malformed URL: ${error.message}`;
+  }
+
+  if (url.protocol !== 'https:') {
+    return 'URL must use https';
+  }
+
+  if (url.username || url.password) {
+    return 'URL must not include credentials';
+  }
+
+  const hostname = normalizeHostname(url.hostname);
+  if (!hostname || hostname.length > MAX_HOSTNAME_LENGTH) {
+    return 'URL hostname is missing or too long';
+  }
+
+  if (BLOCKED_HOSTNAMES.has(hostname)) {
+    return `URL hostname is blocked: ${hostname}`;
+  }
+
+  if (BLOCKED_HOSTNAME_SUFFIXES.some((suffix) => hostname.endsWith(suffix))) {
+    return `URL hostname uses a blocked suffix: ${hostname}`;
+  }
+
+  if (isIP(hostname)) {
+    return 'URL must use a public DNS hostname, not an IP literal';
+  }
+
+  return undefined;
+}
 
 /**
  * Validate that a string is a valid URL
  * Prevents command injection via malformed URLs
  */
 export function isValidUrl(str) {
-  if (!str || typeof str !== 'string') {
-    return false;
+  return getUrlValidationError(str) === undefined;
+}
+
+export async function assertPublicHttpsUrl(str, resolver = lookup) {
+  const validationError = getUrlValidationError(str);
+  if (validationError) {
+    throw new Error(validationError);
   }
 
-  // Must start with http:// or https://
-  if (!str.startsWith('http://') && !str.startsWith('https://')) {
-    return false;
-  }
-
+  const url = new URL(str);
+  const hostname = normalizeHostname(url.hostname);
+  let addresses;
   try {
-    const url = new URL(str);
-
-    // Only allow http and https protocols
-    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-      return false;
-    }
-
-    // Hostname must exist and be valid
-    if (!url.hostname || url.hostname.length === 0) {
-      return false;
-    }
-
-    // Block localhost and private IPs (SSRF prevention)
-    const hostname = url.hostname.toLowerCase();
-
-    // Direct localhost variants (IPv4, IPv6, hex, octal)
-    if (
-      hostname === 'localhost' ||
-      hostname === '127.0.0.1' ||
-      hostname === '0.0.0.0' ||
-      hostname === '[::1]' ||
-      hostname === '::1' ||
-      hostname === '0x7f000001' ||
-      hostname === '0177.0.0.1'
-    ) {
-      return false;
-    }
-
-    // Private IPv4 ranges (RFC 1918 + loopback + link-local)
-    if (
-      hostname.startsWith('192.168.') ||       // 192.168.0.0/16
-      hostname.startsWith('10.') ||             // 10.0.0.0/8
-      hostname.startsWith('169.254.') ||        // 169.254.0.0/16 link-local
-      hostname.startsWith('127.')               // 127.0.0.0/8 full loopback
-    ) {
-      return false;
-    }
-
-    // 172.16.0.0/12 = 172.16.x.x through 172.31.x.x
-    const match172 = hostname.match(/^172\.(\d+)\./);
-    if (match172) {
-      const second = parseInt(match172[1], 10);
-      if (second >= 16 && second <= 31) {
-        return false;
-      }
-    }
-
-    // IPv6 private (fc00::/7) and link-local (fe80::/10), mDNS (.local)
-    if (
-      hostname.startsWith('fc') ||
-      hostname.startsWith('fd') ||
-      hostname.startsWith('fe80') ||
-      hostname.endsWith('.local')
-    ) {
-      return false;
-    }
-
-    // No credentials in URL
-    if (url.username || url.password) {
-      return false;
-    }
-
-    return true;
-  } catch {
-    return false;
+    addresses = await resolver(hostname, { all: true, verbatim: true });
+  } catch (error) {
+    throw new Error(`Unable to resolve ${hostname}: ${error.message}`);
   }
+
+  if (!Array.isArray(addresses) || addresses.length === 0) {
+    throw new Error(`No DNS records found for ${hostname}`);
+  }
+
+  for (const { address } of addresses) {
+    if (isPrivateIpAddress(address)) {
+      throw new Error(`URL resolves to a non-public address: ${hostname}`);
+    }
+  }
+
+  return url;
 }
 
 /**
@@ -97,8 +165,10 @@ export function isPathSafe(targetPath, baseDir) {
     const resolvedBase = resolve(baseDir);
     const resolvedTarget = resolve(targetPath);
 
-    // Target must start with base (be inside it)
-    if (!resolvedTarget.startsWith(resolvedBase)) {
+    const relativeTarget = relative(resolvedBase, resolvedTarget);
+
+    // Target must be the base itself or a descendant, not a prefix sibling.
+    if (relativeTarget.startsWith('..') || isAbsolute(relativeTarget)) {
       return false;
     }
 
@@ -108,7 +178,10 @@ export function isPathSafe(targetPath, baseDir) {
     }
 
     return true;
-  } catch {
+  } catch (error) {
+    if (error instanceof TypeError) {
+      return false;
+    }
     return false;
   }
 }
@@ -124,7 +197,7 @@ export function isValidSkillPath(skillPath) {
   }
 
   // CRITICAL: Length check BEFORE regex to prevent ReDoS
-  if (skillPath.length > 256) {
+  if (skillPath.length > MAX_SKILL_PATH_LENGTH) {
     return false;
   }
 
@@ -144,7 +217,7 @@ export function isValidSkillPath(skillPath) {
   }
 
   // Must match expected pattern: alphanumeric, hyphens, underscores, slashes
-  const validPattern = /^[a-zA-Z0-9_\-\/]+$/;
+  const validPattern = /^[a-zA-Z0-9_/-]+$/;
   if (!validPattern.test(skillPath)) {
     return false;
   }
@@ -172,12 +245,12 @@ export function isValidSkillId(skillId) {
   }
 
   // CRITICAL: Length check BEFORE regex to prevent ReDoS
-  if (skillId.length > 64) {
+  if (skillId.length > MAX_SKILL_ID_LENGTH) {
     return false;
   }
 
   // Alphanumeric, hyphens, underscores only (no slashes)
-  const validPattern = /^[a-zA-Z0-9_\-]+$/;
+  const validPattern = /^[a-zA-Z0-9_-]+$/;
   if (!validPattern.test(skillId)) {
     return false;
   }
@@ -196,7 +269,7 @@ export function isValidCommandName(commandName) {
   }
 
   // CRITICAL: Length check BEFORE regex to prevent ReDoS
-  if (commandName.length > 64) {
+  if (commandName.length > MAX_COMMAND_NAME_LENGTH) {
     return false;
   }
 
@@ -206,7 +279,7 @@ export function isValidCommandName(commandName) {
   }
 
   // Alphanumeric, hyphens, underscores only (no slashes, dots, or path separators)
-  const validPattern = /^[a-zA-Z0-9_\-]+$/;
+  const validPattern = /^[a-zA-Z0-9_-]+$/;
   if (!validPattern.test(commandName)) {
     return false;
   }
@@ -222,7 +295,9 @@ export function sanitizeForLog(str) {
     return String(str);
   }
 
-  // Remove control characters except newline and tab
-  return str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+  // Remove control characters except newline and tab.
+  return Array.from(str).filter((char) => {
+    const code = char.charCodeAt(0);
+    return code === 9 || code === 10 || (code >= 32 && code !== 127);
+  }).join('');
 }
-

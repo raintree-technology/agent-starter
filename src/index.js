@@ -1,10 +1,14 @@
-// Claude Starter - Programmatic API
+// Agent Starter - Programmatic API
 // For CLI usage, use bin/cli.js
 
 export { init } from './commands/init.js';
 export { docs } from './commands/docs.js';
+export { AGENT_TARGETS, parseAgentTargets } from './agents.js';
 
 export {
+  copyAgentEssentials,
+  copyAgentSkill,
+  copyAgentSkills,
   copyAll,
   copySkill,
   copySkills,

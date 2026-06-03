@@ -220,10 +220,12 @@ async function getAuthData(access_token) {
   const accounts = response.data.accounts;
   const numbers = response.data.numbers;
 
-  // ACH numbers
   const ach = numbers.ach[0];
-  console.log('Account:', ach.account);
-  console.log('Routing:', ach.routing);
+  await storeAchNumbersEncrypted({
+    accountId: ach.account_id,
+    accountNumber: ach.account,
+    routingNumber: ach.routing,
+  });
 
   return { accounts, numbers };
 }
@@ -280,9 +282,12 @@ async function getBalance(access_token) {
   });
 
   const accounts = response.data.accounts;
-  accounts.forEach(account => {
-    console.log(`${account.name}: ${account.balances.current}`);
-  });
+  await upsertAccountBalances(accounts.map((account) => ({
+    accountId: account.account_id,
+    currentBalance: account.balances.current,
+    availableBalance: account.balances.available,
+    isoCurrencyCode: account.balances.iso_currency_code,
+  })));
 
   return accounts;
 }
@@ -297,9 +302,11 @@ async function getIdentity(access_token) {
   });
 
   const identity = response.data.accounts[0].owners[0];
-  console.log('Name:', identity.names[0]);
-  console.log('Email:', identity.emails[0].data);
-  console.log('Phone:', identity.phone_numbers[0].data);
+  await storeIdentitySnapshot({
+    primaryName: identity.names[0],
+    primaryEmail: identity.emails[0].data,
+    primaryPhone: identity.phone_numbers[0].data,
+  });
 
   return response.data;
 }
@@ -343,14 +350,13 @@ app.post('/api/plaid/webhook', express.json(), async (req, res) => {
   if (webhook_type === 'TRANSACTIONS') {
     switch (webhook_code) {
       case 'INITIAL_UPDATE':
-        console.log('Initial transactions available');
+        await enqueueTransactionSync(req.body.item_id, 'initial');
         break;
       case 'DEFAULT_UPDATE':
-        console.log('New transactions available');
-        // Fetch new transactions
+        await enqueueTransactionSync(req.body.item_id, 'incremental');
         break;
       case 'TRANSACTIONS_REMOVED':
-        console.log('Transactions removed');
+        await reconcileRemovedTransactions(req.body.item_id, req.body.removed_transactions);
         break;
     }
   }
