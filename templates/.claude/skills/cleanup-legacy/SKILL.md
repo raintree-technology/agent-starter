@@ -69,7 +69,7 @@ Write `.claude/cleanup-reports/cleanup-legacy-{YYYY-MM-DD}.md`:
 ## Findings
 
 ### HIGH — `packages/utils/src/format-old.ts`
-- Marked `@deprecated` since commit abc123 (2024-08-15).
+- Marked `@deprecated` in an older commit and unused by current callers.
 - Exports: `formatV1`, `parseV1`. Repo grep shows zero usages outside the file.
 - Action: delete file.
 

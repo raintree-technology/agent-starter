@@ -1,5 +1,20 @@
 # Direct-Response Patterns
 
+## Table of Contents
+
+- [Source Note](#source-note)
+- [Core Model](#core-model)
+- [AIDA Pass](#aida-pass)
+- [Hook Patterns](#hook-patterns)
+- [Rewrite Moves](#rewrite-moves)
+- [Story Structure](#story-structure)
+- [Objection Handling](#objection-handling)
+- [Price and Desire](#price-and-desire)
+- [Style Rules](#style-rules)
+- [Critique Rubric](#critique-rubric)
+- [Copywork Routine](#copywork-routine)
+
+
 ## Source Note
 
 These patterns are distilled and paraphrased from a user-provided transcript of a copywriting discussion with Sam Parr, combined with general direct-response practice. Use them as reusable heuristics, not as quoted source material.

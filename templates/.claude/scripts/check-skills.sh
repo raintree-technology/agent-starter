@@ -16,7 +16,7 @@ echo "Checking all skill files..."
 echo "=================================="
 echo ""
 
-find "$SKILLS_DIR" -name "skill.md" -type f | sort | while IFS= read -r file; do
+find "$SKILLS_DIR" \( -name "skill.md" -o -name "SKILL.md" \) -type f | sort | while IFS= read -r file; do
     echo "File: $file"
 
     # Extract name and description

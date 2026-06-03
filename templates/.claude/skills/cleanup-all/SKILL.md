@@ -16,7 +16,7 @@ Orchestrate the full cleanup pipeline. Runs each of the 8 cleanup skills in a de
 
 ## Execution Order
 
-Each child skill is invoked via Skill tool. After each, run that skill's verify step. **Halt the pipeline on any verify failure** — do not proceed to the next step.
+Each child workflow is run by loading the matching local skill instructions for the current agent target. After each, run that skill's verify step. **Halt the pipeline on any verify failure** — do not proceed to the next step.
 
 1. **`cleanup-unused`** — delete dead code first. Less for everything downstream to scan.
 2. **`cleanup-cycles`** — fix the dependency graph next. Other refactors are safer in an acyclic graph.
@@ -38,7 +38,7 @@ Each child skill is invoked via Skill tool. After each, run that skill's verify 
 
 For each skill in order:
 1. Print: `▶ Running cleanup-X (step Y/8)…`
-2. Invoke the skill via the Skill tool with the same scope arg (if any).
+2. Load and run the matching cleanup skill instructions with the same scope arg (if any).
 3. Wait for the skill to finish — it produces its own commit and verify result.
 4. If the skill's verify failed: HALT, print `✗ cleanup-X verify failed — halting pipeline. See report at <path>.`
 5. If verify passed: append findings count + LOC delta to master report, continue.
@@ -62,12 +62,12 @@ Write `.claude/cleanup-reports/cleanup-all-{YYYY-MM-DD}.md`:
 
 | # | Skill | Status | Items removed | LOC delta | Commit | Report |
 |---|-------|--------|---------------|-----------|--------|--------|
-| 1 | cleanup-unused | ✓ | 12 (3 files, 8 exports, 1 dep) | -340 | abc1234 | [link](cleanup-unused-2026-04-16.md) |
-| 2 | cleanup-cycles | ✓ | 3 cycles broken | +12 (extracted leaves) | def5678 | [link](cleanup-cycles-2026-04-16.md) |
+| 1 | cleanup-unused | pass | 12 (3 files, 8 exports, 1 dep) | -340 | `<commit>` | `[link]` |
+| 2 | cleanup-cycles | pass | 3 cycles broken | +12 (extracted leaves) | `<commit>` | `[link]` |
 | 3 | cleanup-dedupe | ✓ | 5 utils extracted | -180 | ... | ... |
 | 4 | cleanup-types | ✓ | 4 types consolidated | -60 | ... | ... |
 | 5 | cleanup-weak-types | ✓ | 22 weak types strengthened | 0 | ... | ... |
-| 6 | cleanup-defensive | ✗ HALTED | — | — | — | [link](cleanup-defensive-2026-04-16.md) |
+| 6 | cleanup-defensive | halted | unsafe pattern requires review | - | - | `[link]` |
 | 7 | cleanup-legacy | (not run — pipeline halted at step 6) | | | | |
 | 8 | cleanup-slop | (not run) | | | | |
 

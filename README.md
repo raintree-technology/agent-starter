@@ -1,6 +1,6 @@
 # agent-starter
 
-An opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Seven deep, handwritten skills for fintech, SaaS, mobile, copywriting, agent tooling, and TOON token savings.
+An opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Deep, handwritten skills for fintech, SaaS, mobile, copywriting, agent tooling, code cleanup, and TOON token savings.
 
 No orchestration framework. No aspirational YAML. Just agent-native project files generated from one shared skill source.
 
@@ -9,7 +9,7 @@ No orchestration framework. No aspirational YAML. Just agent-native project file
 
 ## What you get
 
-**7 top-level skills**:
+**16 shipped skills**:
 
 | Skill | Covers |
 |---|---|
@@ -20,6 +20,15 @@ No orchestration framework. No aspirational YAML. Just agent-native project file
 | **copywriting-frameworks** | Headlines, landing pages, ads, emails, CTAs, AIDA, objections, proof placeholders, critiques. |
 | **anthropic** | Anthropic Claude API plus Claude Code meta-tooling sub-skills. |
 | **toon-formatter** | When TOON helps, when it does not, and how to invoke the TOON commands. |
+| **cleanup-all** | Orchestrates the full cleanup pipeline. |
+| **cleanup-unused** | Detects and removes high-confidence dead code, exports, files, and dependencies. |
+| **cleanup-cycles** | Detects and untangles circular dependencies. |
+| **cleanup-dedupe** | Extracts high-confidence duplicate code into shared utilities. |
+| **cleanup-types** | Consolidates duplicated or fragmented type definitions. |
+| **cleanup-weak-types** | Replaces weak types with stronger inferred or validated types. |
+| **cleanup-defensive** | Removes pointless try/catch blocks and guards that hide errors. |
+| **cleanup-legacy** | Removes zero-caller deprecated, legacy, and fallback paths. |
+| **cleanup-slop** | Removes unhelpful narration comments while preserving useful WHY comments. |
 
 ## Agent Targets
 

@@ -1,5 +1,6 @@
 # Claude Code local settings
 .claude/settings.local.json
+.claude/skills/
 
 # Skills installer scratch output
 /.agents/

@@ -169,7 +169,7 @@ function splitFrontmatter(markdown) {
     if (separator === -1) continue;
     const key = line.slice(0, separator).trim();
     const value = line.slice(separator + 1).trim();
-    if (key) metadata[key] = value.replace(/^"(.*)"$/, "$1");
+    if (key) metadata[key] = value.replace(/^"(.*)"$/, "$1").replaceAll('\\"', '"');
   }
 
   return { metadata, body };
