@@ -102,7 +102,7 @@ function Hero() {
 
       <div className="mt-10 inline-flex items-center gap-0 overflow-hidden rounded-lg border border-border/60 bg-muted/40 font-mono text-sm">
         <span className="select-none border-r border-border/60 px-3 py-2.5 text-muted-foreground">$</span>
-        <code className="px-4 py-2.5">npx create-agent-starter@3.0.1 --agent all</code>
+        <code className="px-4 py-2.5">npx create-agent-starter@latest --agent all</code>
       </div>
 
       <div className="mt-6 flex justify-center">
@@ -180,6 +180,33 @@ function Skills() {
       ],
     },
     {
+      group: "Design / HCI",
+      items: [
+        { name: "human-processor-model", blurb: "Models perceptual, cognitive, motor, and memory costs to estimate task time and reveal usability bottlenecks." },
+        { name: "goms-klm-analysis", blurb: "Compares task flows with GOMS/KLM operators, waits, selection rules, and expert-user interaction cost." },
+      ],
+    },
+    {
+      group: "Apple HIG",
+      items: [
+        { name: "hig-doctor-audit", blurb: "Runs HIG Doctor audits with npx hig-doctor, exported reports, severity gates, and category-to-skill routing." },
+        { name: "hig-project-context", blurb: "Creates shared Apple design context so other HIG skills can tailor guidance without repeated setup questions." },
+        { name: "hig-foundations", blurb: "Color, typography, SF Symbols, dark mode, accessibility, layout, materials, motion, privacy, and writing." },
+        { name: "hig-platforms", blurb: "Platform-specific design guidance for iOS, iPadOS, macOS, tvOS, visionOS, watchOS, and games." },
+        { name: "hig-patterns", blurb: "UX patterns for onboarding, launch, loading, permissions, feedback, undo, settings, sharing, and collaboration." },
+        { name: "hig-inputs", blurb: "Gestures, keyboards, pointers, Apple Pencil, Digital Crown, focus, remotes, eye tracking, and spatial input." },
+        { name: "hig-technologies", blurb: "Siri, Apple Pay, HealthKit, ARKit, iCloud, Sign in with Apple, SharePlay, Wallet, VoiceOver, and more." },
+        { name: "hig-components-content", blurb: "Charts, collections, image views, web views, color wells, image wells, lockups, and share sheets." },
+        { name: "hig-components-layout", blurb: "Sidebars, split views, tab bars, scroll views, windows, panels, lists, tables, and ornaments." },
+        { name: "hig-components-menus", blurb: "Buttons, context menus, toolbars, the menu bar, pop-up buttons, pull-downs, and disclosure controls." },
+        { name: "hig-components-search", blurb: "Search fields, page controls, path controls, search scopes, suggestions, and pagination." },
+        { name: "hig-components-dialogs", blurb: "Alerts, action sheets, popovers, sheets, destructive confirmations, and digit entry views." },
+        { name: "hig-components-controls", blurb: "Pickers, toggles, sliders, steppers, segmented controls, text fields, labels, and validation." },
+        { name: "hig-components-status", blurb: "Progress indicators, loading states, status bars, determinate progress, and activity rings." },
+        { name: "hig-components-system", blurb: "Widgets, Live Activities, notifications, complications, App Clips, shortcuts, and watch faces." },
+      ],
+    },
+    {
       group: "Growth",
       items: [
         { name: "copywriting-frameworks", blurb: "Direct-response workflows for headlines, ads, landing pages, emails, CTAs, objections, and critiques." },
@@ -201,12 +228,13 @@ function Skills() {
       ],
     },
   ];
+  const skillCount = groups.reduce((total, group) => total + group.items.length, 0);
   return (
     <section className="border-t border-border/60">
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Skills</SectionLabel>
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
-          Sixteen hand-maintained skills generated into each agent&apos;s native project shape. Claude gets skills and slash commands, Codex gets `AGENTS.md` plus local `SKILL.md` files, and Cursor gets `.mdc` project rules.
+          {skillCount} hand-maintained skills generated into each agent&apos;s native project shape. Claude gets skills and slash commands, Codex gets `AGENTS.md` plus local `SKILL.md` files, and Cursor gets `.mdc` project rules.
         </p>
         <div className="mt-8 space-y-6">
           {groups.map((g) => (
@@ -316,9 +344,10 @@ function Install() {
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Install</SectionLabel>
         <ol className="mt-8 space-y-5 font-mono text-sm">
-          <Snippet step="1" code="npx create-agent-starter@3.0.1 --agent all" hint="all supported agents" />
-          <Snippet step="2" code="npx create-agent-starter@3.0.1 --agent codex,cursor --skills stripe,copywriting-frameworks" hint="targeted install" />
-          <Snippet step="3" code="npm i @toon-format/toon gpt-tokenizer" hint="for Claude /toon-* commands" />
+          <Snippet step="1" code="npx create-agent-starter@latest --agent all" hint="all supported agents" />
+          <Snippet step="2" code="npx create-agent-starter@latest --agent codex,cursor --profile apple-hig" hint="HIG Doctor profile" />
+          <Snippet step="3" code="npx create-agent-starter@latest --agent codex,cursor --skills stripe,copywriting-frameworks" hint="targeted install" />
+          <Snippet step="4" code="npm i @toon-format/toon gpt-tokenizer" hint="for Claude /toon-* commands" />
         </ol>
       </div>
     </section>

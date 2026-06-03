@@ -163,13 +163,32 @@ function splitFrontmatter(markdown) {
   const bodyStart = markdown.indexOf("\n", endIndex + 4);
   const body = bodyStart === -1 ? "" : markdown.slice(bodyStart + 1);
   const metadata = {};
+  const frontmatterLines = frontmatter.split("\n");
 
-  for (const line of frontmatter.split("\n")) {
+  for (let index = 0; index < frontmatterLines.length; index += 1) {
+    const line = frontmatterLines[index];
     const separator = line.indexOf(":");
     if (separator === -1) continue;
     const key = line.slice(0, separator).trim();
     const value = line.slice(separator + 1).trim();
-    if (key) metadata[key] = value.replace(/^"(.*)"$/, "$1").replaceAll('\\"', '"');
+    if (!key) continue;
+
+    if ([">", ">-", "|", "|-"].includes(value)) {
+      const blockLines = [];
+      while (
+        index + 1 < frontmatterLines.length &&
+        (frontmatterLines[index + 1].startsWith(" ") || frontmatterLines[index + 1].trim() === "")
+      ) {
+        index += 1;
+        blockLines.push(frontmatterLines[index].replace(/^ {2}/, ""));
+      }
+      metadata[key] = value.startsWith("|")
+        ? blockLines.join("\n").trim()
+        : blockLines.map((blockLine) => blockLine.trim()).join(" ").replace(/\s+/g, " ").trim();
+      continue;
+    }
+
+    metadata[key] = value.replace(/^"(.*)"$/, "$1").replaceAll('\\"', '"');
   }
 
   return { metadata, body };

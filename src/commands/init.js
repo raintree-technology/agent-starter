@@ -22,7 +22,7 @@ import { generateSettings } from '../utils/settings.js';
 import { AGENT_TARGETS, formatAgentTargets, parseAgentTargets } from '../agents.js';
 
 function parseSkillList(skillsList) {
-  return skillsList.split(',').map((skill) => skill.trim()).filter(Boolean);
+  return [...new Set(skillsList.split(',').map((skill) => skill.trim()).filter(Boolean))];
 }
 
 function validateRequestedSkills(skillIds) {
