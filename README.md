@@ -35,19 +35,19 @@ Claude remains the default for backwards compatibility. Use `--agent all` to ins
 
 ```bash
 # Claude Code only (default)
-npx create-agent-starter@3.0.0
+npx create-agent-starter@3.0.1
 
 # Codex only
-npx create-agent-starter@3.0.0 --agent codex
+npx create-agent-starter@3.0.1 --agent codex
 
 # Cursor only
-npx create-agent-starter@3.0.0 --agent cursor
+npx create-agent-starter@3.0.1 --agent cursor
 
 # Claude Code + Codex + Cursor
-npx create-agent-starter@3.0.0 --agent all
+npx create-agent-starter@3.0.1 --agent all
 
 # Backwards-compatible aliases still work
-npx create-claude-starter@3.0.0 --agent all
+npx create-claude-starter@3.0.1 --agent all
 ```
 
 For Claude TOON commands, add the runtime deps to your project:
@@ -59,9 +59,9 @@ npm i @toon-format/toon gpt-tokenizer
 ## Profiles
 
 ```bash
-npx create-agent-starter@3.0.0 --profile web-saas --agent all
-npx create-agent-starter@3.0.0 --profile fintech --agent codex,cursor
-npx create-agent-starter@3.0.0 --skills stripe,copywriting-frameworks --agent cursor
+npx create-agent-starter@3.0.1 --profile web-saas --agent all
+npx create-agent-starter@3.0.1 --profile fintech --agent codex,cursor
+npx create-agent-starter@3.0.1 --skills stripe,copywriting-frameworks --agent cursor
 ```
 
 Profiles select a skill set. Agent targets decide where that skill set is installed.
@@ -91,8 +91,8 @@ The package keeps one shared source of truth in `templates/.claude/skills/` and 
 The `docs` command is Claude-specific because external docs are stored under `.claude/skills/*/docs`.
 
 ```bash
-npx agent-starter docs pull stripe
-npx agent-starter docs status
+npx create-agent-starter@3.0.1 docs pull stripe
+npx create-agent-starter@3.0.1 docs status
 ```
 
 ## Benchmarks

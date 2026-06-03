@@ -1,6 +1,6 @@
 {
   "name": "create-agent-starter",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Opinionated multi-agent skill pack for Claude Code, Codex, and Cursor: deep skills for Stripe, Supabase, Plaid, Expo, copywriting frameworks, and agent meta-tooling, plus a TOON command wrapper for input-token savings.",
   "type": "module",
   "main": "src/index.js",
