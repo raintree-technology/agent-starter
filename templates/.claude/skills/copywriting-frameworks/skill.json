@@ -1,0 +1,33 @@
+{
+  "id": "copywriting-frameworks",
+  "version": "1.0.0",
+  "category": "marketing",
+  "keywords": ["copywriting", "headline", "ads", "landing-page", "email", "sales", "cta", "aida"],
+  "docs": null,
+  "semanticTags": {
+    "primary": ["direct_response", "persuasive_copy", "conversion_copy"],
+    "secondary": ["headlines", "hooks", "sales_emails", "landing_pages", "ad_copy", "copy_critiques"],
+    "domains": ["marketing", "growth", "sales", "content"]
+  },
+  "capabilities": {
+    "inputs": ["audience", "offer", "brand_voice", "draft_copy", "proof_constraints"],
+    "outputs": ["headlines", "ad_hooks", "landing_page_copy", "email_copy", "copy_critiques"],
+    "actions": ["draft_copy", "rewrite_copy", "critique_copy", "select_framework", "handle_objections"]
+  },
+  "orchestration": {
+    "priority": 6,
+    "cooperationLevel": "medium",
+    "parallelizable": true,
+    "estimatedTokens": 2500,
+    "activationThreshold": 0.65
+  },
+  "dependencies": {
+    "recommended": [],
+    "complements": ["stripe", "supabase", "expo", "anthropic"]
+  },
+  "collaboration": {
+    "canProvideDataTo": ["anthropic"],
+    "canConsumeDataFrom": ["stripe", "supabase", "expo", "anthropic"],
+    "sharedContext": ["audience", "offer", "cta", "proof", "brand_voice"]
+  }
+}

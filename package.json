@@ -1,7 +1,7 @@
 {
   "name": "create-claude-starter",
   "version": "3.0.0",
-  "description": "Opinionated Claude Code skill pack for fintech and Anthropic power-users: deep skills for Stripe, Supabase, Plaid, Expo, and Claude Code meta-tooling, plus a TOON command wrapper for input-token savings.",
+  "description": "Opinionated Claude Code skill pack for fintech, growth builders, and Anthropic power-users: deep skills for Stripe, Supabase, Plaid, Expo, copywriting frameworks, and Claude Code meta-tooling, plus a TOON command wrapper for input-token savings.",
   "type": "module",
   "main": "src/index.js",
   "bin": {
@@ -30,6 +30,8 @@
     "supabase",
     "plaid",
     "expo",
+    "copywriting",
+    "marketing",
     "mcp",
     "toon",
     "token-efficiency",

@@ -38,6 +38,28 @@ test('profile skill paths install under .claude/skills/<id>', async (t) => {
   assert.equal(await isSkillInstalled(dir, 'stripe'), true);
 });
 
+test('copywriting skill installs with its reference material', async (t) => {
+  const dir = await withTempDir(t);
+
+  await copySkills(dir, [skillIdToPath('copywriting-frameworks')]);
+
+  assert.equal(
+    existsSync(join(dir, '.claude', 'skills', 'copywriting-frameworks', 'skill.md')),
+    true,
+  );
+  assert.equal(
+    existsSync(join(
+      dir,
+      '.claude',
+      'skills',
+      'copywriting-frameworks',
+      'references',
+      'direct-response-patterns.md',
+    )),
+    true,
+  );
+});
+
 test('legacy skills/<id> inputs normalize to the current destination', async (t) => {
   const dir = await withTempDir(t);
 

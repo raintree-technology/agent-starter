@@ -2,12 +2,12 @@
 .claude/settings.local.json
 
 # Skills installer scratch output
-.agents/
-.crush/
-.goose/
-.pi/
-skills/
-skills-lock.json
+/.agents/
+/.crush/
+/.goose/
+/.pi/
+/skills/
+/skills-lock.json
 
 # macOS
 .DS_Store

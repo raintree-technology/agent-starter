@@ -1,5 +1,6 @@
 export const SKILLS = [
   { id: 'anthropic', category: 'ai', name: 'Anthropic & Claude Code meta-tooling' },
+  { id: 'copywriting-frameworks', category: 'marketing', name: 'Copywriting frameworks' },
   { id: 'expo', category: 'mobile', name: 'Expo / React Native' },
   { id: 'plaid', category: 'banking', name: 'Plaid' },
   { id: 'stripe', category: 'payments', name: 'Stripe' },
@@ -19,8 +20,8 @@ export const profiles = {
 
   'web-saas': {
     name: 'Web SaaS',
-    description: 'Stripe + Supabase + Expo + TOON — common SaaS stack',
-    skills: ['stripe', 'supabase', 'expo', 'toon-formatter'],
+    description: 'Stripe + Supabase + Expo + copywriting + TOON — common SaaS stack',
+    skills: ['stripe', 'supabase', 'expo', 'copywriting-frameworks', 'toon-formatter'],
     toon: true,
     hooks: false,
     commands: ['analyze-tokens', 'convert-to-toon', 'toon-decode', 'toon-encode'],

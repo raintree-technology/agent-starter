@@ -90,12 +90,12 @@ function Hero() {
         </pre>
       </div>
       <h1 className="font-mono text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-        Six deep skills.<br />
+        Seven deep skills.<br />
         <span className="text-muted-foreground">Measured token savings.</span>
       </h1>
       <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
         Opinionated <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.claude/</code>{" "}
-        pack for fintech and Anthropic power-users. Handwritten skills for Stripe, Supabase, Plaid, Expo, and Claude Code meta-tooling — plus a TOON wrapper that cuts input tokens 40–60% on tabular data.
+        pack for fintech, growth builders, and Anthropic power-users. Handwritten skills for Stripe, Supabase, Plaid, Expo, copywriting, and Claude Code meta-tooling — plus a TOON wrapper that cuts input tokens 40–60% on tabular data.
       </p>
 
       <div className="mt-10 inline-flex items-center gap-0 overflow-hidden rounded-lg border border-border/60 bg-muted/40 font-mono text-sm">
@@ -123,11 +123,12 @@ function Hero() {
 function Inside() {
   const rows: Array<{ path: string; note?: string; dim?: boolean }> = [
     { path: ".claude/" },
-    { path: "├── skills/",           note: "6 deep, auto-invoked experts" },
+    { path: "├── skills/",           note: "7 deep, auto-invoked experts" },
     { path: "│   ├── stripe/",        dim: true },
     { path: "│   ├── supabase/",      dim: true },
     { path: "│   ├── plaid/",         dim: true },
     { path: "│   ├── expo/",          dim: true },
+    { path: "│   ├── copywriting-frameworks/", dim: true },
     { path: "│   ├── anthropic/",     dim: true },
     { path: "│   └── toon-formatter/", dim: true },
     { path: "├── commands/",          note: "slash commands (TOON + SkillsMP)" },
@@ -182,6 +183,12 @@ function Skills() {
       ],
     },
     {
+      group: "Growth",
+      items: [
+        { name: "copywriting-frameworks", blurb: "Direct-response workflows for headlines, ads, landing pages, emails, CTAs, objections, and critiques." },
+      ],
+    },
+    {
       group: "Claude tooling",
       items: [
         { name: "anthropic", blurb: "Claude API + 6 Claude Code meta-tooling sub-skills: skill/command/hook/MCP/settings builders." },
@@ -194,7 +201,7 @@ function Skills() {
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Skills</SectionLabel>
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
-          Six hand-maintained skills. No filler — each one earns its place. Anthropic already ships 17 general-purpose skills and a wide community marketplace covers the rest; this pack goes deep on the verticals where depth matters.
+          Seven hand-maintained skills. No filler — each one earns its place. Anthropic already ships 17 general-purpose skills and a wide community marketplace covers the rest; this pack goes deep on the verticals where depth matters.
         </p>
         <div className="mt-8 space-y-6">
           {groups.map((g) => (

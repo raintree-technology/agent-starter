@@ -1,6 +1,6 @@
 # claude-starter
 
-An opinionated [Claude Code](https://code.claude.com) skill pack for fintech devs and Anthropic power-users. Six deep, handwritten skills plus a thin CLI for [TOON](https://toonformat.dev) — a JSON compression format that typically cuts input tokens 40–60% on tabular data.
+An opinionated [Claude Code](https://code.claude.com) skill pack for fintech devs, growth builders, and Anthropic power-users. Seven deep, handwritten skills plus a thin CLI for [TOON](https://toonformat.dev) — a JSON compression format that typically cuts input tokens 40–60% on tabular data.
 
 No orchestration framework. No aspirational YAML. Just skills that activate when you need them.
 
@@ -9,7 +9,7 @@ No orchestration framework. No aspirational YAML. Just skills that activate when
 
 ## What you get
 
-**6 top-level skills** — auto-activate on keywords:
+**7 top-level skills** — auto-activate on keywords:
 
 | Skill | Covers |
 |---|---|
@@ -17,6 +17,7 @@ No orchestration framework. No aspirational YAML. Just skills that activate when
 | **supabase** | Postgres + RLS, Auth (OAuth + SSR cookies), Realtime, Storage, Edge Functions, pgvector |
 | **plaid** | Link flow, Auth (ACH routing/account numbers), Transactions sync, Identity (KYC), Accounts + balance |
 | **expo** | EAS Build (`eas.json`, credentials, CI), EAS Update (OTA, channels, staged rollouts), Expo Router (file-based routing, dynamic segments, layout groups) |
+| **copywriting-frameworks** | Direct-response copywriting for headlines, landing pages, ads, emails, CTAs, AIDA, objections, proof placeholders, and critiques |
 | **anthropic** | Anthropic Claude API — Messages API, prompt caching, tool use, vision, model migration. Includes 6 Claude Code meta-tooling sub-skills: skill-builder, command-builder, hook-builder, mcp-expert, settings-expert, claude-code |
 | **toon-formatter** | When TOON helps, when it doesn't, how to wire the commands |
 
@@ -63,7 +64,7 @@ Claude: [runs /convert-to-toon api-response.json]
 
 The Claude Code skill market is fragmented: Anthropic ships 17 general-purpose skills and nothing for fintech or platform integrations. Community mega-packs (`awesome-claude-code-toolkit`, `antigravity-awesome-skills`) compete on volume — 1,400+ skills with razor-thin depth.
 
-This pack goes the other way: **6 skills, hand-maintained, each genuinely better than what's out there.** The Stripe skill alone is 2,100+ lines of tested integration patterns. If you're building a fintech app or extending Claude itself, this is the starting point.
+This pack goes the other way: **7 skills, hand-maintained, each genuinely better than what's out there.** The Stripe skill alone is 2,100+ lines of tested integration patterns. If you're building a fintech app, shaping its marketing surface, or extending Claude itself, this is the starting point.
 
 ## Not in this repo (and why)
 
@@ -83,6 +84,7 @@ This pack goes the other way: **6 skills, hand-maintained, each genuinely better
 │   ├── supabase/
 │   ├── plaid/         # consolidated: Link + Auth + Transactions + Identity + Accounts
 │   ├── expo/          # consolidated: core + EAS Build + EAS Update + Expo Router
+│   ├── copywriting-frameworks/
 │   ├── anthropic/     # 1 main skill + 6 Claude Code meta-tooling sub-skills
 │   └── toon-formatter/
 ├── commands/

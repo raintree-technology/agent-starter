@@ -14,7 +14,7 @@ const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8')
 program
   .name('claude-starter')
   .version(pkg.version)
-  .description('Claude Code starter kit: 6 depth-focused skills + TOON utilities');
+  .description('Claude Code starter kit: 7 depth-focused skills + TOON utilities');
 
 program
   .command('init [dir]', { isDefault: true })
