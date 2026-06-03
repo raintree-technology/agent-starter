@@ -37,12 +37,31 @@ function splitFrontmatter(markdown) {
 
   const rawFrontmatter = markdown.slice(4, endIndex).trim();
   const metadata = {};
-  for (const line of rawFrontmatter.split('\n')) {
+  const frontmatterLines = rawFrontmatter.split('\n');
+  for (let index = 0; index < frontmatterLines.length; index += 1) {
+    const line = frontmatterLines[index];
     const separator = line.indexOf(':');
     if (separator === -1) continue;
     const key = line.slice(0, separator).trim();
-    const value = line.slice(separator + 1).trim().replace(/^"(.*)"$/, '$1');
-    metadata[key] = value;
+    const value = line.slice(separator + 1).trim();
+    if (!key) continue;
+
+    if (['>', '>-', '|', '|-'].includes(value)) {
+      const blockLines = [];
+      while (
+        index + 1 < frontmatterLines.length &&
+        (frontmatterLines[index + 1].startsWith(' ') || frontmatterLines[index + 1].trim() === '')
+      ) {
+        index += 1;
+        blockLines.push(frontmatterLines[index].replace(/^ {2}/, ''));
+      }
+      metadata[key] = value.startsWith('|')
+        ? blockLines.join('\n').trim()
+        : blockLines.map((blockLine) => blockLine.trim()).join(' ').replace(/\s+/g, ' ').trim();
+      continue;
+    }
+
+    metadata[key] = value.replace(/^"(.*)"$/, '$1');
   }
 
   return {
@@ -134,13 +153,28 @@ test('long reference files include a table of contents', async () => {
 
   for (const file of referenceFiles) {
     const markdown = await readFile(file, 'utf8');
+    const rel = relative(SKILLS_ROOT, file);
+    if (rel.startsWith('hig-')) {
+      assert.match(
+        markdown.slice(0, 1200),
+        /source: https:\/\/developer\.apple\.com\/design\/human-interface-guidelines\//,
+        `${rel} needs canonical Apple source metadata`,
+      );
+      assert.match(
+        markdown.slice(0, 1200),
+        /<!-- hig-doctor:attribution -->/,
+        `${rel} needs HIG Doctor attribution`,
+      );
+      continue;
+    }
+
     const lines = markdown.split('\n').length;
     if (lines <= 100) continue;
 
     assert.match(
       markdown.slice(0, 1200),
       /^## Table of Contents$/m,
-      `${relative(SKILLS_ROOT, file)} needs a top-level table of contents`,
+      `${rel} needs a top-level table of contents`,
     );
   }
 });

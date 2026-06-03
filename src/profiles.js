@@ -1,3 +1,26 @@
+export const HCI_SKILLS = [
+  'human-processor-model',
+  'goms-klm-analysis',
+];
+
+export const HIG_SKILLS = [
+  'hig-doctor-audit',
+  'hig-project-context',
+  'hig-foundations',
+  'hig-platforms',
+  'hig-patterns',
+  'hig-inputs',
+  'hig-technologies',
+  'hig-components-content',
+  'hig-components-layout',
+  'hig-components-menus',
+  'hig-components-search',
+  'hig-components-dialogs',
+  'hig-components-controls',
+  'hig-components-status',
+  'hig-components-system',
+];
+
 export const SKILLS = [
   { id: 'anthropic', category: 'ai', name: 'Anthropic & Claude Code meta-tooling' },
   { id: 'copywriting-frameworks', category: 'marketing', name: 'Copywriting frameworks' },
@@ -11,6 +34,23 @@ export const SKILLS = [
   { id: 'cleanup-unused', category: 'quality', name: 'Unused code cleanup' },
   { id: 'cleanup-weak-types', category: 'quality', name: 'Weak type cleanup' },
   { id: 'expo', category: 'mobile', name: 'Expo / React Native' },
+  { id: 'goms-klm-analysis', category: 'design', name: 'GOMS / KLM analysis' },
+  { id: 'hig-components-content', category: 'design', name: 'Apple HIG content components' },
+  { id: 'hig-components-controls', category: 'design', name: 'Apple HIG controls' },
+  { id: 'hig-components-dialogs', category: 'design', name: 'Apple HIG dialogs' },
+  { id: 'hig-components-layout', category: 'design', name: 'Apple HIG layout' },
+  { id: 'hig-components-menus', category: 'design', name: 'Apple HIG menus and actions' },
+  { id: 'hig-components-search', category: 'design', name: 'Apple HIG search and navigation' },
+  { id: 'hig-components-status', category: 'design', name: 'Apple HIG status and progress' },
+  { id: 'hig-components-system', category: 'design', name: 'Apple HIG system experiences' },
+  { id: 'hig-doctor-audit', category: 'design', name: 'HIG Doctor audit' },
+  { id: 'hig-foundations', category: 'design', name: 'Apple HIG foundations' },
+  { id: 'hig-inputs', category: 'design', name: 'Apple HIG inputs' },
+  { id: 'hig-patterns', category: 'design', name: 'Apple HIG patterns' },
+  { id: 'hig-platforms', category: 'design', name: 'Apple HIG platforms' },
+  { id: 'hig-project-context', category: 'design', name: 'Apple HIG project context' },
+  { id: 'hig-technologies', category: 'design', name: 'Apple HIG technologies' },
+  { id: 'human-processor-model', category: 'design', name: 'Human Processor Model' },
   { id: 'plaid', category: 'banking', name: 'Plaid' },
   { id: 'stripe', category: 'payments', name: 'Stripe' },
   { id: 'supabase', category: 'backend', name: 'Supabase' },
@@ -43,6 +83,24 @@ export const profiles = {
     toon: true,
     hooks: false,
     commands: ['convert-to-toon'],
+  },
+
+  'apple-hig': {
+    name: 'Apple HIG Doctor',
+    description: 'HIG Doctor audit workflow plus the 14 Apple HIG reference skills',
+    skills: HIG_SKILLS,
+    toon: false,
+    hooks: false,
+    commands: [],
+  },
+
+  'design-hci': {
+    name: 'Design + HCI',
+    description: 'Human Processor Model + GOMS/KLM + Apple HIG Doctor',
+    skills: [...HCI_SKILLS, ...HIG_SKILLS],
+    toon: false,
+    hooks: false,
+    commands: [],
   },
 
   minimal: {

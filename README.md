@@ -1,6 +1,6 @@
 # agent-starter
 
-An opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Deep, handwritten skills for fintech, SaaS, mobile, copywriting, agent tooling, code cleanup, and TOON token savings.
+An opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Deep, handwritten skills for fintech, SaaS, mobile, HCI usability modeling, Apple HIG Doctor guidance, copywriting, agent tooling, code cleanup, and TOON token savings.
 
 No orchestration framework. No aspirational YAML. Just agent-native project files generated from one shared skill source.
 
@@ -9,7 +9,7 @@ No orchestration framework. No aspirational YAML. Just agent-native project file
 
 ## What you get
 
-**16 shipped skills**:
+**33 shipped skills**:
 
 | Skill | Covers |
 |---|---|
@@ -17,6 +17,23 @@ No orchestration framework. No aspirational YAML. Just agent-native project file
 | **supabase** | Postgres + RLS, Auth with SSR cookies, Realtime, Storage, Edge Functions, pgvector. |
 | **plaid** | Link flow, Auth, Transactions sync, Identity, Accounts, balances. |
 | **expo** | EAS Build, EAS Update, Expo Router, React Native app patterns. |
+| **human-processor-model** | Estimates task time, cognitive load, memory burden, and perceptual/motor bottlenecks in product flows. |
+| **goms-klm-analysis** | Decomposes workflows into GOMS/KLM goals, operators, methods, selection rules, waits, and interaction-cost comparisons. |
+| **hig-doctor-audit** | Runs the HIG Doctor verification loop with `npx hig-doctor`, severity gates, exported reports, and category-to-skill routing. |
+| **hig-project-context** | Creates shared Apple design context so HIG skills tailor guidance without repetitive questions. |
+| **hig-foundations** | Apple HIG foundations: color, typography, SF Symbols, dark mode, accessibility, layout, materials, motion, privacy, writing. |
+| **hig-platforms** | Platform-specific HIG guidance for iOS, iPadOS, macOS, tvOS, visionOS, watchOS, and games. |
+| **hig-patterns** | Apple UX patterns for onboarding, launch, loading, permissions, feedback, undo, settings, sharing, and collaboration. |
+| **hig-inputs** | Apple input guidance for gestures, keyboards, pointers, Apple Pencil, Digital Crown, focus, remotes, and spatial input. |
+| **hig-technologies** | Apple technology guidance for Siri, Apple Pay, HealthKit, ARKit, iCloud, Sign in with Apple, SharePlay, Wallet, and more. |
+| **hig-components-content** | HIG content display components: charts, collections, image views, web views, color wells, lockups, share sheets. |
+| **hig-components-layout** | HIG layout and organization: sidebars, split views, tab bars, scroll views, windows, panels, lists, and tables. |
+| **hig-components-menus** | HIG menus and actions: buttons, context menus, toolbars, menu bar, pop-up buttons, and disclosure controls. |
+| **hig-components-search** | HIG search and navigation components: search fields, page controls, and path controls. |
+| **hig-components-dialogs** | HIG dialogs and overlays: alerts, action sheets, popovers, sheets, and digit entry views. |
+| **hig-components-controls** | HIG controls: pickers, toggles, sliders, steppers, segmented controls, text fields, labels, and validation. |
+| **hig-components-status** | HIG status and progress UI: progress indicators, status bars, loading states, and activity rings. |
+| **hig-components-system** | HIG system experiences: widgets, Live Activities, notifications, complications, App Clips, shortcuts, and watch faces. |
 | **copywriting-frameworks** | Headlines, landing pages, ads, emails, CTAs, AIDA, objections, proof placeholders, critiques. |
 | **anthropic** | Anthropic Claude API plus Claude Code meta-tooling sub-skills. |
 | **toon-formatter** | When TOON helps, when it does not, and how to invoke the TOON commands. |
@@ -44,16 +61,16 @@ Claude remains the default for backwards compatibility. Use `--agent all` to ins
 
 ```bash
 # Claude Code only (default)
-npx create-agent-starter@3.0.1
+npx create-agent-starter@latest
 
 # Codex only
-npx create-agent-starter@3.0.1 --agent codex
+npx create-agent-starter@latest --agent codex
 
 # Cursor only
-npx create-agent-starter@3.0.1 --agent cursor
+npx create-agent-starter@latest --agent cursor
 
 # Claude Code + Codex + Cursor
-npx create-agent-starter@3.0.1 --agent all
+npx create-agent-starter@latest --agent all
 
 # Backwards-compatible aliases still work
 npx create-claude-starter@3.0.1 --agent all
@@ -68,9 +85,11 @@ npm i @toon-format/toon gpt-tokenizer
 ## Profiles
 
 ```bash
-npx create-agent-starter@3.0.1 --profile web-saas --agent all
-npx create-agent-starter@3.0.1 --profile fintech --agent codex,cursor
-npx create-agent-starter@3.0.1 --skills stripe,copywriting-frameworks --agent cursor
+npx create-agent-starter@latest --profile web-saas --agent all
+npx create-agent-starter@latest --profile fintech --agent codex,cursor
+npx create-agent-starter@latest --profile apple-hig --agent codex,cursor
+npx create-agent-starter@latest --profile design-hci --agent codex
+npx create-agent-starter@latest --skills stripe,copywriting-frameworks --agent cursor
 ```
 
 Profiles select a skill set. Agent targets decide where that skill set is installed.
@@ -95,13 +114,15 @@ AGENTS.md
 
 The package keeps one shared source of truth in `templates/.claude/skills/` and generates Codex/Cursor formats from that source during install.
 
+The Apple HIG skills are vendored from [HIG Doctor](https://apple.raintree.technology), including the progressive-disclosure `references/` corpus with canonical Apple source links and attribution. The `hig-doctor-audit` skill points agents at HIG Doctor's published audit CLI and verification workflow.
+
 ## Documentation Pulls
 
 The `docs` command is Claude-specific because external docs are stored under `.claude/skills/*/docs`.
 
 ```bash
-npx create-agent-starter@3.0.1 docs pull stripe
-npx create-agent-starter@3.0.1 docs status
+npx create-agent-starter@latest docs pull stripe
+npx create-agent-starter@latest docs status
 ```
 
 ## Benchmarks
