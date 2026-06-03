@@ -43,7 +43,7 @@ function isValidCache(cache) {
  * Get path to global docs cache file
  */
 function getCachePath() {
-  return resolve(homedir(), '.claude-starter', 'docs-cache.json');
+  return resolve(homedir(), '.agent-starter', 'docs-cache.json');
 }
 
 /**

@@ -16,7 +16,7 @@ import {
 // Each test file runs in its own process under `node --test`, so sandboxing
 // the home directory here cannot leak into other suites.
 async function withSandboxedHome(t) {
-  const home = await mkdtemp(join(tmpdir(), 'claude-starter-home-'));
+  const home = await mkdtemp(join(tmpdir(), 'agent-starter-home-'));
   const prevHome = process.env.HOME;
   const prevUserProfile = process.env.USERPROFILE;
   process.env.HOME = home;
@@ -28,7 +28,7 @@ async function withSandboxedHome(t) {
     else process.env.USERPROFILE = prevUserProfile;
     await rm(home, { recursive: true, force: true });
   });
-  return join(home, '.claude-starter', 'docs-cache.json');
+  return join(home, '.agent-starter', 'docs-cache.json');
 }
 
 test('recordDocsPulled persists metadata that getDocsInfo can read back', async (t) => {
@@ -81,5 +81,5 @@ test('writeDocsCache refuses to persist a malformed cache object', async (t) => 
   await withSandboxedHome(t);
 
   await assert.rejects(writeDocsCache({ docs: [] }), /invalid docs cache/i);
-  assert.equal(existsSync(join(process.env.HOME, '.claude-starter', 'docs-cache.json')), false);
+  assert.equal(existsSync(join(process.env.HOME, '.agent-starter', 'docs-cache.json')), false);
 });

@@ -184,7 +184,7 @@ export async function docs(action, skillId, options = {}) {
 
   if (!(await pathExists(claudeDir))) {
     console.log(chalk.yellow('\nNo .claude/ directory found.'));
-    console.log(chalk.dim('Run `npx claude-starter` first to initialize.\n'));
+    console.log(chalk.dim('Run `npx agent-starter --agent claude` first to initialize.\n'));
     return;
   }
 
@@ -338,10 +338,10 @@ async function showStatus(skillId, claudeDir) {
   }
 
   console.log('\n' + chalk.dim('Commands:'));
-  console.log(chalk.dim('  npx claude-starter docs pull         Pull all docs'));
-  console.log(chalk.dim('  npx claude-starter docs pull stripe  Pull specific skill'));
-  console.log(chalk.dim('  npx claude-starter docs update       Update stale docs'));
-  console.log(chalk.dim('  npx claude-starter docs sync         Auto-update everything stale\n'));
+  console.log(chalk.dim('  npx agent-starter docs pull         Pull all docs'));
+  console.log(chalk.dim('  npx agent-starter docs pull stripe  Pull specific skill'));
+  console.log(chalk.dim('  npx agent-starter docs update       Update stale docs'));
+  console.log(chalk.dim('  npx agent-starter docs sync         Auto-update everything stale\n'));
 }
 
 async function syncDocs(claudeDir, options) {

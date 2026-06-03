@@ -1,110 +1,110 @@
-# claude-starter
+# agent-starter
 
-An opinionated [Claude Code](https://code.claude.com) skill pack for fintech devs, growth builders, and Anthropic power-users. Seven deep, handwritten skills plus a thin CLI for [TOON](https://toonformat.dev) — a JSON compression format that typically cuts input tokens 40–60% on tabular data.
+An opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Seven deep, handwritten skills for fintech, SaaS, mobile, copywriting, agent tooling, and TOON token savings.
 
-No orchestration framework. No aspirational YAML. Just skills that activate when you need them.
+No orchestration framework. No aspirational YAML. Just agent-native project files generated from one shared skill source.
 
-[![npm version](https://img.shields.io/npm/v/create-claude-starter.svg)](https://www.npmjs.com/package/create-claude-starter)
+[![npm version](https://img.shields.io/npm/v/create-agent-starter.svg)](https://www.npmjs.com/package/create-agent-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## What you get
 
-**7 top-level skills** — auto-activate on keywords:
+**7 top-level skills**:
 
 | Skill | Covers |
 |---|---|
-| **stripe** | Checkout, Payment Intents, subscriptions, Connect/marketplace, Terminal, Radar, Treasury, Issuing, webhooks (signature + idempotency) — 2,100+ lines of real patterns |
-| **supabase** | Postgres + RLS, Auth (OAuth + SSR cookies), Realtime, Storage, Edge Functions, pgvector |
-| **plaid** | Link flow, Auth (ACH routing/account numbers), Transactions sync, Identity (KYC), Accounts + balance |
-| **expo** | EAS Build (`eas.json`, credentials, CI), EAS Update (OTA, channels, staged rollouts), Expo Router (file-based routing, dynamic segments, layout groups) |
-| **copywriting-frameworks** | Direct-response copywriting for headlines, landing pages, ads, emails, CTAs, AIDA, objections, proof placeholders, and critiques |
-| **anthropic** | Anthropic Claude API — Messages API, prompt caching, tool use, vision, model migration. Includes 6 Claude Code meta-tooling sub-skills: skill-builder, command-builder, hook-builder, mcp-expert, settings-expert, claude-code |
-| **toon-formatter** | When TOON helps, when it doesn't, how to wire the commands |
+| **stripe** | Checkout, Payment Intents, subscriptions, Connect/marketplace, Terminal, Radar, Treasury, Issuing, webhooks. |
+| **supabase** | Postgres + RLS, Auth with SSR cookies, Realtime, Storage, Edge Functions, pgvector. |
+| **plaid** | Link flow, Auth, Transactions sync, Identity, Accounts, balances. |
+| **expo** | EAS Build, EAS Update, Expo Router, React Native app patterns. |
+| **copywriting-frameworks** | Headlines, landing pages, ads, emails, CTAs, AIDA, objections, proof placeholders, critiques. |
+| **anthropic** | Anthropic Claude API plus Claude Code meta-tooling sub-skills. |
+| **toon-formatter** | When TOON helps, when it does not, and how to invoke the TOON commands. |
 
-**5 slash commands** for TOON:
-- `/convert-to-toon <file>` — encode + report measured savings
-- `/analyze-tokens <file>` — compare JSON vs TOON token counts without writing a file
-- `/toon-encode <file>`, `/toon-decode <file>`, `/toon-validate <file>`
+## Agent Targets
 
-All TOON commands shell out to the canonical [`@toon-format/toon`](https://www.npmjs.com/package/@toon-format/toon) npm library via a 90-line wrapper at `.claude/utils/toon/cli.mjs`, and use [`gpt-tokenizer`](https://www.npmjs.com/package/gpt-tokenizer) for real token counts (OpenAI BPE — directionally accurate proxy for Claude; for exact counts use Anthropic's `/v1/messages/count_tokens` endpoint).
+| Agent | Generated output | Notes |
+|---|---|---|
+| Claude Code | `.claude/` | Native Claude skills, settings, TOON slash commands, optional hooks. |
+| Codex | `AGENTS.md` + `.codex/skills/*/SKILL.md` | Root Codex guidance points to project-local skill files. |
+| Cursor | `.cursor/rules/*.mdc` | Cursor project rules generated as Agent Requested rules, plus an always-applied skill-selection rule. |
+
+Claude remains the default for backwards compatibility. Use `--agent all` to install all supported targets.
 
 ## Install
 
 ```bash
-# Into current project
-npx create-claude-starter@3.0.0
+# Claude Code only (default)
+npx create-agent-starter@3.0.0
 
-# Into a specific dir, no prompts
-npx create-claude-starter@3.0.0 ./my-app --yes
+# Codex only
+npx create-agent-starter@3.0.0 --agent codex
+
+# Cursor only
+npx create-agent-starter@3.0.0 --agent cursor
+
+# Claude Code + Codex + Cursor
+npx create-agent-starter@3.0.0 --agent all
+
+# Backwards-compatible aliases still work
+npx create-claude-starter@3.0.0 --agent all
 ```
 
-For TOON commands, add the runtime deps to your project:
+For Claude TOON commands, add the runtime deps to your project:
+
 ```bash
 npm i @toon-format/toon gpt-tokenizer
 ```
 
-## Use
+## Profiles
 
-Skills auto-activate on context:
-
-```
-User: How do I verify a Stripe webhook signature?
-Claude: [stripe-expert activates] Use stripe.webhooks.constructEvent...
-
-User: Convert api-response.json to TOON
-Claude: [runs /convert-to-toon api-response.json]
-  ✓ Wrote api-response.toon
-  Tokenizer: gpt-tokenizer (OpenAI BPE — approximate proxy for Claude)
-  JSON:      4,587 tokens (12,840 bytes)
-  TOON:      2,759 tokens (7,128 bytes)
-  Saved:     1,828 tokens (39.8%)
+```bash
+npx create-agent-starter@3.0.0 --profile web-saas --agent all
+npx create-agent-starter@3.0.0 --profile fintech --agent codex,cursor
+npx create-agent-starter@3.0.0 --skills stripe,copywriting-frameworks --agent cursor
 ```
 
-## Why this exists
-
-The Claude Code skill market is fragmented: Anthropic ships 17 general-purpose skills and nothing for fintech or platform integrations. Community mega-packs (`awesome-claude-code-toolkit`, `antigravity-awesome-skills`) compete on volume — 1,400+ skills with razor-thin depth.
-
-This pack goes the other way: **7 skills, hand-maintained, each genuinely better than what's out there.** The Stripe skill alone is 2,100+ lines of tested integration patterns. If you're building a fintech app, shaping its marketing surface, or extending Claude itself, this is the starting point.
-
-## Not in this repo (and why)
-
-- **Orchestration / semantic matching / multi-skill workflows** — removed. Claude Code selects skills natively via frontmatter `description`; the previous TypeScript orchestration engine was placeholder code.
-- **YAML workflow engine** — removed. Out of scope for a skill pack.
-- **Meta-commands / command registry / validators** — removed. Claude Code's built-in `/skill` and plugin system handle this.
-- **Native Zig TOON binary** — removed. The canonical `@toon-format/toon` npm package (1.8M downloads/month) ships pure JS, cross-platform.
-- **Blockchain / iOS / Shopify / Whop skills** — removed. Niche or thin; if you need them, spin a focused pack.
-- **Duplicated code-quality skills** — removed. Anthropic already ships `cleanup-unused`, `cleanup-slop`, etc. natively.
+Profiles select a skill set. Agent targets decide where that skill set is installed.
 
 ## Structure
 
-```
+```text
 .claude/
-├── skills/
-│   ├── stripe/        # 2,100+ lines
-│   ├── supabase/
-│   ├── plaid/         # consolidated: Link + Auth + Transactions + Identity + Accounts
-│   ├── expo/          # consolidated: core + EAS Build + EAS Update + Expo Router
-│   ├── copywriting-frameworks/
-│   ├── anthropic/     # 1 main skill + 6 Claude Code meta-tooling sub-skills
-│   └── toon-formatter/
-├── commands/
-│   ├── convert-to-toon.md
-│   ├── analyze-tokens.md
-│   ├── toon-{encode,decode,validate}.md
-│   └── {discover,install}-skills.md
-└── utils/toon/cli.mjs # 90-line wrapper around @toon-format/toon + gpt-tokenizer
+  skills/<skill>/skill.md
+  commands/
+  utils/toon/cli.mjs
+
+.codex/
+  skills/<skill>/SKILL.md
+AGENTS.md
+
+.cursor/
+  rules/agent-starter.mdc
+  rules/<skill>.mdc
+  rules/<skill>/references/
+```
+
+The package keeps one shared source of truth in `templates/.claude/skills/` and generates Codex/Cursor formats from that source during install.
+
+## Documentation Pulls
+
+The `docs` command is Claude-specific because external docs are stored under `.claude/skills/*/docs`.
+
+```bash
+npx agent-starter docs pull stripe
+npx agent-starter docs status
 ```
 
 ## Benchmarks
 
-Real measured token counts for a handful of representative workloads are in [`bench/`](bench/). Numbers use `gpt-tokenizer`, not a claimed heuristic.
+Real measured token counts for representative workloads are in [`bench/`](bench/). Numbers use `gpt-tokenizer`, not a claimed heuristic.
 
 ## Requirements
 
-- Node.js ≥ 18
-- Claude Code ≥ 1.0
-- (Optional) `@toon-format/toon` and `gpt-tokenizer` in your project for TOON commands
+- Node.js >= 18
+- Claude Code, Codex, or Cursor, depending on the selected target
+- Optional: `@toon-format/toon` and `gpt-tokenizer` for Claude TOON slash commands
 
 ## License
 
-MIT. Not affiliated with Stripe, Supabase, Plaid, Expo, or Anthropic.
+MIT. Not affiliated with Stripe, Supabase, Plaid, Expo, Anthropic, OpenAI, Cursor, or `@toon-format/toon`.

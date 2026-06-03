@@ -1,6 +1,6 @@
 # Claude Code configuration
 
-This directory is dropped into your project by `npx create-claude-starter`. It gives Claude Code seven deep skills plus a thin TOON (Token-Oriented Object Notation) command layer.
+This directory is dropped into your project by `npx create-agent-starter --agent claude` or `--agent all`. It gives Claude Code seven deep skills plus a thin TOON (Token-Oriented Object Notation) command layer.
 
 ## What's here
 

@@ -1,6 +1,6 @@
 # claude.raintree.technology
 
-Landing page for [claude-starter](https://github.com/raintree-technology/claude-starter).
+Landing page for [agent-starter](https://github.com/raintree-technology/claude-starter).
 
 ## Develop
 

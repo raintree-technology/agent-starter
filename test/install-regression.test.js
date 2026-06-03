@@ -8,15 +8,21 @@ import { join, resolve } from 'node:path';
 import { promisify } from 'node:util';
 
 import {
+  copyAgentEssentials,
+  copyAgentSkills,
   copyAll,
   copyCommands,
   copySkills,
   copyToonUtils,
+  isAgentSkillInstalled,
   isSkillInstalled,
   normalizeSkillPath,
+  writeCodexAgentsFile,
+  writeCursorProjectRule,
 } from '../src/utils/copy.js';
 import { setupToonBinary } from '../src/utils/platform.js';
 import { skillIdToPath } from '../src/profiles.js';
+import { parseAgentTargets } from '../src/agents.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -28,6 +34,12 @@ async function withTempDir(t) {
   return dir;
 }
 
+test('agent target parser supports aliases and rejects unknown targets', () => {
+  assert.deepEqual(parseAgentTargets('codex,cursor'), ['codex', 'cursor']);
+  assert.deepEqual(parseAgentTargets('all'), ['claude', 'codex', 'cursor']);
+  assert.throws(() => parseAgentTargets('windsurf'), /Unknown agent target/);
+});
+
 test('profile skill paths install under .claude/skills/<id>', async (t) => {
   const dir = await withTempDir(t);
 
@@ -36,6 +48,55 @@ test('profile skill paths install under .claude/skills/<id>', async (t) => {
   assert.equal(existsSync(join(dir, '.claude', 'skills', 'stripe', 'skill.md')), true);
   assert.equal(existsSync(join(dir, '.claude', 'skills', 'skills')), false);
   assert.equal(await isSkillInstalled(dir, 'stripe'), true);
+});
+
+test('codex target installs local skills and root AGENTS guidance', async (t) => {
+  const dir = await withTempDir(t);
+
+  await copyAgentEssentials(dir, 'codex');
+  await copyAgentSkills(dir, 'codex', [skillIdToPath('copywriting-frameworks')]);
+  await writeCodexAgentsFile(dir, [skillIdToPath('copywriting-frameworks')]);
+
+  assert.equal(
+    existsSync(join(dir, '.codex', 'skills', 'copywriting-frameworks', 'SKILL.md')),
+    true,
+  );
+  assert.equal(
+    existsSync(join(
+      dir,
+      '.codex',
+      'skills',
+      'copywriting-frameworks',
+      'references',
+      'direct-response-patterns.md',
+    )),
+    true,
+  );
+  assert.equal(existsSync(join(dir, 'AGENTS.md')), true);
+  assert.equal(await isAgentSkillInstalled(dir, 'codex', 'copywriting-frameworks'), true);
+});
+
+test('cursor target installs project rules and skill references', async (t) => {
+  const dir = await withTempDir(t);
+
+  await copyAgentEssentials(dir, 'cursor');
+  await copyAgentSkills(dir, 'cursor', [skillIdToPath('copywriting-frameworks')]);
+  await writeCursorProjectRule(dir, [skillIdToPath('copywriting-frameworks')]);
+
+  assert.equal(existsSync(join(dir, '.cursor', 'rules', 'agent-starter.mdc')), true);
+  assert.equal(existsSync(join(dir, '.cursor', 'rules', 'copywriting-frameworks.mdc')), true);
+  assert.equal(
+    existsSync(join(
+      dir,
+      '.cursor',
+      'rules',
+      'copywriting-frameworks',
+      'references',
+      'direct-response-patterns.md',
+    )),
+    true,
+  );
+  assert.equal(await isAgentSkillInstalled(dir, 'cursor', 'copywriting-frameworks'), true);
 });
 
 test('copywriting skill installs with its reference material', async (t) => {
@@ -151,4 +212,46 @@ test('CLI explicit init subcommand respects non-interactive options', async (t) 
   assert.equal(existsSync(join(dir, '.claude', 'skills', 'toon-formatter', 'skill.md')), true);
   assert.equal(existsSync(join(dir, '.claude', 'utils', 'toon', 'cli.mjs')), true);
   assert.equal(existsSync(join(dir, '.claude', 'skills', 'skills')), false);
+});
+
+test('CLI can install all supported agent targets', async (t) => {
+  const dir = await withTempDir(t);
+  const cliPath = resolve('bin/cli.js');
+
+  await execFileAsync(process.execPath, [
+    cliPath,
+    'init',
+    dir,
+    '--yes',
+    '--agent',
+    'all',
+    '--skills',
+    'copywriting-frameworks',
+  ]);
+
+  assert.equal(existsSync(join(dir, '.claude', 'skills', 'copywriting-frameworks', 'skill.md')), true);
+  assert.equal(existsSync(join(dir, '.codex', 'skills', 'copywriting-frameworks', 'SKILL.md')), true);
+  assert.equal(existsSync(join(dir, 'AGENTS.md')), true);
+  assert.equal(existsSync(join(dir, '.cursor', 'rules', 'copywriting-frameworks.mdc')), true);
+});
+
+test('CLI codex-only install does not emit Claude or Cursor targets', async (t) => {
+  const dir = await withTempDir(t);
+  const cliPath = resolve('bin/cli.js');
+
+  await execFileAsync(process.execPath, [
+    cliPath,
+    'init',
+    dir,
+    '--yes',
+    '--agent',
+    'codex',
+    '--skills',
+    'stripe',
+  ]);
+
+  assert.equal(existsSync(join(dir, '.codex', 'skills', 'stripe', 'SKILL.md')), true);
+  assert.equal(existsSync(join(dir, 'AGENTS.md')), true);
+  assert.equal(existsSync(join(dir, '.claude')), false);
+  assert.equal(existsSync(join(dir, '.cursor')), false);
 });

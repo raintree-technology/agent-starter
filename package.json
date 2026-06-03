@@ -1,10 +1,12 @@
 {
-  "name": "create-claude-starter",
+  "name": "create-agent-starter",
   "version": "3.0.0",
-  "description": "Opinionated Claude Code skill pack for fintech, growth builders, and Anthropic power-users: deep skills for Stripe, Supabase, Plaid, Expo, copywriting frameworks, and Claude Code meta-tooling, plus a TOON command wrapper for input-token savings.",
+  "description": "Opinionated multi-agent skill pack for Claude Code, Codex, and Cursor: deep skills for Stripe, Supabase, Plaid, Expo, copywriting frameworks, and agent meta-tooling, plus a TOON command wrapper for input-token savings.",
   "type": "module",
   "main": "src/index.js",
   "bin": {
+    "agent-starter": "bin/cli.js",
+    "create-agent-starter": "bin/cli.js",
     "claude-starter": "bin/cli.js",
     "create-claude-starter": "bin/cli.js"
   },
@@ -24,6 +26,9 @@
   "keywords": [
     "claude",
     "claude-code",
+    "codex",
+    "cursor",
+    "agents",
     "claude-skills",
     "anthropic",
     "stripe",
