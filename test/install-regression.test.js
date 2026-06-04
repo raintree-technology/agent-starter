@@ -43,11 +43,11 @@ test('agent target parser supports aliases and rejects unknown targets', () => {
 test('profile skill paths install under .claude/skills/<id>', async (t) => {
   const dir = await withTempDir(t);
 
-  await copySkills(dir, [skillIdToPath('stripe')]);
+  await copySkills(dir, [skillIdToPath('toon-formatter')]);
 
-  assert.equal(existsSync(join(dir, '.claude', 'skills', 'stripe', 'skill.md')), true);
+  assert.equal(existsSync(join(dir, '.claude', 'skills', 'toon-formatter', 'skill.md')), true);
   assert.equal(existsSync(join(dir, '.claude', 'skills', 'skills')), false);
-  assert.equal(await isSkillInstalled(dir, 'stripe'), true);
+  assert.equal(await isSkillInstalled(dir, 'toon-formatter'), true);
 });
 
 test('codex target installs local skills and root AGENTS guidance', async (t) => {
@@ -158,22 +158,22 @@ test('copywriting skill installs with its reference material', async (t) => {
 test('legacy skills/<id> inputs normalize to the current destination', async (t) => {
   const dir = await withTempDir(t);
 
-  await copySkills(dir, ['skills/plaid']);
+  await copySkills(dir, ['skills/toon-formatter']);
 
-  assert.equal(normalizeSkillPath('skills/plaid'), 'plaid');
-  assert.equal(existsSync(join(dir, '.claude', 'skills', 'plaid', 'skill.md')), true);
-  assert.equal(existsSync(join(dir, '.claude', 'skills', 'skills', 'plaid')), false);
+  assert.equal(normalizeSkillPath('skills/toon-formatter'), 'toon-formatter');
+  assert.equal(existsSync(join(dir, '.claude', 'skills', 'toon-formatter', 'skill.md')), true);
+  assert.equal(existsSync(join(dir, '.claude', 'skills', 'skills', 'toon-formatter')), false);
 });
 
 test('copySkills preflights all requested skills before writing', async (t) => {
   const dir = await withTempDir(t);
 
   await assert.rejects(
-    copySkills(dir, ['stripe', 'missing-skill']),
+    copySkills(dir, ['toon-formatter', 'missing-skill']),
     /Skill not found: missing-skill/,
   );
 
-  assert.equal(existsSync(join(dir, '.claude', 'skills', 'stripe')), false);
+  assert.equal(existsSync(join(dir, '.claude', 'skills', 'toon-formatter')), false);
 });
 
 test('copyCommands rejects traversal before creating command output', async (t) => {
@@ -311,10 +311,10 @@ test('CLI codex-only install does not emit Claude or Cursor targets', async (t) 
     '--agent',
     'codex',
     '--skills',
-    'stripe',
+    'cleanup-unused',
   ]);
 
-  assert.equal(existsSync(join(dir, '.codex', 'skills', 'stripe', 'SKILL.md')), true);
+  assert.equal(existsSync(join(dir, '.codex', 'skills', 'cleanup-unused', 'SKILL.md')), true);
   assert.equal(existsSync(join(dir, 'AGENTS.md')), true);
   assert.equal(existsSync(join(dir, '.claude')), false);
   assert.equal(existsSync(join(dir, '.cursor')), false);

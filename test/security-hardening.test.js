@@ -49,13 +49,13 @@ test('isValidUrl blocks IPv6 private ranges', () => {
 });
 
 test('isValidUrl still allows legitimate URLs', () => {
-  assert.ok(isValidUrl('https://docs.stripe.com'));
-  assert.ok(isValidUrl('https://supabase.com/docs'));
+  assert.ok(isValidUrl('https://docs.example.com'));
+  assert.ok(isValidUrl('https://example.com/docs'));
   assert.ok(isValidUrl('https://example.com/path'));
 });
 
 test('isValidUrl rejects non-HTTPS and credentialed URLs', () => {
-  assert.equal(getUrlValidationError('http://docs.stripe.com'), 'URL must use https');
+  assert.equal(getUrlValidationError('http://docs.example.com'), 'URL must use https');
   assert.equal(getUrlValidationError('https://user:pass@example.com'), 'URL must not include credentials');
 });
 
@@ -143,7 +143,7 @@ test('sanitizeForLog strips control and DEL characters', () => {
 
 test('sanitizeForLog preserves tab, newline, and printable text', () => {
   assert.equal(sanitizeForLog('a\tb\nc d'), 'a\tb\nc d');
-  assert.equal(sanitizeForLog('https://docs.stripe.com'), 'https://docs.stripe.com');
+  assert.equal(sanitizeForLog('https://docs.example.com'), 'https://docs.example.com');
 });
 
 test('sanitizeForLog coerces non-string input to a string', () => {

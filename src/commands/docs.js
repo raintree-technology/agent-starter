@@ -339,7 +339,7 @@ async function showStatus(skillId, claudeDir) {
 
   console.log('\n' + chalk.dim('Commands:'));
   console.log(chalk.dim('  npx agent-starter docs pull         Pull all docs'));
-  console.log(chalk.dim('  npx agent-starter docs pull stripe  Pull specific skill'));
+  console.log(chalk.dim('  npx agent-starter docs pull <skill-id>  Pull specific skill'));
   console.log(chalk.dim('  npx agent-starter docs update       Update stale docs'));
   console.log(chalk.dim('  npx agent-starter docs sync         Auto-update everything stale\n'));
 }

@@ -87,7 +87,7 @@ ${table}
 
 ## Methodology caveats
 
-- Tokenizer: \`gpt-tokenizer@3.x\` (cl100k_base / OpenAI BPE). Claude uses a different tokenizer; exact Claude counts require Anthropic's \`/v1/messages/count_tokens\` endpoint.
+- Tokenizer: \`gpt-tokenizer@3.x\` (cl100k_base / OpenAI BPE). Claude uses a different tokenizer; exact Claude counts require a provider-specific token count endpoint.
 - TOON: \`@toon-format/toon@2.1.0\`, default options (comma delimiter, key folding on).
 - Workloads: deterministic, seeded PRNG. See \`bench/generate-workloads.mjs\` for the exact shape of each sample.
 - These numbers are **input-token** savings only. Output tokens are unaffected.

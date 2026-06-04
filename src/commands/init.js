@@ -141,7 +141,7 @@ export async function init(dir = '.', options = {}) {
       name: 'selectedProfile',
       message: 'Which skills do you want to install?',
       choices: getProfileChoices(),
-      default: 'web-saas',
+      default: 'all',
     }]);
 
     options.profile = selectedProfile;
@@ -221,10 +221,6 @@ export async function init(dir = '.', options = {}) {
 
     console.log('\n' + chalk.green('Agent starter installed successfully.') + '\n');
     console.log(chalk.bold('Next steps:'));
-    if (agentTargets.includes('claude')) {
-      console.log(chalk.dim('  Pull external docs for Claude skills (requires docpull):'));
-      console.log(`     ${chalk.cyan('npx agent-starter docs pull stripe')}`);
-    }
     if (agentTargets.includes('codex')) {
       console.log(chalk.dim('  Codex project guidance:'));
       console.log(`     ${chalk.cyan(join(targetDir, 'AGENTS.md'))}`);

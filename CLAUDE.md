@@ -35,15 +35,12 @@ The shared skill source is still `templates/.claude/skills/`. Codex and Cursor o
 
 ## Skills
 
-The shipped profile skills are defined in `src/profiles.js`:
+The shipped profile skills are defined in `src/profiles.js`. Current groups are:
 
-- `stripe`
-- `supabase`
-- `plaid`
-- `expo`
-- `copywriting-frameworks`
-- `anthropic`
-- `toon-formatter`
+- HCI usability modeling: `human-processor-model`, `goms-klm-analysis`
+- Apple HIG Doctor and reference skills: `hig-*`
+- Cleanup skills: `cleanup-*`
+- Growth and utility skills: `copywriting-frameworks`, `toon-formatter`
 
 When adding a skill, update the shared source in `templates/.claude/skills/`, register it in `src/profiles.js`, add regression coverage for all relevant agent targets, and update README/site copy.
 
