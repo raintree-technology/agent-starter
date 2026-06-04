@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { canonicalUrl, siteConfig } from '@/lib/site'
 
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'development'
+const CANONICAL_HOST = new URL(siteConfig.url).host
 
 const STATIC_SECURITY_HEADERS = {
   'X-DNS-Prefetch-Control': 'on',
@@ -12,10 +14,14 @@ const STATIC_SECURITY_HEADERS = {
 }
 
 function buildContentSecurityPolicy(nonce: string) {
+  const styleSrc = IS_DEVELOPMENT
+    ? "style-src 'self' 'unsafe-inline'"
+    : `style-src 'self' 'nonce-${nonce}'`
+
   const directives = [
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${IS_DEVELOPMENT ? " 'unsafe-eval'" : ''}`,
-    `style-src 'self' 'nonce-${nonce}'`,
+    styleSrc,
     "img-src 'self' data:",
     "font-src 'self' https://fonts.gstatic.com",
     `connect-src 'self'${IS_DEVELOPMENT ? ' ws: wss:' : ''}`,
@@ -35,6 +41,15 @@ function buildContentSecurityPolicy(nonce: string) {
 }
 
 export function proxy(request: NextRequest) {
+  const requestHost = request.headers.get('host')?.toLowerCase()
+  const forwardedProtocol = request.headers.get('x-forwarded-proto')?.toLowerCase()
+  const shouldRedirectHost = requestHost === `www.${CANONICAL_HOST}`
+  const shouldRedirectProtocol = requestHost === CANONICAL_HOST && forwardedProtocol === 'http'
+
+  if (!IS_DEVELOPMENT && (shouldRedirectHost || shouldRedirectProtocol)) {
+    return NextResponse.redirect(canonicalUrl(request.nextUrl.pathname, request.nextUrl.search), 308)
+  }
+
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   const contentSecurityPolicy = buildContentSecurityPolicy(nonce)
   const requestHeaders = new Headers(request.headers)

@@ -22,7 +22,6 @@ export const HIG_SKILLS = [
 ];
 
 export const SKILLS = [
-  { id: 'anthropic', category: 'ai', name: 'Anthropic & Claude Code meta-tooling' },
   { id: 'copywriting-frameworks', category: 'marketing', name: 'Copywriting frameworks' },
   { id: 'cleanup-all', category: 'quality', name: 'Full cleanup pipeline' },
   { id: 'cleanup-cycles', category: 'quality', name: 'Circular dependency cleanup' },
@@ -33,7 +32,6 @@ export const SKILLS = [
   { id: 'cleanup-types', category: 'quality', name: 'Type consolidation cleanup' },
   { id: 'cleanup-unused', category: 'quality', name: 'Unused code cleanup' },
   { id: 'cleanup-weak-types', category: 'quality', name: 'Weak type cleanup' },
-  { id: 'expo', category: 'mobile', name: 'Expo / React Native' },
   { id: 'goms-klm-analysis', category: 'design', name: 'GOMS / KLM analysis' },
   { id: 'hig-components-content', category: 'design', name: 'Apple HIG content components' },
   { id: 'hig-components-controls', category: 'design', name: 'Apple HIG controls' },
@@ -51,9 +49,6 @@ export const SKILLS = [
   { id: 'hig-project-context', category: 'design', name: 'Apple HIG project context' },
   { id: 'hig-technologies', category: 'design', name: 'Apple HIG technologies' },
   { id: 'human-processor-model', category: 'design', name: 'Human Processor Model' },
-  { id: 'plaid', category: 'banking', name: 'Plaid' },
-  { id: 'stripe', category: 'payments', name: 'Stripe' },
-  { id: 'supabase', category: 'backend', name: 'Supabase' },
   { id: 'toon-formatter', category: 'utilities', name: 'TOON formatter' },
 ];
 
@@ -65,24 +60,6 @@ export const profiles = {
     toon: true,
     hooks: false,
     commands: ['analyze-tokens', 'convert-to-toon', 'toon-decode', 'toon-encode', 'toon-validate'],
-  },
-
-  'web-saas': {
-    name: 'Web SaaS',
-    description: 'Stripe + Supabase + Expo + copywriting + TOON — common SaaS stack',
-    skills: ['stripe', 'supabase', 'expo', 'copywriting-frameworks', 'toon-formatter'],
-    toon: true,
-    hooks: false,
-    commands: ['analyze-tokens', 'convert-to-toon', 'toon-decode', 'toon-encode'],
-  },
-
-  fintech: {
-    name: 'Fintech',
-    description: 'Stripe + Plaid + Supabase',
-    skills: ['stripe', 'plaid', 'supabase', 'toon-formatter'],
-    toon: true,
-    hooks: false,
-    commands: ['convert-to-toon'],
   },
 
   'apple-hig': {

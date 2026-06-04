@@ -28,13 +28,8 @@ All dependencies use permissive licenses compatible with MIT:
 ## ✅ Trademark Compliance
 
 Created TRADEMARKS.md with proper disclaimers for:
-- Stripe (Stripe, Inc.)
 - Anthropic/Claude (Anthropic PBC)
-- Supabase (Supabase, Inc.)
-- Expo (650 Industries, Inc.)
-- Plaid (Plaid Inc.)
-- Shopify (Shopify Inc.)
-- Whop (Whop, Inc.)
+- Apple (Apple Inc.)
 
 **Fair Use:** References made solely for identification and integration purposes.
 **No Endorsement:** Clearly states package is not affiliated with or endorsed by these companies.
@@ -42,9 +37,9 @@ Created TRADEMARKS.md with proper disclaimers for:
 ## ✅ Third-Party Content
 
 **Skills:**
-- Contain integration guides only (metadata/configuration)
+- Contain agent guidance and reference material only (metadata/configuration)
 - Do NOT include copyrighted documentation
-- Reference official documentation with instructions to pull separately via `docpull`
+- Reference official documentation through attribution or separate user-managed pulls
 - All skill descriptions are original content
 
 **External Documentation:**
@@ -87,14 +82,14 @@ Created TRADEMARKS.md with proper disclaimers for:
 ## ✅ Accuracy
 
 **Package Claims:**
-- "40 skills" ✓ (verified in manifest.json)
+- "28 shipped skills" ✓ (verified in src/profiles.js)
 - "30-60% token savings" ✓ (TOON spec documented)
 - "Security hardened" ✓ (security fixes applied and documented)
 - All features tested ✓ (COMPLETE_TEST_RESULTS.md - deleted but tests passed)
 
 ## ✅ npm Specific
 
-- Package name: `create-claude-starter` (follows create-* convention)
+- Package name: `create-agent-starter` (follows create-* convention)
 - Scoped correctly for creator tools
 - Not impersonating official Anthropic/Claude packages
 - README clearly describes purpose and usage

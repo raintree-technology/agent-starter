@@ -34,10 +34,10 @@ async function withSandboxedHome(t) {
 test('recordDocsPulled persists metadata that getDocsInfo can read back', async (t) => {
   await withSandboxedHome(t);
 
-  await recordDocsPulled('stripe', { url: 'https://docs.stripe.com', size: 10, fileCount: 3 });
-  const info = await getDocsInfo('stripe');
+  await recordDocsPulled('copywriting-frameworks', { url: 'https://example.com/docs', size: 10, fileCount: 3 });
+  const info = await getDocsInfo('copywriting-frameworks');
 
-  assert.equal(info.url, 'https://docs.stripe.com');
+  assert.equal(info.url, 'https://example.com/docs');
   assert.equal(info.fileCount, 3);
   assert.ok(info.pulledAt);
 });
@@ -45,7 +45,7 @@ test('recordDocsPulled persists metadata that getDocsInfo can read back', async 
 test('cache is written with owner-only file and directory modes', { skip: process.platform === 'win32' }, async (t) => {
   const cachePath = await withSandboxedHome(t);
 
-  await recordDocsPulled('plaid', { url: 'https://plaid.com/docs' });
+  await recordDocsPulled('hig-foundations', { url: 'https://example.com/hig' });
 
   assert.equal(statSync(cachePath).mode & 0o777, 0o600);
   assert.equal(statSync(join(cachePath, '..')).mode & 0o777, 0o700);

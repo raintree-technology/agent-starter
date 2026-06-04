@@ -1,6 +1,6 @@
 # agent-starter
 
-An opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Deep, handwritten skills for fintech, SaaS, mobile, HCI usability modeling, Apple HIG Doctor guidance, copywriting, agent tooling, code cleanup, and TOON token savings.
+An opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Deep, handwritten skills for HCI usability modeling, Apple HIG Doctor guidance, copywriting, code cleanup, and TOON token savings.
 
 No orchestration framework. No aspirational YAML. Just agent-native project files generated from one shared skill source.
 
@@ -9,14 +9,10 @@ No orchestration framework. No aspirational YAML. Just agent-native project file
 
 ## What you get
 
-**33 shipped skills**:
+**28 shipped skills**:
 
 | Skill | Covers |
 |---|---|
-| **stripe** | Checkout, Payment Intents, subscriptions, Connect/marketplace, Terminal, Radar, Treasury, Issuing, webhooks. |
-| **supabase** | Postgres + RLS, Auth with SSR cookies, Realtime, Storage, Edge Functions, pgvector. |
-| **plaid** | Link flow, Auth, Transactions sync, Identity, Accounts, balances. |
-| **expo** | EAS Build, EAS Update, Expo Router, React Native app patterns. |
 | **human-processor-model** | Estimates task time, cognitive load, memory burden, and perceptual/motor bottlenecks in product flows. |
 | **goms-klm-analysis** | Decomposes workflows into GOMS/KLM goals, operators, methods, selection rules, waits, and interaction-cost comparisons. |
 | **hig-doctor-audit** | Runs the HIG Doctor verification loop with `npx hig-doctor`, severity gates, exported reports, and category-to-skill routing. |
@@ -35,7 +31,6 @@ No orchestration framework. No aspirational YAML. Just agent-native project file
 | **hig-components-status** | HIG status and progress UI: progress indicators, status bars, loading states, and activity rings. |
 | **hig-components-system** | HIG system experiences: widgets, Live Activities, notifications, complications, App Clips, shortcuts, and watch faces. |
 | **copywriting-frameworks** | Headlines, landing pages, ads, emails, CTAs, AIDA, objections, proof placeholders, critiques. |
-| **anthropic** | Anthropic Claude API plus Claude Code meta-tooling sub-skills. |
 | **toon-formatter** | When TOON helps, when it does not, and how to invoke the TOON commands. |
 | **cleanup-all** | Orchestrates the full cleanup pipeline. |
 | **cleanup-unused** | Detects and removes high-confidence dead code, exports, files, and dependencies. |
@@ -85,11 +80,10 @@ npm i @toon-format/toon gpt-tokenizer
 ## Profiles
 
 ```bash
-npx create-agent-starter@latest --profile web-saas --agent all
-npx create-agent-starter@latest --profile fintech --agent codex,cursor
+npx create-agent-starter@latest --profile all --agent all
 npx create-agent-starter@latest --profile apple-hig --agent codex,cursor
 npx create-agent-starter@latest --profile design-hci --agent codex
-npx create-agent-starter@latest --skills stripe,copywriting-frameworks --agent cursor
+npx create-agent-starter@latest --skills copywriting-frameworks,cleanup-unused --agent cursor
 ```
 
 Profiles select a skill set. Agent targets decide where that skill set is installed.
@@ -118,10 +112,10 @@ The Apple HIG skills are vendored from [HIG Doctor](https://apple.raintree.techn
 
 ## Documentation Pulls
 
-The `docs` command is Claude-specific because external docs are stored under `.claude/skills/*/docs`.
+The `docs` command is Claude-specific because external docs are stored under `.claude/skills/*/docs`. It only pulls for installed skills that define a `docs.url` in their `skill.json`.
 
 ```bash
-npx create-agent-starter@latest docs pull stripe
+npx create-agent-starter@latest docs pull <skill-id>
 npx create-agent-starter@latest docs status
 ```
 
@@ -137,4 +131,4 @@ Real measured token counts for representative workloads are in [`bench/`](bench/
 
 ## License
 
-MIT. Not affiliated with Stripe, Supabase, Plaid, Expo, Anthropic, OpenAI, Cursor, or `@toon-format/toon`.
+MIT. Not affiliated with Anthropic, Apple, OpenAI, Cursor, or `@toon-format/toon`.

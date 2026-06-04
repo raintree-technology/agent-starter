@@ -1,19 +1,29 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { connection } from "next/server";
 import { Github, ArrowRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GitHubStats } from "@/components/github-stats";
+import { absoluteUrl, siteConfig } from "@/lib/site";
 
-const REPO = "https://github.com/raintree-technology/claude-starter";
-const DOCPULL = "https://docpull.raintree.technology";
+const REPO = siteConfig.repoUrl;
+const DOCPULL = siteConfig.docpullUrl;
 
 export default async function Home() {
   await connection();
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
 
   return (
     <div className="min-h-screen bg-background">
+      <Link
+        href="#main-content"
+        className="fixed left-4 top-4 z-50 -translate-y-24 rounded-md bg-background px-4 py-2 font-mono text-sm opacity-0 shadow-lg ring-1 ring-border transition focus:translate-y-0 focus:opacity-100"
+      >
+        Skip to main content
+      </Link>
       <Header />
-      <main>
+      <main id="main-content" tabIndex={-1}>
+        <StructuredData nonce={nonce} />
         <Hero />
         <Inside />
         <Skills />
@@ -36,10 +46,22 @@ function Header() {
           <span className="font-mono text-sm font-semibold tracking-tight">agent-starter</span>
         </Link>
         <div className="flex items-center gap-2">
+          <nav className="hidden items-center gap-3 font-mono text-xs text-muted-foreground md:flex" aria-label="Sections">
+            <Link href="#skills" className="hover:text-foreground">
+              Skills
+            </Link>
+            <Link href="#benchmarks" className="hover:text-foreground">
+              Benchmarks
+            </Link>
+            <Link href="#install" className="hover:text-foreground">
+              Install
+            </Link>
+          </nav>
           <Link
             href={REPO}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
+            aria-label="View agent-starter on GitHub"
             className="flex items-center gap-2 rounded-md border border-border/60 px-2.5 py-1.5 hover:border-border hover:bg-muted/60"
           >
             <Github className="h-3.5 w-3.5" />
@@ -109,7 +131,7 @@ function Hero() {
         <Link
           href={REPO}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
         >
           View on GitHub
@@ -129,12 +151,12 @@ function Inside() {
     { path: "AGENTS.md",              note: "Codex project guidance" },
     { path: ".cursor/rules/",         note: "Cursor project rules" },
     { path: "├── agent-starter.mdc",  dim: true },
-    { path: "├── stripe.mdc",         dim: true },
+    { path: "├── hig-foundations.mdc", dim: true },
     { path: "├── copywriting-frameworks.mdc", dim: true },
     { path: "└── ...",                dim: true },
   ];
   return (
-    <section className="border-t border-border/60">
+    <section id="agent-targets" className="scroll-mt-20 border-t border-border/60">
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Agent targets</SectionLabel>
         <pre className="mt-8 overflow-x-auto font-mono text-[13px] leading-[1.9]">
@@ -160,25 +182,6 @@ type Skill = { name: string; blurb: string };
 
 function Skills() {
   const groups: { group: string; items: Skill[] }[] = [
-    {
-      group: "Fintech",
-      items: [
-        { name: "stripe", blurb: "Checkout, Payment Intents, subscriptions, Connect, Terminal, Radar, Treasury, webhooks, with detailed references." },
-        { name: "plaid", blurb: "Link flow, Auth (ACH), Transactions sync, Identity (KYC), Accounts. One consolidated skill." },
-      ],
-    },
-    {
-      group: "Backend",
-      items: [
-        { name: "supabase", blurb: "Postgres + RLS, Auth with SSR cookies, Realtime, Storage, Edge Functions, pgvector." },
-      ],
-    },
-    {
-      group: "Mobile",
-      items: [
-        { name: "expo", blurb: "EAS Build (eas.json, credentials, CI), EAS Update (OTA, channels, staged rollouts), Expo Router." },
-      ],
-    },
     {
       group: "Design / HCI",
       items: [
@@ -213,9 +216,8 @@ function Skills() {
       ],
     },
     {
-      group: "Agent tooling",
+      group: "Utilities",
       items: [
-        { name: "anthropic", blurb: "Claude API + 6 agent meta-tooling sub-skills: skill/command/hook/MCP/settings builders." },
         { name: "toon-formatter", blurb: "When to reach for TOON, when not. Wraps @toon-format/toon." },
       ],
     },
@@ -224,17 +226,23 @@ function Skills() {
       items: [
         { name: "cleanup-all", blurb: "Runs the ordered cleanup pipeline across unused code, cycles, dedupe, types, defensive code, legacy paths, and comments." },
         { name: "cleanup-unused", blurb: "Finds high-confidence dead code, exports, files, and dependencies before applying verified removals." },
+        { name: "cleanup-cycles", blurb: "Finds circular dependencies, traces import paths, and plans low-risk untangling work." },
+        { name: "cleanup-dedupe", blurb: "Identifies duplicated logic and extracts shared helpers only when the reuse is clear." },
+        { name: "cleanup-types", blurb: "Consolidates duplicated or fragmented type definitions into maintainable shared shapes." },
+        { name: "cleanup-weak-types", blurb: "Replaces weak types with stronger inferred, validated, or locally appropriate types." },
+        { name: "cleanup-defensive", blurb: "Removes pointless guards and catch blocks that hide errors instead of handling them." },
+        { name: "cleanup-legacy", blurb: "Removes zero-caller deprecated paths, fallbacks, and compatibility code after verification." },
         { name: "cleanup-slop", blurb: "Removes AI narration and restated-code comments while preserving useful WHY comments." },
       ],
     },
   ];
   const skillCount = groups.reduce((total, group) => total + group.items.length, 0);
   return (
-    <section className="border-t border-border/60">
+    <section id="skills" className="scroll-mt-20 border-t border-border/60">
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Skills</SectionLabel>
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
-          {skillCount} hand-maintained skills generated into each agent&apos;s native project shape. Claude gets skills and slash commands, Codex gets `AGENTS.md` plus local `SKILL.md` files, and Cursor gets `.mdc` project rules.
+          {skillCount}{" "}hand-maintained skills generated into each agent&apos;s native project shape. Claude gets skills and slash commands, Codex gets `AGENTS.md` plus local `SKILL.md` files, and Cursor gets `.mdc` project rules.
         </p>
         <div className="mt-8 space-y-6">
           {groups.map((g) => (
@@ -284,7 +292,7 @@ function Benchmarks() {
     { workload: "Small array (3 items)",      jsonTokens: 62,    toonTokens: 27,   savings: "56.5%" },
   ];
   return (
-    <section className="border-t border-border/60">
+    <section id="benchmarks" className="scroll-mt-20 border-t border-border/60">
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Measured savings</SectionLabel>
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
@@ -296,6 +304,7 @@ function Benchmarks() {
         </p>
         <div className="mt-8 overflow-x-auto rounded-md border border-border/60">
           <table className="w-full font-mono text-sm">
+            <caption className="sr-only">TOON token savings benchmark results</caption>
             <thead className="bg-muted/40 text-left text-muted-foreground">
               <tr>
                 <th className="px-4 py-2.5 font-normal">Workload</th>
@@ -324,10 +333,10 @@ function Benchmarks() {
         </div>
         <p className="mt-4 text-xs text-muted-foreground">
           Full methodology + raw data:{" "}
-          <Link href={`${REPO}/blob/main/bench/RESULTS.md`} target="_blank" rel="noreferrer" className="underline hover:text-foreground">
+          <Link href={`${REPO}/blob/main/bench/RESULTS.md`} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
             bench/RESULTS.md
           </Link>
-          . For exact Claude token counts, use Anthropic&apos;s{" "}
+          . For exact Claude token counts, use Claude&apos;s{" "}
           <code className="rounded bg-muted px-1 py-0.5 font-mono">/v1/messages/count_tokens</code>{" "}
           endpoint.
         </p>
@@ -340,13 +349,13 @@ function Benchmarks() {
 
 function Install() {
   return (
-    <section className="border-t border-border/60">
+    <section id="install" className="scroll-mt-20 border-t border-border/60">
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Install</SectionLabel>
         <ol className="mt-8 space-y-5 font-mono text-sm">
           <Snippet step="1" code="npx create-agent-starter@latest --agent all" hint="all supported agents" />
           <Snippet step="2" code="npx create-agent-starter@latest --agent codex,cursor --profile apple-hig" hint="HIG Doctor profile" />
-          <Snippet step="3" code="npx create-agent-starter@latest --agent codex,cursor --skills stripe,copywriting-frameworks" hint="targeted install" />
+          <Snippet step="3" code="npx create-agent-starter@latest --agent codex,cursor --skills copywriting-frameworks,cleanup-unused" hint="targeted install" />
           <Snippet step="4" code="npm i @toon-format/toon gpt-tokenizer" hint="for Claude /toon-* commands" />
         </ol>
       </div>
@@ -379,13 +388,19 @@ function Footer() {
           <span>- MIT</span>
         </div>
         <div className="flex items-center gap-5">
-          <Link href={REPO} target="_blank" rel="noreferrer" className="hover:text-foreground">
+          <Link href={REPO} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
             GitHub
           </Link>
-          <Link href={DOCPULL} target="_blank" rel="noreferrer" className="hover:text-foreground">
+          <Link href={DOCPULL} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
             docpull
           </Link>
-          <Link href="https://github.com/raintree-technology" target="_blank" rel="noreferrer" className="hover:text-foreground">
+          <Link href={siteConfig.llmsPath} className="hover:text-foreground">
+            llms.txt
+          </Link>
+          <Link href={siteConfig.securityPath} className="hover:text-foreground">
+            security.txt
+          </Link>
+          <Link href="https://github.com/raintree-technology" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
             Raintree
           </Link>
         </div>
@@ -398,9 +413,84 @@ function Footer() {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+    <h2 className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
       <span className="h-px w-6 bg-border" />
       {children}
-    </div>
+    </h2>
+  );
+}
+
+function StructuredData({ nonce }: { nonce?: string }) {
+  const pageUrl = absoluteUrl("/");
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${siteConfig.url}/#organization`,
+        name: siteConfig.organization.name,
+        url: siteConfig.organization.url,
+        logo: absoluteUrl("/logo.svg"),
+        sameAs: [siteConfig.repoUrl],
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteConfig.url}/#website`,
+        name: siteConfig.name,
+        url: siteConfig.url,
+        description: siteConfig.description,
+        inLanguage: "en-US",
+        publisher: { "@id": `${siteConfig.url}/#organization` },
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#webpage`,
+        name: siteConfig.title,
+        url: pageUrl,
+        description: siteConfig.description,
+        isPartOf: { "@id": `${siteConfig.url}/#website` },
+        about: { "@id": `${pageUrl}#software` },
+        breadcrumb: { "@id": `${pageUrl}#breadcrumb` },
+        inLanguage: "en-US",
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": `${pageUrl}#software`,
+        name: siteConfig.name,
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Any",
+        description: siteConfig.description,
+        url: pageUrl,
+        codeRepository: siteConfig.repoUrl,
+        license: `${siteConfig.repoUrl}/blob/main/LICENSE`,
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: pageUrl,
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      nonce={nonce}
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }}
+    />
   );
 }

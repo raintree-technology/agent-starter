@@ -183,9 +183,6 @@ test('template skills do not carry stale captured-doc or legacy-runtime content'
   const files = (await walk(SKILLS_ROOT)).filter((file) => /\.(md|json)$/.test(file));
   const stalePatterns = [
     [/3,253|2,616|199 markdown/, 'stale documentation count'],
-    [/docs\/stripe|docs\/supabase_com/, 'stale docs-puller path'],
-    [/2024-11-20\.acacia/, 'stale Stripe API version literal'],
-    [/@supabase\/auth-helpers-nextjs/, 'legacy Supabase auth-helper package'],
     [/claude-sonnet-4-5-20250929|claude-sonnet-4-6/, 'hardcoded Claude model snapshot'],
     [/Auto-invoke|Auto-invokes/, 'Claude-only auto-invoke wording'],
     [/Example 1: \[Scenario\]/, 'placeholder scenario heading'],
@@ -232,7 +229,6 @@ test('generated Codex and Cursor targets keep valid target-specific skill output
   for (const file of generatedFiles) {
     const content = await readFile(file, 'utf8');
     const rel = relative(dir, file);
-    assert.doesNotMatch(content, /\.claude\/skills\/(api\/stripe|frontend\/expo|stripe|supabase|plaid)/, rel);
     assert.doesNotMatch(content, /Skill tool/, rel);
   }
 
@@ -241,9 +237,21 @@ test('generated Codex and Cursor targets keep valid target-specific skill output
   assert.doesNotMatch(codexAgents, /\\"/);
   assert.doesNotMatch(cursorProjectRule, /\\"/);
 
-  const codexStripe = await readFile(join(dir, '.codex/skills/stripe/SKILL.md'), 'utf8');
-  const codexMetadata = splitFrontmatter(codexStripe).metadata;
+  const codexCopywriting = await readFile(join(dir, '.codex/skills/copywriting-frameworks/SKILL.md'), 'utf8');
+  const codexMetadata = splitFrontmatter(codexCopywriting).metadata;
   assert.deepEqual(Object.keys(codexMetadata), ['name', 'description']);
-  assert.equal(existsSync(join(dir, '.codex/skills/stripe/references/full-guide.md')), true);
-  assert.equal(existsSync(join(dir, '.cursor/rules/stripe/references/full-guide.md')), true);
+  assert.equal(
+    existsSync(join(
+      dir,
+      '.codex/skills/copywriting-frameworks/references/direct-response-patterns.md',
+    )),
+    true,
+  );
+  assert.equal(
+    existsSync(join(
+      dir,
+      '.cursor/rules/copywriting-frameworks/references/direct-response-patterns.md',
+    )),
+    true,
+  );
 });

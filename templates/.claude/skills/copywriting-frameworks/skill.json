@@ -15,12 +15,7 @@
   "dependencies": {
     "required": [],
     "recommended": [],
-    "complements": [
-      "stripe",
-      "supabase",
-      "expo",
-      "anthropic"
-    ]
+    "complements": []
   },
   "docs": null,
   "semanticTags": {
@@ -75,15 +70,8 @@
     "activationThreshold": 0.65
   },
   "collaboration": {
-    "canProvideDataTo": [
-      "anthropic"
-    ],
-    "canConsumeDataFrom": [
-      "stripe",
-      "supabase",
-      "expo",
-      "anthropic"
-    ],
+    "canProvideDataTo": [],
+    "canConsumeDataFrom": [],
     "sharedContext": [
       "audience",
       "offer",

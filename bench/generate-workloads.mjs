@@ -48,7 +48,7 @@ const metrics = Array.from({ length: 288 }, (_, i) => ({
 }));
 writeFileSync(join(OUT, 'metrics-series.json'), JSON.stringify(metrics, null, 2));
 
-// 4. Database rows: 100 Stripe-like transaction records
+// 4. Database rows: 100 transaction records
 const txns = Array.from({ length: 100 }, (_, i) => ({
   id: `txn_${i.toString(36).padStart(6, '0')}`,
   customer_id: `cus_${int(1, 50).toString(36)}`,

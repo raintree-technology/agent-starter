@@ -26,7 +26,7 @@ Full code is ~60 lines. Run `node bench/run.mjs` to reproduce.
 | Workload | JSON bytes | TOON bytes | JSON tokens | TOON tokens | Δ | Savings |
 |---|---:|---:|---:|---:|---:|---:|
 | `api-response-users.json` (50 user records) | 10,424 | 4,576 | 4,133 | 2,128 | 2,005 | **48.5%** |
-| `db-transactions.json` (100 Stripe-like txns) | 15,721 | 4,972 | 5,708 | 2,252 | 3,456 | **60.5%** |
+| `db-transactions.json` (100 transaction records) | 15,721 | 4,972 | 5,708 | 2,252 | 3,456 | **60.5%** |
 | `irregular-nested.json` (deeply nested mixed) | 437 | 247 | 135 | 80 | 55 | **40.7%** |
 | `logs-events.json` (200 log events) | 32,853 | 11,505 | 13,052 | 6,266 | 6,786 | **52.0%** |
 | `metrics-series.json` (288 time-series points) | 27,780 | 7,649 | 13,537 | 4,622 | 8,915 | **65.9%** |
@@ -53,7 +53,7 @@ Running `/analyze-tokens api-response.json` inside Claude Code now shows you rea
 ## Caveats
 
 - **Input-token savings only.** Output tokens are unaffected.
-- **Tokenizer mismatch.** We used OpenAI BPE. Claude's tokenizer will differ slightly — usually within a few percentage points, occasionally more. For exact counts, call Anthropic's `/v1/messages/count_tokens` endpoint.
+- **Tokenizer mismatch.** We used OpenAI BPE. Claude's tokenizer will differ slightly — usually within a few percentage points, occasionally more. For exact counts, call the provider-specific token count endpoint.
 - **Six workloads is six workloads.** Your data might be weirder. The seeded-PRNG workloads are designed to be reproducible and fair, not to cover every edge case. Run the benchmark on *your* payloads.
 - **TOON is one person's project.** Johann Schopplich has ~260 commits; the next contributor has 6. The spec is at RFC v4.0 as of April 2026 and actively evolving. If you adopt it, track upstream.
 

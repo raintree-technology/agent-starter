@@ -14,7 +14,7 @@ const pkg = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8')
 program
   .name('agent-starter')
   .version(pkg.version)
-  .description('Agent starter kit: 7 depth-focused skills for Claude Code, Codex, and Cursor');
+  .description('Agent starter kit: 28 depth-focused skills for Claude Code, Codex, and Cursor');
 
 program
   .command('init [dir]', { isDefault: true })
@@ -22,7 +22,7 @@ program
   .option('-y, --yes', 'Skip confirmation prompts')
   .option('-f, --force', 'Overwrite existing files')
   .option('--agent <list>', 'Agent target(s): claude, codex, cursor, or all', 'claude')
-  .option('--profile <name>', 'Use preset profile (all, web-saas, fintech, minimal)')
+  .option('--profile <name>', 'Use preset profile (all, apple-hig, design-hci, minimal)')
   .option('--skills <list>', 'Comma-separated skills to install')
   .option('--no-toon', 'Skip TOON utilities')
   .action(init);
