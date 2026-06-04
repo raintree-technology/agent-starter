@@ -2,7 +2,6 @@
 // For CLI usage, use bin/cli.js
 
 export { init } from './commands/init.js';
-export { docs } from './commands/docs.js';
 export { AGENT_TARGETS, parseAgentTargets } from './agents.js';
 
 export {
@@ -15,10 +14,6 @@ export {
   getTemplatesDir,
 } from './utils/copy.js';
 
-export {
-  getToonBinaryName,
-  isPlatformSupported,
-  setupToonBinary,
-} from './utils/platform.js';
+export { setupToonBinary } from './utils/toon.js';
 
 export { SKILLS, profiles, getProfile } from './profiles.js';

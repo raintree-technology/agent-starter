@@ -3,7 +3,6 @@ import ora from 'ora';
 import inquirer from 'inquirer';
 import { join, resolve } from 'path';
 import { pathExists } from 'fs-extra';
-import { writeFile } from 'fs/promises';
 import {
   copyAgentEssentials,
   copyAgentSkills,
@@ -16,9 +15,8 @@ import {
   writeCodexAgentsFile,
   writeCursorProjectRule,
 } from '../utils/copy.js';
-import { setupToonBinary } from '../utils/platform.js';
-import { getProfiles, getProfile, getProfileChoices, getSkillChoices, skillIdToPath, SKILLS } from '../profiles.js';
-import { generateSettings } from '../utils/settings.js';
+import { setupToonBinary } from '../utils/toon.js';
+import { profiles, getProfile, getProfileChoices, getSkillChoices, SKILLS } from '../profiles.js';
 import { AGENT_TARGETS, formatAgentTargets, parseAgentTargets } from '../agents.js';
 
 function parseSkillList(skillsList) {
@@ -54,12 +52,10 @@ async function findExistingAgentTargets(targetDir, agentTargets) {
 
 async function installClaude(targetDir, installPlan, options) {
   const claudeDir = resolve(targetDir, '.claude');
-  let installedHooks = false;
   const installedToon = options.toon !== false && installPlan.skills.includes('toon-formatter');
 
   if (installPlan.copyWholeClaudeTemplate) {
     await copyAll(targetDir, options);
-    installedHooks = installPlan.hooks && options.hooks !== false;
   } else {
     await copyEssentials(targetDir, options);
 
@@ -69,23 +65,13 @@ async function installClaude(targetDir, installPlan, options) {
 
     if (installPlan.hooks && options.hooks !== false) {
       await copyHooks(targetDir, options);
-      installedHooks = true;
     }
 
-    await copySkills(targetDir, installPlan.skills.map(skillIdToPath), options);
+    await copySkills(targetDir, installPlan.skills, options);
   }
 
   if (installedToon) {
     await copyToonUtils(targetDir, options);
-  }
-
-  const settings = generateSettings(installPlan.skills, {
-    hooks: installedHooks,
-    toon: installedToon,
-  });
-  await writeFile(resolve(claudeDir, 'settings.json'), settings, 'utf-8');
-
-  if (installedToon) {
     const toonResult = setupToonBinary(claudeDir);
     if (!toonResult.success) {
       throw new Error(toonResult.error);
@@ -95,14 +81,14 @@ async function installClaude(targetDir, installPlan, options) {
 
 async function installCodex(targetDir, installPlan, options) {
   await copyAgentEssentials(targetDir, 'codex', options);
-  await copyAgentSkills(targetDir, 'codex', installPlan.skills.map(skillIdToPath), options);
-  await writeCodexAgentsFile(targetDir, installPlan.skills.map(skillIdToPath), options);
+  await copyAgentSkills(targetDir, 'codex', installPlan.skills, options);
+  await writeCodexAgentsFile(targetDir, installPlan.skills, options);
 }
 
 async function installCursor(targetDir, installPlan, options) {
   await copyAgentEssentials(targetDir, 'cursor', options);
-  await copyAgentSkills(targetDir, 'cursor', installPlan.skills.map(skillIdToPath), options);
-  await writeCursorProjectRule(targetDir, installPlan.skills.map(skillIdToPath), options);
+  await copyAgentSkills(targetDir, 'cursor', installPlan.skills, options);
+  await writeCursorProjectRule(targetDir, installPlan.skills, options);
 }
 
 export async function init(dir = '.', options = {}) {
@@ -180,7 +166,7 @@ export async function init(dir = '.', options = {}) {
       const profile = getProfile(options.profile);
       if (!profile) {
         spinner.fail(`Unknown profile: ${options.profile}`);
-        console.log(chalk.dim(`Available profiles: ${Object.keys(getProfiles()).join(', ')}`));
+        console.log(chalk.dim(`Available profiles: ${Object.keys(profiles).join(', ')}`));
         return;
       }
 

@@ -1,18 +1,14 @@
 import js from '@eslint/js';
 
 const nodeGlobals = {
-  Buffer: 'readonly',
-  URL: 'readonly',
   console: 'readonly',
   process: 'readonly',
-  setTimeout: 'readonly',
 };
 
 export default [
   {
     ignores: [
       '.agents/**',
-      '.claude/skills/**/docs/**',
       'node_modules/**',
       'site/**',
     ],

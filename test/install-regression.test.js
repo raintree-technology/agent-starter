@@ -20,8 +20,7 @@ import {
   writeCodexAgentsFile,
   writeCursorProjectRule,
 } from '../src/utils/copy.js';
-import { setupToonBinary } from '../src/utils/platform.js';
-import { skillIdToPath } from '../src/profiles.js';
+import { setupToonBinary } from '../src/utils/toon.js';
 import { parseAgentTargets } from '../src/agents.js';
 
 const execFileAsync = promisify(execFile);
@@ -43,7 +42,7 @@ test('agent target parser supports aliases and rejects unknown targets', () => {
 test('profile skill paths install under .claude/skills/<id>', async (t) => {
   const dir = await withTempDir(t);
 
-  await copySkills(dir, [skillIdToPath('toon-formatter')]);
+  await copySkills(dir, ['toon-formatter']);
 
   assert.equal(existsSync(join(dir, '.claude', 'skills', 'toon-formatter', 'skill.md')), true);
   assert.equal(existsSync(join(dir, '.claude', 'skills', 'skills')), false);
@@ -54,8 +53,8 @@ test('codex target installs local skills and root AGENTS guidance', async (t) =>
   const dir = await withTempDir(t);
 
   await copyAgentEssentials(dir, 'codex');
-  await copyAgentSkills(dir, 'codex', [skillIdToPath('copywriting-frameworks')]);
-  await writeCodexAgentsFile(dir, [skillIdToPath('copywriting-frameworks')]);
+  await copyAgentSkills(dir, 'codex', ['copywriting-frameworks']);
+  await writeCodexAgentsFile(dir, ['copywriting-frameworks']);
 
   assert.equal(
     existsSync(join(dir, '.codex', 'skills', 'copywriting-frameworks', 'SKILL.md')),
@@ -80,8 +79,8 @@ test('cursor target installs project rules and skill references', async (t) => {
   const dir = await withTempDir(t);
 
   await copyAgentEssentials(dir, 'cursor');
-  await copyAgentSkills(dir, 'cursor', [skillIdToPath('copywriting-frameworks')]);
-  await writeCursorProjectRule(dir, [skillIdToPath('copywriting-frameworks')]);
+  await copyAgentSkills(dir, 'cursor', ['copywriting-frameworks']);
+  await writeCursorProjectRule(dir, ['copywriting-frameworks']);
 
   assert.equal(existsSync(join(dir, '.cursor', 'rules', 'agent-starter.mdc')), true);
   assert.equal(existsSync(join(dir, '.cursor', 'rules', 'copywriting-frameworks.mdc')), true);
@@ -102,8 +101,8 @@ test('cursor target installs project rules and skill references', async (t) => {
 test('real Apple HIG skills install with references for Codex and Cursor', async (t) => {
   const dir = await withTempDir(t);
   const skillPaths = [
-    skillIdToPath('hig-foundations'),
-    skillIdToPath('hig-components-layout'),
+    'hig-foundations',
+    'hig-components-layout',
   ];
 
   await copyAgentEssentials(dir, 'codex');
@@ -136,7 +135,7 @@ test('real Apple HIG skills install with references for Codex and Cursor', async
 test('copywriting skill installs with its reference material', async (t) => {
   const dir = await withTempDir(t);
 
-  await copySkills(dir, [skillIdToPath('copywriting-frameworks')]);
+  await copySkills(dir, ['copywriting-frameworks']);
 
   assert.equal(
     existsSync(join(dir, '.claude', 'skills', 'copywriting-frameworks', 'skill.md')),
