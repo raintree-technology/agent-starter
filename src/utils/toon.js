@@ -1,20 +1,7 @@
-import os from 'os';
 import { existsSync, lstatSync } from 'fs';
 import { join } from 'path';
 
 const TOON_WRAPPER_RELATIVE_PATH = ['utils', 'toon', 'cli.mjs'];
-
-export function getToonBinaryName() {
-  return TOON_WRAPPER_RELATIVE_PATH.at(-1);
-}
-
-export function getSupportedPlatforms() {
-  return ['node'];
-}
-
-export function isPlatformSupported() {
-  return true;
-}
 
 export function setupToonBinary(claudeDir) {
   const wrapperPath = join(claudeDir, ...TOON_WRAPPER_RELATIVE_PATH);
@@ -50,13 +37,4 @@ export function setupToonBinary(claudeDir) {
   }
 
   return { success: true, path: wrapperPath };
-}
-
-export function getPlatformInfo() {
-  return {
-    platform: os.platform(),
-    arch: os.arch(),
-    nodeVersion: process.version,
-    supported: isPlatformSupported()
-  };
 }

@@ -99,10 +99,6 @@ export const profiles = {
   },
 };
 
-export function getProfiles() {
-  return profiles;
-}
-
 export function getProfile(id) {
   return profiles[id];
 }
@@ -121,8 +117,4 @@ export function getSkillChoices() {
     value: s.id,
     short: s.id,
   }));
-}
-
-export function skillIdToPath(skillId) {
-  return skillId;
 }

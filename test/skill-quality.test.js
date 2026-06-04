@@ -11,7 +11,7 @@ import {
   writeCodexAgentsFile,
   writeCursorProjectRule,
 } from '../src/utils/copy.js';
-import { SKILLS, skillIdToPath } from '../src/profiles.js';
+import { SKILLS } from '../src/profiles.js';
 
 const SKILLS_ROOT = 'templates/.claude/skills';
 const MAX_ENTRYPOINT_LINES = 500;
@@ -103,33 +103,6 @@ test('template skill entrypoints stay compact and use folder-matching names', as
   }
 });
 
-test('skill.json files have no duplicate top-level keys and one dependencies object', async () => {
-  const jsonFiles = (await walk(SKILLS_ROOT)).filter((file) => file.endsWith('/skill.json'));
-
-  for (const file of jsonFiles) {
-    const raw = await readFile(file, 'utf8');
-    const rel = relative(SKILLS_ROOT, file);
-    const topLevelKeys = new Map();
-
-    raw.split('\n').forEach((line, index) => {
-      const match = line.match(/^ {2}"([^"]+)"\s*:/);
-      if (!match) return;
-      const lines = topLevelKeys.get(match[1]) || [];
-      lines.push(index + 1);
-      topLevelKeys.set(match[1], lines);
-    });
-
-    for (const [key, lines] of topLevelKeys) {
-      assert.equal(lines.length, 1, `${rel} duplicates ${key} at lines ${lines.join(', ')}`);
-    }
-
-    const parsed = JSON.parse(raw);
-    assert.equal(typeof parsed.dependencies, 'object', `${rel} dependencies must be an object`);
-    assert.equal(Array.isArray(parsed.dependencies), false, `${rel} dependencies must not be an array`);
-    assert.ok(Array.isArray(parsed.dependencies.required), `${rel} dependencies.required must be an array`);
-  }
-});
-
 test('registry covers every top-level template skill', async () => {
   const registered = new Set(SKILLS.map((skill) => skill.id));
   const entries = await readdir(SKILLS_ROOT, { withFileTypes: true });
@@ -215,7 +188,7 @@ test('template skills use references instead of docs directories for bundled gui
 
 test('generated Codex and Cursor targets keep valid target-specific skill output', async (t) => {
   const dir = await withTempDir(t);
-  const skillPaths = SKILLS.map((skill) => skillIdToPath(skill.id));
+  const skillPaths = SKILLS.map((skill) => skill.id);
 
   await copyAgentEssentials(dir, 'codex');
   await copyAgentSkills(dir, 'codex', skillPaths);

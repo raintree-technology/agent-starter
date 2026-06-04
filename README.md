@@ -110,15 +110,6 @@ The package keeps one shared source of truth in `templates/.claude/skills/` and 
 
 The Apple HIG skills are vendored from [HIG Doctor](https://apple.raintree.technology), including the progressive-disclosure `references/` corpus with canonical Apple source links and attribution. The `hig-doctor-audit` skill points agents at HIG Doctor's published audit CLI and verification workflow.
 
-## Documentation Pulls
-
-The `docs` command is Claude-specific because external docs are stored under `.claude/skills/*/docs`. It only pulls for installed skills that define a `docs.url` in their `skill.json`.
-
-```bash
-npx create-agent-starter@latest docs pull <skill-id>
-npx create-agent-starter@latest docs status
-```
-
 ## Benchmarks
 
 Real measured token counts for representative workloads are in [`bench/`](bench/). Numbers use `gpt-tokenizer`, not a claimed heuristic.

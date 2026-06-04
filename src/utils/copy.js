@@ -1,6 +1,6 @@
 import { copy, pathExists, remove, ensureDir, move } from "fs-extra";
 import { lstat, mkdtemp, readFile, writeFile } from "fs/promises";
-import { join, dirname, resolve, relative, sep, basename } from "path";
+import { join, dirname, resolve, basename } from "path";
 import { fileURLToPath } from "url";
 import { isValidSkillPath, isPathSafe, isValidCommandName, sanitizeForLog } from "./security.js";
 import { AGENT_TARGETS } from "../agents.js";
@@ -11,10 +11,6 @@ const LEGACY_SKILLS_PREFIX = "skills/";
 const INSTALL_STAGING_PREFIX = ".claude-install-";
 const INSTALL_BACKUP_PREFIX = ".claude.backup.";
 const SKILL_MARKDOWN_FILENAMES = ["skill.md", "SKILL.md"];
-
-function pathHasSegment(path, segment) {
-  return relative("", path).split(sep).includes(segment);
-}
 
 export function normalizeSkillPath(skillPath) {
   if (typeof skillPath !== "string") {
@@ -47,37 +43,27 @@ async function assertRegularTemplateFile(src, description) {
   }
 }
 
-function shouldCopyTemplatePath(src, root, options = {}) {
-  const rel = relative(root, src);
+function shouldCopyTemplatePath(src) {
   if (basename(src) === "settings.local.json" || basename(src) === "settings.local.json.example") {
-    return false;
-  }
-
-  if (!options.includeDocs && pathHasSegment(rel, "docs")) {
     return false;
   }
 
   return true;
 }
 
-function templateCopyFilter(root, options = {}) {
+function templateCopyFilter() {
   return async (src) => {
     await rejectSymlink(src);
-    return shouldCopyTemplatePath(src, root, options);
+    return shouldCopyTemplatePath(src);
   };
 }
 
-function supportFileCopyFilter(root, options = {}) {
+function supportFileCopyFilter() {
   return async (src) => {
     await rejectSymlink(src);
-    const rel = relative(root, src);
     const fileName = basename(src);
 
-    if (SKILL_MARKDOWN_FILENAMES.includes(fileName) || fileName === "skill.json") {
-      return false;
-    }
-
-    if (!options.includeDocs && pathHasSegment(rel, "docs")) {
+    if (SKILL_MARKDOWN_FILENAMES.includes(fileName)) {
       return false;
     }
 
@@ -241,7 +227,7 @@ async function copySkillSupportFiles(srcSkillDir, destSkillDir, options = {}) {
   await ensureDir(destSkillDir);
   await copy(srcSkillDir, destSkillDir, {
     overwrite: options.force,
-    filter: supportFileCopyFilter(srcSkillDir, options),
+    filter: supportFileCopyFilter(),
   });
 }
 
@@ -335,7 +321,7 @@ export async function copyAll(targetDir, options = {}) {
       try {
         await copy(templatesDir, stagedDir, {
           overwrite: true,
-          filter: templateCopyFilter(templatesDir, options),
+          filter: templateCopyFilter(),
         });
         await replaceDirectory(stagedDir, claudeDir);
       } catch (error) {
@@ -355,7 +341,7 @@ export async function copyAll(targetDir, options = {}) {
   await ensureDir(claudeDir);
   await copy(templatesDir, claudeDir, {
     overwrite: options.force || options.merge,
-    filter: templateCopyFilter(templatesDir, options),
+    filter: templateCopyFilter(),
   });
 
   return claudeDir;
@@ -396,7 +382,7 @@ export async function copySkill(targetDir, skillPath, options = {}) {
   await ensureDir(dirname(destPath));
   await copy(srcPath, destPath, {
     overwrite: options.force,
-    filter: templateCopyFilter(srcPath, options),
+    filter: templateCopyFilter(),
   });
 
   return destPath;
@@ -604,7 +590,7 @@ export async function copyToonUtils(targetDir, options = {}) {
   await ensureDir(dirname(destToonDir));
   await copy(srcToonDir, destToonDir, {
     overwrite: options.force,
-    filter: templateCopyFilter(srcToonDir, options),
+    filter: templateCopyFilter(),
   });
 
   return destToonDir;
@@ -664,6 +650,6 @@ export async function copyHooks(targetDir, options = {}) {
   await ensureDir(destHooksDir);
   await copy(srcHooksDir, destHooksDir, {
     overwrite: options.force,
-    filter: templateCopyFilter(srcHooksDir, options),
+    filter: templateCopyFilter(),
   });
 }

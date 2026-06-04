@@ -22,8 +22,7 @@ We will respond within 48 hours and provide a timeline for fixing the issue.
 This package implements multiple layers of security:
 
 ### 1. Command Injection Prevention
-- ✅ Documentation pulling uses `execFile` with argument arrays
-- ✅ The `docpull` executable is resolved once, checked with `--help`, then invoked by absolute path
+- ✅ The CLI performs file-copy operations only; it does not shell out or execute external commands
 - ✅ No shipped workflow engine executes arbitrary shell commands
 
 ### 2. Path Traversal Prevention
@@ -47,21 +46,11 @@ This package implements multiple layers of security:
 - ✅ `lstat()` used instead of `stat()` to detect links
 - ✅ Required template files must be regular files
 
-### 6. JSON Bomb DoS Prevention
-- ✅ Docs cache is capped at 5MB and schema-validated before use
-- ✅ Installed `skill.json` files are checked as regular files and schema-validated before docs operations
-
-### 7. SSRF Prevention
-- ✅ Documentation URLs must use HTTPS
-- ✅ URL validation blocks credentials, localhost names, private suffixes, and IP literals
-- ✅ Hostnames are resolved before `docpull`; private, loopback, link-local, multicast, and reserved DNS results are rejected
-- ✅ Documentation sources come from installed skill metadata and should stay on reviewed domains
-
-### 8. Least Privilege Defaults
+### 6. Least Privilege Defaults
 - ✅ Shared template settings ship without wildcard tool permissions
 - ✅ Executable hooks and elevated trust settings belong in `.claude/settings.local.json`
 
-### 9. Supply Chain Hardening
+### 7. Supply Chain Hardening
 - ✅ Skill installation guidance requires commit-pinned GitHub sources
 - ✅ Skill installs review a single downloaded artifact and surface its SHA-256 digest before install
 - ✅ Installed bytes are copied from the reviewed artifact instead of being re-fetched from a mutable branch
@@ -70,27 +59,17 @@ This package implements multiple layers of security:
 - ✅ Dependabot version updates are configured for npm (root + `site/`) and GitHub Actions in `.github/dependabot.yml`
 - ℹ️ Repository-level controls (secret-scanning push protection, Dependabot security alerts, branch protection) are configured in GitHub repo settings, outside this source tree
 
-### 10. Input Validation
+### 8. Input Validation
 - ✅ All user inputs sanitized
-- ✅ Skill IDs, paths, URLs validated before use
+- ✅ Skill IDs, paths, and command names validated before use
 - ✅ Log injection prevention (control character filtering)
 
 ---
 
 ## Known Limitations
 
-### Not Yet Implemented (Roadmap)
-
-1. **Checksum verification** - Downloaded docs are not verified with checksums
-2. **Documentation content trust** - Pulled docs are fetched over HTTPS but their content is not semantically reviewed by the CLI
-3. **External docpull trust** - Users must install `docpull` from a trusted source
-4. **DNS-rebinding window** - The pre-flight DNS public-address check and `docpull`'s own connection resolve independently, so a rebinding attacker could still steer the actual fetch (low risk: `docpull` is trusted and URLs come from reviewed skill metadata)
-5. **Rate limiting** - No limits on docpull frequency
-
 ### Out of Scope
 
-- **Content validation** - We don't validate the actual content of pulled documentation
-- **Network security** - SSL/TLS is handled by Node.js and `docpull`
 - **User authentication** - This is a local tool, no auth required
 
 ---
