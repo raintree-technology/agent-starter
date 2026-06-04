@@ -1,6 +1,6 @@
 {
   "name": "create-agent-starter",
-  "version": "3.0.3",
+  "version": "3.1.0",
   "description": "Opinionated multi-agent skill pack for Claude Code, Codex, and Cursor: deep skills for HCI usability modeling, Apple HIG Doctor guidance and audits, copywriting frameworks, cleanup workflows, plus a TOON command wrapper for input-token savings.",
   "type": "module",
   "main": "src/index.js",
