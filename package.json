@@ -64,7 +64,7 @@
     "ora": "9.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.4",
+    "@eslint/js": "10.0.1",
     "@toon-format/toon": "2.1.0",
     "eslint": "9.39.4",
     "gpt-tokenizer": "3.0.0"
