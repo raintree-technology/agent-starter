@@ -1,7 +1,7 @@
 {
   "name": "create-agent-starter",
-  "version": "3.1.0",
-  "description": "Opinionated multi-agent skill pack for Claude Code, Codex, and Cursor: deep skills for HCI usability modeling, Apple HIG Doctor guidance and audits, copywriting frameworks, cleanup workflows, plus a TOON command wrapper for input-token savings.",
+  "version": "4.0.0",
+  "description": "Declarative agent config for Claude Code, Codex, and Cursor: an agent.json manifest for skills, MCP servers, and stack profiles, synced to each agent's native config, plus 29 hand-maintained skills.",
   "type": "module",
   "main": "src/index.js",
   "bin": {
@@ -47,12 +47,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/raintree-technology/claude-starter.git"
+    "url": "git+https://github.com/raintree-technology/agent-starter.git"
   },
   "bugs": {
-    "url": "https://github.com/raintree-technology/claude-starter/issues"
+    "url": "https://github.com/raintree-technology/agent-starter/issues"
   },
-  "homepage": "https://github.com/raintree-technology/claude-starter#readme",
+  "homepage": "https://claude.raintree.technology",
   "engines": {
     "node": ">=18.0.0"
   },
