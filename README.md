@@ -9,7 +9,7 @@ No orchestration framework. No aspirational YAML. Just agent-native project file
 
 ## What you get
 
-**28 shipped skills**:
+**29 shipped skills**:
 
 | Skill | Covers |
 |---|---|
@@ -31,6 +31,7 @@ No orchestration framework. No aspirational YAML. Just agent-native project file
 | **hig-components-status** | HIG status and progress UI: progress indicators, status bars, loading states, and activity rings. |
 | **hig-components-system** | HIG system experiences: widgets, Live Activities, notifications, complications, App Clips, shortcuts, and watch faces. |
 | **copywriting-frameworks** | Headlines, landing pages, ads, emails, CTAs, AIDA, objections, proof placeholders, critiques. |
+| **finish-setup** | Provisions a freshly scaffolded SaaS project through the wired MCPs: Stripe products, database migrations, email DNS, analytics, GitHub. |
 | **toon-formatter** | When TOON helps, when it does not, and how to invoke the TOON commands. |
 | **cleanup-all** | Orchestrates the full cleanup pipeline. |
 | **cleanup-unused** | Detects and removes high-confidence dead code, exports, files, and dependencies. |
