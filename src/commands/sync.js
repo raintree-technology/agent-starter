@@ -23,7 +23,7 @@ async function readJsonIfExists(filePath) {
   try {
     return JSON.parse(await readFile(filePath, 'utf-8'));
   } catch (error) {
-    throw new Error(`Failed to parse ${filePath}: ${error.message}`);
+    throw new Error(`Failed to parse ${filePath}: ${error.message}`, { cause: error });
   }
 }
 
