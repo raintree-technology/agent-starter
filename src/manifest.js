@@ -64,7 +64,7 @@ export async function loadManifest(targetDir) {
   try {
     parsed = JSON.parse(await readFile(manifestPath, 'utf-8'));
   } catch (error) {
-    throw new Error(`Failed to parse ${manifestPath}: ${error.message}`);
+    throw new Error(`Failed to parse ${manifestPath}: ${error.message}`, { cause: error });
   }
   return validateManifest(parsed);
 }

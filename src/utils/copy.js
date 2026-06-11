@@ -89,7 +89,7 @@ async function replaceDirectory(stagedDir, finalDir) {
     if (movedExisting && !(await pathExists(finalDir)) && await pathExists(backupDir)) {
       await move(backupDir, finalDir, { overwrite: false });
     }
-    throw new Error(`Failed to replace ${finalDir}: ${error.message}`);
+    throw new Error(`Failed to replace ${finalDir}: ${error.message}`, { cause: error });
   } finally {
     if (await pathExists(stagedDir)) {
       await remove(stagedDir);

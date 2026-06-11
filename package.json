@@ -57,16 +57,16 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "chalk": "5.3.0",
-    "commander": "14.0.2",
+    "chalk": "5.6.2",
+    "commander": "15.0.0",
     "fs-extra": "11.3.3",
-    "inquirer": "13.1.0",
-    "ora": "9.0.0"
+    "inquirer": "14.0.2",
+    "ora": "9.4.0"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.4",
+    "@eslint/js": "10.0.1",
     "@toon-format/toon": "2.1.0",
-    "eslint": "9.39.4",
+    "eslint": "10.4.1",
     "gpt-tokenizer": "3.0.0"
   }
 }
