@@ -1,3 +1,5 @@
+import { getCatalogMcp } from './mcps.js';
+
 export const HCI_SKILLS = [
   'human-processor-model',
   'goms-klm-analysis',
@@ -23,6 +25,7 @@ export const HIG_SKILLS = [
 
 export const SKILLS = [
   { id: 'copywriting-frameworks', category: 'marketing', name: 'Copywriting frameworks' },
+  { id: 'finish-setup', category: 'workflow', name: 'SaaS provisioning via MCPs' },
   { id: 'cleanup-all', category: 'quality', name: 'Full cleanup pipeline' },
   { id: 'cleanup-cycles', category: 'quality', name: 'Circular dependency cleanup' },
   { id: 'cleanup-dedupe', category: 'quality', name: 'Duplicate code cleanup' },
@@ -51,6 +54,16 @@ export const SKILLS = [
   { id: 'human-processor-model', category: 'design', name: 'Human Processor Model' },
   { id: 'toon-formatter', category: 'utilities', name: 'TOON formatter' },
 ];
+
+function catalogMcps(...names) {
+  return names.map((name) => {
+    const entry = getCatalogMcp(name);
+    if (!entry) {
+      throw new Error(`Unknown catalog MCP referenced by profile: ${name}`);
+    }
+    return entry;
+  });
+}
 
 export const profiles = {
   all: {
@@ -97,7 +110,75 @@ export const profiles = {
     hooks: false,
     commands: [],
   },
+
+  'next-saas': {
+    name: 'Next.js SaaS',
+    description: 'Stack-aware profile for Next.js SaaS apps (next-starter): cleanup + copywriting skills, finish-setup provisioning, and Neon/Stripe/Resend/PostHog/GitHub MCPs',
+    skills: ['finish-setup', 'cleanup-unused', 'cleanup-types', 'cleanup-slop', 'copywriting-frameworks'],
+    mcps: catalogMcps('neon', 'stripe', 'resend', 'posthog', 'github'),
+    toon: false,
+    hooks: false,
+    commands: [],
+  },
+
+  next: {
+    name: 'Next.js',
+    description: 'Generic Next.js projects: cleanup skills plus the GitHub MCP',
+    skills: ['cleanup-unused', 'cleanup-types'],
+    mcps: catalogMcps('github'),
+    toon: false,
+    hooks: false,
+    commands: [],
+  },
+
+  node: {
+    name: 'Node.js',
+    description: 'Generic Node.js projects: cleanup skills plus the GitHub MCP',
+    skills: ['cleanup-unused', 'cleanup-types'],
+    mcps: catalogMcps('github'),
+    toon: false,
+    hooks: false,
+    commands: [],
+  },
+
+  base: {
+    name: 'Base',
+    description: 'Minimal stack-agnostic profile: unused-code cleanup only, no MCPs',
+    skills: ['cleanup-unused'],
+    mcps: [],
+    toon: false,
+    hooks: false,
+    commands: [],
+  },
 };
+
+const STACK_PROFILE_IDS = ['next-saas', 'next', 'node', 'base'];
+
+/**
+ * Infer the best stack profile from a project's package.json.
+ * Returns a profile id, or null when the directory has no package.json
+ * (callers should fall back to 'base').
+ */
+export function detectStackProfile(packageJson) {
+  if (!packageJson || typeof packageJson !== 'object') {
+    return null;
+  }
+  const deps = {
+    ...(packageJson.dependencies || {}),
+    ...(packageJson.devDependencies || {}),
+  };
+  if (deps.next && (deps['drizzle-orm'] || deps['better-auth'] || deps['@neondatabase/serverless'])) {
+    return 'next-saas';
+  }
+  if (deps.next) {
+    return 'next';
+  }
+  return 'node';
+}
+
+export function isStackProfile(id) {
+  return STACK_PROFILE_IDS.includes(id);
+}
 
 export function getProfile(id) {
   return profiles[id];

@@ -1,9 +1,9 @@
 export const siteConfig = {
   name: "agent-starter",
-  title: "agent-starter - skills for Claude Code, Codex, and Cursor",
+  title: "agent-starter - agent.json, skills, and MCPs for Claude Code, Codex, and Cursor",
   shortTitle: "agent-starter",
   description:
-    "Opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Install 28 hand-maintained skills into .claude, .codex, and .cursor/rules.",
+    "Declarative agent config for Claude Code, Codex, and Cursor. Declare skills, MCP servers, and a stack profile in agent.json — sync writes each agent's native config, plus 29 hand-maintained skills.",
   url: "https://claude.raintree.technology",
   repoUrl: "https://github.com/raintree-technology/claude-starter",
   docpullUrl: "https://docpull.raintree.technology",
@@ -11,10 +11,12 @@ export const siteConfig = {
   manifestPath: "/manifest.webmanifest",
   llmsPath: "/llms.txt",
   securityPath: "/.well-known/security.txt",
-  lastModified: "2026-06-03T00:00:00.000-07:00",
+  lastModified: "2026-06-11T00:00:00.000-07:00",
   themeColor: "#0a0a0a",
   keywords: [
     "agent-starter",
+    "agent.json",
+    "MCP servers",
     "Claude Code skills",
     "Codex skills",
     "Cursor rules",
