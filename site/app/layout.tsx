@@ -49,7 +49,7 @@ export const metadata: Metadata = {
         url: siteConfig.ogImagePath,
         width: 1200,
         height: 630,
-        alt: "agent-starter skill pack for Claude Code, Codex, and Cursor",
+        alt: "agent-starter — agent.json, skills, and MCPs for Claude Code, Codex, and Cursor",
       },
     ],
     locale: "en_US",

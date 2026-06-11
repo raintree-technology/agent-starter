@@ -25,7 +25,9 @@ export default async function Home() {
       <main id="main-content" tabIndex={-1}>
         <StructuredData nonce={nonce} />
         <Hero />
+        <Manifest />
         <Inside />
+        <Profiles />
         <Skills />
         <Benchmarks />
         <Install />
@@ -47,6 +49,12 @@ function Header() {
         </Link>
         <div className="flex items-center gap-2">
           <nav className="hidden items-center gap-3 font-mono text-xs text-muted-foreground md:flex" aria-label="Sections">
+            <Link href="#manifest" className="hover:text-foreground">
+              agent.json
+            </Link>
+            <Link href="#profiles" className="hover:text-foreground">
+              Profiles
+            </Link>
             <Link href="#skills" className="hover:text-foreground">
               Skills
             </Link>
@@ -112,14 +120,17 @@ function Hero() {
         </pre>
       </div>
       <h1 className="font-mono text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-        One skill pack.<br />
+        One agent.json.<br />
         <span className="text-muted-foreground">Three agent targets.</span>
       </h1>
       <p className="mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-        Opinionated skill templates for Claude Code, Codex, and Cursor. Install the same shipped skills into{" "}
+        The package.json for agent environments. Declare skills, MCP servers, and a stack profile in{" "}
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">agent.json</code>;{" "}
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">sync</code>{" "}
+        writes native config for{" "}
         <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.claude/</code>,{" "}
         <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.codex/</code>, and{" "}
-        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.cursor/rules/</code>.
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.95em] text-foreground">.cursor/</code>.
       </p>
 
       <div className="mt-10 inline-flex items-center gap-0 overflow-hidden rounded-lg border border-border/60 bg-muted/40 font-mono text-sm">
@@ -142,14 +153,68 @@ function Hero() {
   );
 }
 
+/* ---------------- agent.json manifest ---------------- */
+
+function Manifest() {
+  const manifest = [
+    `{`,
+    `  "version": 1,`,
+    `  "profile": "next-saas",`,
+    `  "targets": ["claude", "codex", "cursor"],`,
+    `  "skills": ["finish-setup", "cleanup-unused", "copywriting-frameworks"],`,
+    `  "mcps": [`,
+    `    { "name": "neon",   "command": "npx", "args": ["-y", "@neondatabase/mcp-server-neon"] },`,
+    `    { "name": "stripe", "command": "npx", "args": ["-y", "@stripe/mcp"] }`,
+    `  ]`,
+    `}`,
+  ].join("\n");
+  const commands = [
+    { code: "npx agent-starter sync", note: "agent.json → native config for every target" },
+    { code: "npx agent-starter status", note: "diff manifest vs configs; exits 1 on drift" },
+    { code: "npx agent-starter add mcp neon", note: "catalog: github, neon, stripe, resend, posthog" },
+    { code: "npx agent-starter add skill cleanup-types", note: "add a shipped skill and re-sync" },
+  ];
+  return (
+    <section id="manifest" className="scroll-mt-20 border-t border-border/60">
+      <div className="mx-auto max-w-4xl px-6 py-20">
+        <SectionLabel>agent.json</SectionLabel>
+        <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
+          One declarative manifest for the whole agent environment. Check it into git; every
+          contributor runs{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">npx agent-starter sync</code>{" "}
+          and gets identical skills and MCP servers in whichever agent they use. Sync is
+          idempotent — generated sections are fenced with markers, manual edits outside them
+          survive, and MCP entries agent-starter didn&apos;t write are never touched. Secrets stay{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">{"${VAR}"}</code>{" "}
+          references, resolved by each agent at runtime.
+        </p>
+        <pre className="mt-8 overflow-x-auto rounded-md border border-border/60 bg-muted/40 px-4 py-3.5 font-mono text-[13px] leading-[1.7]">
+          {manifest}
+        </pre>
+        <ul className="mt-6 space-y-3 font-mono text-sm">
+          {commands.map((c) => (
+            <li key={c.code} className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+              <code className="overflow-x-auto rounded-md border border-border/60 bg-muted/40 px-4 py-2.5">
+                <span className="select-none text-muted-foreground">$ </span>
+                {c.code}
+              </code>
+              <span className="text-xs text-muted-foreground">{c.note}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 /* ---------------- Agent targets ---------------- */
 
 function Inside() {
   const rows: Array<{ path: string; note?: string; dim?: boolean }> = [
-    { path: ".claude/",               note: "Claude Code skills, commands, settings" },
-    { path: ".codex/",                note: "Codex local skill files" },
-    { path: "AGENTS.md",              note: "Codex project guidance" },
-    { path: ".cursor/rules/",         note: "Cursor project rules" },
+    { path: "agent.json",             note: "the manifest — profile, targets, skills, MCPs" },
+    { path: ".claude/ + .mcp.json",   note: "Claude Code skills, commands, settings, MCP servers" },
+    { path: ".codex/ + AGENTS.md",    note: "Codex skill files, config.toml MCPs, project guidance" },
+    { path: ".cursor/rules/ + .cursor/mcp.json", note: "Cursor project rules and MCP servers" },
     { path: "├── agent-starter.mdc",  dim: true },
     { path: "├── hig-foundations.mdc", dim: true },
     { path: "├── copywriting-frameworks.mdc", dim: true },
@@ -171,6 +236,85 @@ function Inside() {
             </div>
           ))}
         </pre>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Profiles ---------------- */
+
+function Profiles() {
+  const stacks = [
+    {
+      name: "next-saas",
+      stack: "Next.js SaaS (next-starter)",
+      skills: "finish-setup, cleanup, copywriting",
+      mcps: "neon, stripe, resend, posthog, github",
+    },
+    {
+      name: "next",
+      stack: "Generic Next.js",
+      skills: "cleanup-unused, cleanup-types",
+      mcps: "github",
+    },
+    {
+      name: "node",
+      stack: "Generic Node.js",
+      skills: "cleanup-unused, cleanup-types",
+      mcps: "github",
+    },
+    {
+      name: "base",
+      stack: "Anything else",
+      skills: "cleanup-unused",
+      mcps: "none",
+    },
+  ];
+  return (
+    <section id="profiles" className="scroll-mt-20 border-t border-border/60">
+      <div className="mx-auto max-w-4xl px-6 py-20">
+        <SectionLabel>Stack profiles</SectionLabel>
+        <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
+          A stack profile bundles the skills <em>and</em> MCP servers a project type needs, so
+          setup is one command instead of a scavenger hunt for server packages.{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">init</code>{" "}
+          auto-detects the right one from{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">package.json</code>.
+          Skill-set profiles (<code className="font-mono">all</code>,{" "}
+          <code className="font-mono">apple-hig</code>, <code className="font-mono">design-hci</code>,{" "}
+          <code className="font-mono">minimal</code>) still exist for picking skills without MCPs.
+        </p>
+        <div className="mt-8 overflow-x-auto rounded-md border border-border/60">
+          <table className="w-full font-mono text-sm">
+            <caption className="sr-only">Stack profiles with bundled skills and MCP servers</caption>
+            <thead className="bg-muted/40 text-left text-muted-foreground">
+              <tr>
+                <th className="px-4 py-2.5 font-normal">Profile</th>
+                <th className="px-4 py-2.5 font-normal">Stack</th>
+                <th className="px-4 py-2.5 font-normal">Skills</th>
+                <th className="px-4 py-2.5 font-normal">MCP servers</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stacks.map((p) => (
+                <tr key={p.name} className="border-t border-border/60">
+                  <td className="px-4 py-2.5 font-semibold">{p.name}</td>
+                  <td className="px-4 py-2.5 text-muted-foreground">{p.stack}</td>
+                  <td className="px-4 py-2.5 text-muted-foreground">{p.skills}</td>
+                  <td className="px-4 py-2.5 text-muted-foreground">{p.mcps}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-6 max-w-2xl text-sm text-muted-foreground">
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">next-saas</code>{" "}
+          is the flagship. It ships the{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">finish-setup</code>{" "}
+          skill: after scaffolding, open your agent and say &ldquo;finish setup&rdquo; — it creates
+          Stripe products matching your billing plans, verifies database migrations, and walks
+          email-domain DNS through the wired MCPs.
+        </p>
       </div>
     </section>
   );
@@ -213,6 +357,12 @@ function Skills() {
       group: "Growth",
       items: [
         { name: "copywriting-frameworks", blurb: "Direct-response workflows for headlines, ads, landing pages, emails, CTAs, objections, and critiques." },
+      ],
+    },
+    {
+      group: "Workflow",
+      items: [
+        { name: "finish-setup", blurb: "Provisions a freshly scaffolded SaaS project through the wired MCPs: Stripe products, database migrations, email DNS, analytics, GitHub." },
       ],
     },
     {
@@ -353,10 +503,11 @@ function Install() {
       <div className="mx-auto max-w-4xl px-6 py-20">
         <SectionLabel>Install</SectionLabel>
         <ol className="mt-8 space-y-5 font-mono text-sm">
-          <Snippet step="1" code="npx create-agent-starter@latest --agent all" hint="all supported agents" />
-          <Snippet step="2" code="npx create-agent-starter@latest --agent codex,cursor --profile apple-hig" hint="HIG Doctor profile" />
-          <Snippet step="3" code="npx create-agent-starter@latest --agent codex,cursor --skills copywriting-frameworks,cleanup-unused" hint="targeted install" />
-          <Snippet step="4" code="npm i @toon-format/toon gpt-tokenizer" hint="for Claude /toon-* commands" />
+          <Snippet step="1" code="npx create-agent-starter@latest --agent all" hint="init: detect stack, write agent.json, sync" />
+          <Snippet step="2" code="npx agent-starter sync" hint="teammates: agent.json → native config" />
+          <Snippet step="3" code="npx create-agent-starter@latest --agent codex,cursor --profile apple-hig" hint="HIG Doctor profile" />
+          <Snippet step="4" code="npx create-agent-starter@latest --agent codex,cursor --skills copywriting-frameworks,cleanup-unused" hint="targeted install" />
+          <Snippet step="5" code="npm i @toon-format/toon gpt-tokenizer" hint="for Claude /toon-* commands" />
         </ol>
       </div>
     </section>

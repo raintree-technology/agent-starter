@@ -88,6 +88,29 @@ npx create-agent-starter@latest --skills copywriting-frameworks,cleanup-unused -
 
 Profiles select a skill set. Agent targets decide where that skill set is installed.
 
+Stack profiles (`next-saas`, `next`, `node`, `base`) additionally bundle MCP servers for the stack. `init` auto-detects the right one from `package.json`.
+
+## agent.json
+
+`init` writes an `agent.json` manifest at the project root — the single declaration of the project's agent environment (profile, targets, skills, MCP servers). Check it into git; every contributor then runs:
+
+```bash
+npx agent-starter sync
+```
+
+and gets identical native config for whichever agent they use: skills plus `.mcp.json` (Claude Code), `.codex/config.toml` + `AGENTS.md` (Codex), and `.cursor/mcp.json` + rules (Cursor). Sync is idempotent — generated sections are fenced with markers, manual edits outside them survive, and MCP entries agent-starter didn't write are never touched.
+
+```bash
+npx agent-starter status            # diff agent.json vs native configs; exits 1 on drift
+npx agent-starter add mcp neon      # catalog: github, neon, stripe, resend, posthog
+npx agent-starter add mcp internal --command ./bin/mcp --env API_KEY='${API_KEY}'
+npx agent-starter add skill cleanup-types
+```
+
+Secrets are referenced as `${VAR}` and resolved by each agent at runtime — never written to the generated files. Sync appends missing vars to `.env.example` and warns when they're unset.
+
+The `next-saas` profile is the flagship: cleanup + copywriting skills, the `finish-setup` provisioning skill, and Neon/Stripe/Resend/PostHog/GitHub MCPs — designed as the companion to a Next.js SaaS template. After scaffolding, open your agent and say "finish setup": the agent creates Stripe products to match your billing plans, verifies migrations, and walks email DNS via the wired MCPs.
+
 ## Structure
 
 ```text

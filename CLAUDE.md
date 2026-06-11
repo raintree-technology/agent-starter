@@ -14,6 +14,8 @@ Users run `npx create-agent-starter` and choose targets with `--agent claude`, `
 
 This is configuration, not an app framework. Avoid adding runtime orchestration, semantic matching engines, YAML workflow DSLs, or placeholder command frameworks.
 
+Since v4 the package is also a project-level agent config manager: an `agent.json` manifest at the project root declares profile, targets, skills, and MCP servers; `agent-starter sync` writes each agent's native config from it (`.mcp.json`, `.codex/config.toml`, `.cursor/mcp.json`, managed blocks in CLAUDE.md/AGENTS.md). Core modules: `src/manifest.js` (load/validate/resolve), `src/mcps.js` (MCP catalog + per-target rendering), `src/commands/{sync,status,add}.js`, `src/utils/managed-block.js` (fenced-marker editing). See SPEC.md for the full design.
+
 ## Current Structure
 
 ```text

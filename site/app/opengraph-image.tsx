@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/lib/site";
 
-export const alt = "agent-starter skill pack for Claude Code, Codex, and Cursor";
+export const alt = "agent-starter — agent.json, skills, and MCPs for Claude Code, Codex, and Cursor";
 export const size = {
   width: 1200,
   height: 630,
@@ -65,7 +65,7 @@ export default function OpenGraphImage() {
               letterSpacing: 0,
             }}
           >
-            <span>One skill pack.</span>
+            <span>One agent.json.</span>
             <span>Three agent targets.</span>
           </div>
           <div
@@ -77,7 +77,7 @@ export default function OpenGraphImage() {
               letterSpacing: 0,
             }}
           >
-            Install 28 hand-maintained skills into Claude Code, Codex, and Cursor.
+            Skills, MCP servers, and stack profiles, synced to Claude Code, Codex, and Cursor.
           </div>
         </div>
 
