@@ -1,16 +1,20 @@
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-
-import { validateManifest, resolveManifest, loadManifest, saveManifest } from '../src/manifest.js';
-import { validateMcpEntry, collectEnvReferences, buildCodexMcpToml, getCatalogMcp } from '../src/mcps.js';
-import { upsertManagedBlock, readManagedBlock } from '../src/utils/managed-block.js';
-import { runSync } from '../src/commands/sync.js';
+import test from 'node:test';
 import { getStatus } from '../src/commands/status.js';
+import { runSync } from '../src/commands/sync.js';
+import { loadManifest, resolveManifest, saveManifest, validateManifest } from '../src/manifest.js';
+import {
+  buildCodexMcpToml,
+  collectEnvReferences,
+  getCatalogMcp,
+  validateMcpEntry,
+} from '../src/mcps.js';
 import { detectStackProfile, getProfile } from '../src/profiles.js';
+import { readManagedBlock, upsertManagedBlock } from '../src/utils/managed-block.js';
 
 async function withTempDir(t) {
   const dir = await mkdtemp(join(tmpdir(), 'agent-manifest-test-'));
@@ -26,9 +30,13 @@ test('manifest validation rejects bad shapes', () => {
   assert.throws(() => validateManifest({ version: 2 }), /Unsupported agent.json version/);
   assert.throws(() => validateManifest({ version: 1, profile: 'nope' }), /Unknown profile/);
   assert.throws(() => validateManifest({ version: 1, skills: ['not-a-skill'] }), /unknown skill/);
-  assert.throws(() => validateManifest({ version: 1, targets: ['windsurf'] }), /Unknown agent target/);
   assert.throws(
-    () => validateManifest({ version: 1, mcps: [{ name: 'x', command: 'npx', url: 'https://x.dev' }] }),
+    () => validateManifest({ version: 1, targets: ['windsurf'] }),
+    /Unknown agent target/,
+  );
+  assert.throws(
+    () =>
+      validateManifest({ version: 1, mcps: [{ name: 'x', command: 'npx', url: 'https://x.dev' }] }),
     /exactly one of/,
   );
   assert.throws(
@@ -40,9 +48,16 @@ test('manifest validation rejects bad shapes', () => {
 
 test('mcp entry validation accepts stdio and remote shapes', () => {
   validateMcpEntry({ name: 'github', command: 'npx', args: ['-y', 'pkg'], env: { A: 'b' } });
-  validateMcpEntry({ name: 'posthog', url: 'https://mcp.posthog.com/mcp', headers: { Authorization: 'Bearer x' } });
+  validateMcpEntry({
+    name: 'posthog',
+    url: 'https://mcp.posthog.com/mcp',
+    headers: { Authorization: 'Bearer x' },
+  });
   assert.throws(() => validateMcpEntry({ name: 'bad name!', command: 'npx' }), /Invalid MCP name/);
-  assert.throws(() => validateMcpEntry({ name: 'x', url: 'http://insecure.dev' }), /exactly one of/);
+  assert.throws(
+    () => validateMcpEntry({ name: 'x', url: 'http://insecure.dev' }),
+    /exactly one of/,
+  );
 });
 
 test('resolveManifest merges profile skills/mcps with explicit entries', () => {
@@ -66,7 +81,10 @@ test('resolveManifest merges profile skills/mcps with explicit entries', () => {
 });
 
 test('stack profile detection reads dependencies', () => {
-  assert.equal(detectStackProfile({ dependencies: { next: '16.0.0', 'better-auth': '1.0.0' } }), 'next-saas');
+  assert.equal(
+    detectStackProfile({ dependencies: { next: '16.0.0', 'better-auth': '1.0.0' } }),
+    'next-saas',
+  );
   assert.equal(detectStackProfile({ dependencies: { next: '16.0.0' } }), 'next');
   assert.equal(detectStackProfile({ dependencies: { express: '5.0.0' } }), 'node');
   assert.equal(detectStackProfile(null), null);
@@ -75,7 +93,11 @@ test('stack profile detection reads dependencies', () => {
 test('env reference collection finds ${VAR} across env, headers, args, url', () => {
   const vars = collectEnvReferences([
     { name: 'a', command: 'npx', args: ['--key=${KEY_ONE}'], env: { TOKEN: '${KEY_TWO}' } },
-    { name: 'b', url: 'https://x.dev/${KEY_THREE}', headers: { Authorization: 'Bearer ${KEY_TWO}' } },
+    {
+      name: 'b',
+      url: 'https://x.dev/${KEY_THREE}',
+      headers: { Authorization: 'Bearer ${KEY_TWO}' },
+    },
   ]);
   assert.deepEqual(vars, ['KEY_ONE', 'KEY_THREE', 'KEY_TWO']);
 });
@@ -83,7 +105,11 @@ test('env reference collection finds ${VAR} across env, headers, args, url', () 
 test('codex toml rendering covers stdio and remote servers', () => {
   const toml = buildCodexMcpToml([
     { name: 'github', command: 'npx', args: ['-y', 'pkg'], env: { TOKEN: '${T}' } },
-    { name: 'posthog', url: 'https://mcp.posthog.com/mcp', headers: { Authorization: 'Bearer ${P}' } },
+    {
+      name: 'posthog',
+      url: 'https://mcp.posthog.com/mcp',
+      headers: { Authorization: 'Bearer ${P}' },
+    },
   ]);
   assert.match(toml, /\[mcp_servers\.github\]/);
   assert.match(toml, /args = \["-y", "pkg"\]/);
@@ -147,9 +173,12 @@ test('sync writes skills and MCP config for all targets and is idempotent', asyn
 
 test('sync preserves foreign MCP keys and content outside managed markers', async (t) => {
   const dir = await withTempDir(t);
-  await writeFile(join(dir, '.mcp.json'), JSON.stringify({
-    mcpServers: { 'user-added': { command: 'my-server' } },
-  }));
+  await writeFile(
+    join(dir, '.mcp.json'),
+    JSON.stringify({
+      mcpServers: { 'user-added': { command: 'my-server' } },
+    }),
+  );
   await writeFile(join(dir, 'AGENTS.md'), '# Existing guidance\n');
   await saveManifest(dir, {
     version: 1,

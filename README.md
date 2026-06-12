@@ -1,11 +1,60 @@
 # agent-starter
 
-An opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Deep, handwritten skills for HCI usability modeling, Apple HIG Doctor guidance, copywriting, code cleanup, and TOON token savings.
+Raintree Technology's opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Deep, handwritten skills for HCI usability modeling, Apple HIG Doctor guidance, copywriting, code cleanup, and TOON token savings.
 
 No orchestration framework. No aspirational YAML. Just agent-native project files generated from one shared skill source.
 
+[![status: live](https://img.shields.io/badge/status-live-brightgreen.svg)](https://github.com/raintree-technology/agent-starter)
+[![CI](https://github.com/raintree-technology/agent-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/raintree-technology/agent-starter/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/create-agent-starter.svg)](https://www.npmjs.com/package/create-agent-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Status
+
+This repository is live. It contains the published `create-agent-starter` npm package and the `claude.raintree.technology` marketing site.
+
+## Stack
+
+- Root package: Node.js ESM CLI/library, npm, `node:test`, ESLint, Biome.
+- Site: Next.js 16 App Router, React 19, TypeScript, Bun, Tailwind CSS, shadcn/ui primitives.
+- CI: Raintree Technology reusable CI and drift-check workflows pinned to the org standard commit.
+
+## Setup
+
+```bash
+npm ci
+cd site
+bun install --frozen-lockfile
+```
+
+Use Node.js 22 for repository development (`.nvmrc`), while the published root package keeps its existing `>=18.0.0` runtime contract.
+
+## Scripts
+
+Root package:
+
+```bash
+npm run check
+npm run lint
+npm test
+npm pack --dry-run
+```
+
+Marketing site:
+
+```bash
+cd site
+bun run check
+bun run lint
+bun run typecheck
+bun run build
+```
+
+## Environment And Deploy
+
+The root package does not require runtime environment variables. The site documents its public local URL in `site/.env.example`.
+
+The npm package is published from the root package. The site is intended for Vercel deployment at `claude.raintree.technology`.
 
 ## What you get
 

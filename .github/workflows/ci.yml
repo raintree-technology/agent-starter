@@ -10,108 +10,20 @@ permissions:
   contents: read
 
 jobs:
-  root-checks:
-    name: Root checks
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+  root:
+    name: Root package
+    uses: raintree-technology/.github/.github/workflows/ci.yml@3256afba6d5c060f8b00f1bbf96887d253b0e9e1
+    with:
+      package-manager: npm
+      node-version: "22"
+      working-directory: "."
+      standard-ref: 3256afba6d5c060f8b00f1bbf96887d253b0e9e1
 
-      - name: Setup Node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
-        with:
-          node-version: 20.19.5
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Test
-        run: npm test
-
-      - name: Audit dependencies
-        run: npm audit --audit-level=moderate
-
-      - name: Package dry-run
-        run: npm pack --dry-run
-
-  site-checks:
-    name: Site checks
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
-        with:
-          bun-version: 1.3.11
-
-      - name: Install dependencies
-        working-directory: site
-        run: bun install --frozen-lockfile
-
-      - name: Audit dependencies
-        working-directory: site
-        run: bun audit
-
-      - name: Lint
-        working-directory: site
-        run: bun run lint
-
-      - name: Typecheck
-        working-directory: site
-        run: bun run typecheck
-
-      - name: Build
-        working-directory: site
-        run: bun run build
-
-  secret-scan:
-    name: Secret scan
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
-        with:
-          fetch-depth: 0
-
-      - name: Install Gitleaks
-        env:
-          GITLEAKS_VERSION: 8.30.1
-        run: |
-          set -euo pipefail
-          archive="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
-          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/${archive}" -o "$RUNNER_TEMP/${archive}"
-          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_checksums.txt" -o "$RUNNER_TEMP/gitleaks_checksums.txt"
-          grep " ${archive}$" "$RUNNER_TEMP/gitleaks_checksums.txt" > "$RUNNER_TEMP/gitleaks.sha256"
-          (cd "$RUNNER_TEMP" && sha256sum -c gitleaks.sha256)
-          mkdir -p "$RUNNER_TEMP/gitleaks"
-          tar -xzf "$RUNNER_TEMP/${archive}" -C "$RUNNER_TEMP/gitleaks"
-
-      - name: Gitleaks
-        run: "$RUNNER_TEMP/gitleaks/gitleaks detect --source . --redact --verbose"
-
-  codeql:
-    name: CodeQL
-    runs-on: ubuntu-24.04
-    permissions:
-      security-events: write
-      packages: read
-      actions: read
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@fee9466b8957867761f2d78f922ab084e3e2dd17
-        with:
-          languages: javascript-typescript
-          build-mode: none
-
-      - name: Analyze
-        uses: github/codeql-action/analyze@fee9466b8957867761f2d78f922ab084e3e2dd17
+  site:
+    name: Marketing site
+    uses: raintree-technology/.github/.github/workflows/ci.yml@3256afba6d5c060f8b00f1bbf96887d253b0e9e1
+    with:
+      package-manager: bun
+      bun-version: "1.3.11"
+      working-directory: site
+      standard-ref: 3256afba6d5c060f8b00f1bbf96887d253b0e9e1

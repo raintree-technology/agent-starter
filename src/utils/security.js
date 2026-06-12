@@ -1,4 +1,4 @@
-import { resolve, relative, isAbsolute } from 'path';
+import { isAbsolute, relative, resolve } from 'node:path';
 
 const MAX_SKILL_PATH_LENGTH = 256;
 const MAX_COMMAND_NAME_LENGTH = 64;
@@ -125,8 +125,10 @@ export function sanitizeForLog(str) {
   }
 
   // Remove control characters except newline and tab.
-  return Array.from(str).filter((char) => {
-    const code = char.charCodeAt(0);
-    return code === 9 || code === 10 || (code >= 32 && code !== 127);
-  }).join('');
+  return Array.from(str)
+    .filter((char) => {
+      const code = char.charCodeAt(0);
+      return code === 9 || code === 10 || (code >= 32 && code !== 127);
+    })
+    .join('');
 }

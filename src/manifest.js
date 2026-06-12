@@ -1,9 +1,9 @@
-import { readFile, writeFile } from 'fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import { pathExists } from 'fs-extra';
-import { join, resolve } from 'path';
-import { getProfile, profiles, SKILLS } from './profiles.js';
 import { parseAgentTargets } from './agents.js';
 import { validateMcpEntry } from './mcps.js';
+import { getProfile, profiles, SKILLS } from './profiles.js';
 
 export const MANIFEST_FILENAME = 'agent.json';
 export const MANIFEST_VERSION = 1;
@@ -17,16 +17,25 @@ export function validateManifest(manifest) {
     throw new Error('agent.json must be a JSON object');
   }
   if (manifest.version !== MANIFEST_VERSION) {
-    throw new Error(`Unsupported agent.json version: ${manifest.version} (expected ${MANIFEST_VERSION})`);
+    throw new Error(
+      `Unsupported agent.json version: ${manifest.version} (expected ${MANIFEST_VERSION})`,
+    );
   }
   if (manifest.profile !== undefined && !getProfile(manifest.profile)) {
-    throw new Error(`Unknown profile in agent.json: ${manifest.profile}. Available: ${Object.keys(profiles).join(', ')}`);
+    throw new Error(
+      `Unknown profile in agent.json: ${manifest.profile}. Available: ${Object.keys(profiles).join(', ')}`,
+    );
   }
   if (manifest.targets !== undefined) {
-    parseAgentTargets(Array.isArray(manifest.targets) ? manifest.targets.join(',') : manifest.targets);
+    parseAgentTargets(
+      Array.isArray(manifest.targets) ? manifest.targets.join(',') : manifest.targets,
+    );
   }
   if (manifest.skills !== undefined) {
-    if (!Array.isArray(manifest.skills) || manifest.skills.some((skill) => typeof skill !== 'string')) {
+    if (
+      !Array.isArray(manifest.skills) ||
+      manifest.skills.some((skill) => typeof skill !== 'string')
+    ) {
       throw new Error('agent.json: skills must be an array of skill ids');
     }
     const knownSkillIds = new Set(SKILLS.map((skill) => skill.id));
@@ -47,8 +56,12 @@ export function validateManifest(manifest) {
     }
   }
   if (manifest.model !== undefined) {
-    if (typeof manifest.model !== 'object' || manifest.model === null || Array.isArray(manifest.model)
-      || Object.values(manifest.model).some((value) => typeof value !== 'string')) {
+    if (
+      typeof manifest.model !== 'object' ||
+      manifest.model === null ||
+      Array.isArray(manifest.model) ||
+      Object.values(manifest.model).some((value) => typeof value !== 'string')
+    ) {
       throw new Error('agent.json: model must be an object mapping agent target to model id');
     }
   }

@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { siteConfig } from "@/lib/site";
+import type { Metadata } from "next"
+import Link from "next/link"
+import { siteConfig } from "@/lib/site"
 
 export const metadata: Metadata = {
   title: `Not found - ${siteConfig.name}`,
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     index: false,
     follow: false,
   },
-};
+}
 
 export default function NotFound() {
   return (
@@ -16,9 +16,7 @@ export default function NotFound() {
       <div className="max-w-md text-center">
         <p className="font-mono text-sm text-muted-foreground">404</p>
         <h1 className="mt-3 font-mono text-3xl font-bold tracking-tight">Page not found</h1>
-        <p className="mt-4 text-sm text-muted-foreground">
-          The requested page does not exist on {siteConfig.name}.
-        </p>
+        <p className="mt-4 text-sm text-muted-foreground">The requested page does not exist on {siteConfig.name}.</p>
         <Link
           href="/"
           className="mt-8 inline-flex rounded-md border border-border/60 px-4 py-2 font-mono text-sm hover:border-border hover:bg-muted/60"
@@ -27,5 +25,5 @@ export default function NotFound() {
         </Link>
       </div>
     </main>
-  );
+  )
 }

@@ -1,7 +1,7 @@
-import type { MetadataRoute } from "next";
-import { absoluteUrl, siteConfig } from "@/lib/site";
+import type { MetadataRoute } from "next"
+import { absoluteUrl, siteConfig } from "@/lib/site"
 
-const siteHost = new URL(siteConfig.url).host;
+const siteHost = new URL(siteConfig.url).host
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -13,5 +13,5 @@ export default function robots(): MetadataRoute.Robots {
     ],
     sitemap: absoluteUrl("/sitemap.xml"),
     host: siteHost,
-  };
+  }
 }

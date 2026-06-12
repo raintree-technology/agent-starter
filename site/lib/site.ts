@@ -28,15 +28,15 @@ export const siteConfig = {
     url: "https://github.com/raintree-technology",
   },
   securityContact: "security@raintree.ai",
-} as const;
+} as const
 
 export function absoluteUrl(path = "/") {
-  return new URL(path, siteConfig.url).toString();
+  return new URL(path, siteConfig.url).toString()
 }
 
 export function canonicalUrl(pathname: string, search = "") {
-  const url = new URL(siteConfig.url);
-  url.pathname = pathname;
-  url.search = search;
-  return url;
+  const url = new URL(siteConfig.url)
+  url.pathname = pathname
+  url.search = search
+  return url
 }

@@ -1,6 +1,6 @@
-import { absoluteUrl, siteConfig } from "@/lib/site";
+import { absoluteUrl, siteConfig } from "@/lib/site"
 
-export const dynamic = "force-static";
+export const dynamic = "force-static"
 
 export function GET() {
   const body = `# ${siteConfig.name}
@@ -55,12 +55,12 @@ npx create-agent-starter@latest --agent codex,cursor --skills copywriting-framew
 ## Licensing
 
 Code is MIT licensed. The package is not affiliated with Anthropic, Apple, OpenAI, Cursor, or @toon-format/toon.
-`;
+`
 
   return new Response(body, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "public, max-age=3600, s-maxage=86400",
     },
-  });
+  })
 }

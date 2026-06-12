@@ -1,19 +1,19 @@
-import type { Metadata, Viewport } from "next";
-import { headers } from "next/headers";
-import { Inter, JetBrains_Mono } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { absoluteUrl, siteConfig } from "@/lib/site";
+import type { Metadata, Viewport } from "next"
+import { Inter, JetBrains_Mono } from "next/font/google"
+import { headers } from "next/headers"
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import { absoluteUrl, siteConfig } from "@/lib/site"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   colorScheme: "light dark",
   themeColor: siteConfig.themeColor,
-};
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -70,27 +70,21 @@ export const metadata: Metadata = {
     "msapplication-TileColor": "#0a0a0a",
     "og:see_also": absoluteUrl("/sitemap.xml"),
   },
-};
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const nonce = (await headers()).get("x-nonce") ?? undefined
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${mono.variable}`}>
       <body className="font-sans">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          nonce={nonce}
-        >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange nonce={nonce}>
           {children}
         </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }

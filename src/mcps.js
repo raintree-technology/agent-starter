@@ -65,8 +65,12 @@ export function validateMcpEntry(entry) {
   for (const key of ['env', 'headers']) {
     if (entry[key] !== undefined) {
       const value = entry[key];
-      if (typeof value !== 'object' || value === null || Array.isArray(value)
-        || Object.values(value).some((v) => typeof v !== 'string')) {
+      if (
+        typeof value !== 'object' ||
+        value === null ||
+        Array.isArray(value) ||
+        Object.values(value).some((v) => typeof v !== 'string')
+      ) {
         throw new Error(`MCP "${entry.name}": ${key} must be an object of string values`);
       }
     }

@@ -1,7 +1,7 @@
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import test from 'node:test';
 
 test('shared template settings stay fail-closed', () => {
   const settingsPath = resolve('templates/.claude/settings.json');
@@ -9,8 +9,5 @@ test('shared template settings stay fail-closed', () => {
 
   assert.equal(settings.permissions, undefined);
   assert.equal(settings.hooks, undefined);
-  assert.match(
-    settings.description,
-    /\.claude\/settings\.local\.json/,
-  );
+  assert.match(settings.description, /\.claude\/settings\.local\.json/);
 });

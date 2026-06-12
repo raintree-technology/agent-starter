@@ -1,17 +1,16 @@
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { mkdtemp, readdir, readFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join, relative } from 'node:path';
-
+import test from 'node:test';
+import { SKILLS } from '../src/profiles.js';
 import {
   copyAgentEssentials,
   copyAgentSkills,
   writeCodexAgentsFile,
   writeCursorProjectRule,
 } from '../src/utils/copy.js';
-import { SKILLS } from '../src/profiles.js';
 
 const SKILLS_ROOT = 'templates/.claude/skills';
 const MAX_ENTRYPOINT_LINES = 500;
@@ -22,7 +21,7 @@ async function walk(dir) {
     const fullPath = join(dir, entry);
     const entryStat = await stat(fullPath);
     if (entryStat.isDirectory()) {
-      results.push(...await walk(fullPath));
+      results.push(...(await walk(fullPath)));
     } else {
       results.push(fullPath);
     }
@@ -57,7 +56,11 @@ function splitFrontmatter(markdown) {
       }
       metadata[key] = value.startsWith('|')
         ? blockLines.join('\n').trim()
-        : blockLines.map((blockLine) => blockLine.trim()).join(' ').replace(/\s+/g, ' ').trim();
+        : blockLines
+            .map((blockLine) => blockLine.trim())
+            .join(' ')
+            .replace(/\s+/g, ' ')
+            .trim();
       continue;
     }
 
@@ -85,8 +88,9 @@ test('only templates/.claude/skills is tracked as skill source', async () => {
 });
 
 test('template skill entrypoints stay compact and use folder-matching names', async () => {
-  const markdownFiles = (await walk(SKILLS_ROOT))
-    .filter((file) => /(^|\/)(skill\.md|SKILL\.md)$/.test(file));
+  const markdownFiles = (await walk(SKILLS_ROOT)).filter((file) =>
+    /(^|\/)(skill\.md|SKILL\.md)$/.test(file),
+  );
 
   assert.ok(markdownFiles.length > 0);
 
@@ -117,7 +121,10 @@ test('registry covers every top-level template skill', async () => {
   }
 
   for (const skillId of topLevelSkills.sort()) {
-    assert.ok(registered.has(skillId), `${skillId} is a top-level template skill but is not registered`);
+    assert.ok(
+      registered.has(skillId),
+      `${skillId} is a top-level template skill but is not registered`,
+    );
   }
 });
 
@@ -159,9 +166,18 @@ test('template skills do not carry stale captured-doc or legacy-runtime content'
     [/claude-sonnet-4-5-20250929|claude-sonnet-4-6/, 'hardcoded Claude model snapshot'],
     [/Auto-invoke|Auto-invokes/, 'Claude-only auto-invoke wording'],
     [/Example 1: \[Scenario\]/, 'placeholder scenario heading'],
-    [/Source Code:\s*`src\/toon\.zig`|zig-out\/bin\/toon|toon-darwin-arm64/, 'obsolete TOON native binary path'],
-    [/\.claude\/skills\/toon-formatter|docs\/INSTALL|docs\/toon-guide/, 'obsolete TOON skill docs path'],
-    [/\.claude\/docs\/creating-components|Examples from TOON Formatter/, 'obsolete scaffold reference'],
+    [
+      /Source Code:\s*`src\/toon\.zig`|zig-out\/bin\/toon|toon-darwin-arm64/,
+      'obsolete TOON native binary path',
+    ],
+    [
+      /\.claude\/skills\/toon-formatter|docs\/INSTALL|docs\/toon-guide/,
+      'obsolete TOON skill docs path',
+    ],
+    [
+      /\.claude\/docs\/creating-components|Examples from TOON Formatter/,
+      'obsolete scaffold reference',
+    ],
     [/2024-01-01|2024-12-31|2024-11-16|2026-04-16|2024-08-15/, 'stale dated example'],
     [/Skill tool/, 'Claude-only skill runtime wording'],
   ];
@@ -210,21 +226,22 @@ test('generated Codex and Cursor targets keep valid target-specific skill output
   assert.doesNotMatch(codexAgents, /\\"/);
   assert.doesNotMatch(cursorProjectRule, /\\"/);
 
-  const codexCopywriting = await readFile(join(dir, '.codex/skills/copywriting-frameworks/SKILL.md'), 'utf8');
+  const codexCopywriting = await readFile(
+    join(dir, '.codex/skills/copywriting-frameworks/SKILL.md'),
+    'utf8',
+  );
   const codexMetadata = splitFrontmatter(codexCopywriting).metadata;
   assert.deepEqual(Object.keys(codexMetadata), ['name', 'description']);
   assert.equal(
-    existsSync(join(
-      dir,
-      '.codex/skills/copywriting-frameworks/references/direct-response-patterns.md',
-    )),
+    existsSync(
+      join(dir, '.codex/skills/copywriting-frameworks/references/direct-response-patterns.md'),
+    ),
     true,
   );
   assert.equal(
-    existsSync(join(
-      dir,
-      '.cursor/rules/copywriting-frameworks/references/direct-response-patterns.md',
-    )),
+    existsSync(
+      join(dir, '.cursor/rules/copywriting-frameworks/references/direct-response-patterns.md'),
+    ),
     true,
   );
 });

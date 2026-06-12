@@ -1,25 +1,32 @@
+import { readFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import chalk from 'chalk';
-import ora from 'ora';
-import inquirer from 'inquirer';
-import { join, resolve } from 'path';
 import { pathExists } from 'fs-extra';
+import inquirer from 'inquirer';
+import ora from 'ora';
+import { AGENT_TARGETS, formatAgentTargets, parseAgentTargets } from '../agents.js';
+import { loadManifest, MANIFEST_VERSION, saveManifest } from '../manifest.js';
+import {
+  detectStackProfile,
+  getProfile,
+  getProfileChoices,
+  getSkillChoices,
+  profiles,
+  SKILLS,
+} from '../profiles.js';
 import {
   copyAgentEssentials,
   copyAgentSkills,
   copyAll,
-  copySkills,
-  copyEssentials,
   copyCommands,
+  copyEssentials,
   copyHooks,
+  copySkills,
   copyToonUtils,
   writeCodexAgentsFile,
   writeCursorProjectRule,
 } from '../utils/copy.js';
 import { setupToonBinary } from '../utils/toon.js';
-import { readFile } from 'fs/promises';
-import { profiles, getProfile, getProfileChoices, getSkillChoices, SKILLS, detectStackProfile } from '../profiles.js';
-import { AGENT_TARGETS, formatAgentTargets, parseAgentTargets } from '../agents.js';
-import { loadManifest, saveManifest, MANIFEST_VERSION } from '../manifest.js';
 import { runSync } from './sync.js';
 
 async function detectProjectProfile(targetDir) {
@@ -41,7 +48,14 @@ async function writeManifest(targetDir, agentTargets, options) {
     delete manifest.skills;
   } else if (options.skills) {
     delete manifest.profile;
-    manifest.skills = [...new Set(options.skills.split(',').map((skill) => skill.trim()).filter(Boolean))];
+    manifest.skills = [
+      ...new Set(
+        options.skills
+          .split(',')
+          .map((skill) => skill.trim())
+          .filter(Boolean),
+      ),
+    ];
   } else {
     manifest.profile = 'all';
     delete manifest.skills;
@@ -51,7 +65,14 @@ async function writeManifest(targetDir, agentTargets, options) {
 }
 
 function parseSkillList(skillsList) {
-  return [...new Set(skillsList.split(',').map((skill) => skill.trim()).filter(Boolean))];
+  return [
+    ...new Set(
+      skillsList
+        .split(',')
+        .map((skill) => skill.trim())
+        .filter(Boolean),
+    ),
+  ];
 }
 
 function validateRequestedSkills(skillIds) {
@@ -131,16 +152,18 @@ export async function init(dir = '.', options = {}) {
   const existingTargets = await findExistingAgentTargets(targetDir, agentTargets);
   if (existingTargets.length > 0) {
     if (!options.force && !options.yes) {
-      const { action } = await inquirer.prompt([{
-        type: 'list',
-        name: 'action',
-        message: `${existingTargets.join(', ')} already exist. What would you like to do?`,
-        choices: [
-          { name: 'Merge (keep existing, add missing)', value: 'merge' },
-          { name: 'Overwrite (replace everything)', value: 'overwrite' },
-          { name: 'Cancel', value: 'cancel' },
-        ],
-      }]);
+      const { action } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'action',
+          message: `${existingTargets.join(', ')} already exist. What would you like to do?`,
+          choices: [
+            { name: 'Merge (keep existing, add missing)', value: 'merge' },
+            { name: 'Overwrite (replace everything)', value: 'overwrite' },
+            { name: 'Cancel', value: 'cancel' },
+          ],
+        },
+      ]);
 
       if (action === 'cancel') {
         console.log(chalk.yellow('Cancelled.'));
@@ -155,26 +178,34 @@ export async function init(dir = '.', options = {}) {
   if (!options.profile && !options.skills && !options.yes) {
     const detectedProfile = await detectProjectProfile(targetDir);
     if (detectedProfile) {
-      console.log(chalk.dim(`Detected stack profile: ${detectedProfile} (${profiles[detectedProfile].description})\n`));
+      console.log(
+        chalk.dim(
+          `Detected stack profile: ${detectedProfile} (${profiles[detectedProfile].description})\n`,
+        ),
+      );
     }
-    const { selectedProfile } = await inquirer.prompt([{
-      type: 'list',
-      name: 'selectedProfile',
-      message: 'Which skills do you want to install?',
-      choices: getProfileChoices(),
-      default: detectedProfile || 'all',
-    }]);
+    const { selectedProfile } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'selectedProfile',
+        message: 'Which skills do you want to install?',
+        choices: getProfileChoices(),
+        default: detectedProfile || 'all',
+      },
+    ]);
 
     options.profile = selectedProfile;
 
     if (selectedProfile === 'custom') {
-      const { selectedSkills } = await inquirer.prompt([{
-        type: 'checkbox',
-        name: 'selectedSkills',
-        message: 'Select skills to install (spacebar to select, enter to continue):',
-        choices: getSkillChoices(),
-        pageSize: 20,
-      }]);
+      const { selectedSkills } = await inquirer.prompt([
+        {
+          type: 'checkbox',
+          name: 'selectedSkills',
+          message: 'Select skills to install (spacebar to select, enter to continue):',
+          choices: getSkillChoices(),
+          pageSize: 20,
+        },
+      ]);
 
       if (selectedSkills.length === 0) {
         console.log(chalk.yellow('No skills selected. Cancelled.'));
@@ -222,7 +253,13 @@ export async function init(dir = '.', options = {}) {
     } else {
       spinner.text = 'Copying all skills and configurations...';
       installPlan.skills = SKILLS.map((s) => s.id);
-      installPlan.commands = ['analyze-tokens', 'convert-to-toon', 'toon-decode', 'toon-encode', 'toon-validate'];
+      installPlan.commands = [
+        'analyze-tokens',
+        'convert-to-toon',
+        'toon-decode',
+        'toon-encode',
+        'toon-validate',
+      ];
       installPlan.hooks = options.hooks !== false;
       installPlan.copyWholeClaudeTemplate = true;
     }
@@ -238,16 +275,22 @@ export async function init(dir = '.', options = {}) {
       }
     }
 
-    spinner.succeed(`Installed ${installPlan.skills.length} skills for ${formatAgentTargets(agentTargets)}`);
+    spinner.succeed(
+      `Installed ${installPlan.skills.length} skills for ${formatAgentTargets(agentTargets)}`,
+    );
 
     const manifestPath = await writeManifest(targetDir, agentTargets, options);
     const { unsetVars } = await runSync(targetDir, { ...options, force: true });
 
-    console.log('\n' + chalk.green('Agent starter installed successfully.') + '\n');
+    console.log(`\n${chalk.green('Agent starter installed successfully.')}\n`);
     console.log(chalk.dim('  Project manifest (check into git):'));
     console.log(`     ${chalk.cyan(manifestPath)}`);
     if (unsetVars.length > 0) {
-      console.log(chalk.yellow(`  Unset env vars referenced by MCPs: ${unsetVars.join(', ')} (see .env.example)`));
+      console.log(
+        chalk.yellow(
+          `  Unset env vars referenced by MCPs: ${unsetVars.join(', ')} (see .env.example)`,
+        ),
+      );
     }
     console.log(chalk.bold('Next steps:'));
     if (agentTargets.includes('codex')) {

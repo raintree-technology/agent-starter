@@ -1,7 +1,10 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import chalk from 'chalk';
-import { readFile, writeFile } from 'fs/promises';
 import { pathExists } from 'fs-extra';
-import { join, resolve } from 'path';
+import { formatAgentTargets } from '../agents.js';
+import { loadManifest, MANIFEST_FILENAME, resolveManifest } from '../manifest.js';
+import { buildCodexMcpToml, buildMcpServersMap, collectEnvReferences } from '../mcps.js';
 import {
   copyAgentEssentials,
   copyAgentSkills,
@@ -10,11 +13,8 @@ import {
   getSkillSummaries,
   writeCursorProjectRule,
 } from '../utils/copy.js';
-import { setupToonBinary } from '../utils/toon.js';
 import { upsertManagedBlock } from '../utils/managed-block.js';
-import { loadManifest, resolveManifest, MANIFEST_FILENAME } from '../manifest.js';
-import { buildMcpServersMap, buildCodexMcpToml, collectEnvReferences } from '../mcps.js';
-import { formatAgentTargets } from '../agents.js';
+import { setupToonBinary } from '../utils/toon.js';
 
 async function readJsonIfExists(filePath) {
   if (!(await pathExists(filePath))) {
@@ -55,9 +55,12 @@ async function buildClaudeSkillsBlock(skills) {
 
 async function buildCodexBlock(skills) {
   const summaries = await getSkillSummaries(skills);
-  const skillList = summaries.map((skill) => (
-    `- \`${skill.id}\`: ${skill.description}\n  Read \`.codex/skills/${skill.id}/SKILL.md\` before using this skill.`
-  )).join('\n');
+  const skillList = summaries
+    .map(
+      (skill) =>
+        `- \`${skill.id}\`: ${skill.description}\n  Read \`.codex/skills/${skill.id}/SKILL.md\` before using this skill.`,
+    )
+    .join('\n');
   return [
     '## Agent Starter skills',
     '',
@@ -150,7 +153,9 @@ export async function runSync(dir = '.', options = {}) {
   const targetDir = resolve(dir);
   const manifest = await loadManifest(targetDir);
   if (!manifest) {
-    throw new Error(`No ${MANIFEST_FILENAME} found in ${targetDir}. Run \`agent-starter init\` first.`);
+    throw new Error(
+      `No ${MANIFEST_FILENAME} found in ${targetDir}. Run \`agent-starter init\` first.`,
+    );
   }
   const plan = resolveManifest(manifest);
 
@@ -168,9 +173,11 @@ export async function runSync(dir = '.', options = {}) {
 export async function sync(dir = '.', options = {}) {
   try {
     const { plan, addedEnvExampleVars, unsetVars } = await runSync(dir, options);
-    console.log(chalk.green(
-      `Synced ${plan.skills.length} skills and ${plan.mcps.length} MCP servers for ${formatAgentTargets(plan.targets)}`,
-    ));
+    console.log(
+      chalk.green(
+        `Synced ${plan.skills.length} skills and ${plan.mcps.length} MCP servers for ${formatAgentTargets(plan.targets)}`,
+      ),
+    );
     if (plan.profile) {
       console.log(chalk.dim(`Profile: ${plan.profile}`));
     }
