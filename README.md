@@ -5,6 +5,7 @@ An opinionated multi-agent skill pack for Claude Code, Codex, and Cursor. Deep, 
 No orchestration framework. No aspirational YAML. Just agent-native project files generated from one shared skill source.
 
 [![npm version](https://img.shields.io/npm/v/create-agent-starter.svg)](https://www.npmjs.com/package/create-agent-starter)
+[![npm downloads](https://img.shields.io/npm/dt/create-agent-starter.svg)](https://www.npmjs.com/package/create-agent-starter)
 [![GitHub stars](https://img.shields.io/github/stars/raintree-technology/agent-starter?style=social)](https://github.com/raintree-technology/agent-starter/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
