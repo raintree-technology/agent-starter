@@ -25,4 +25,6 @@ permissions:
 jobs:
   drift:
     name: Standard drift
-    uses: raintree-technology/.github/.github/workflows/drift-check.yml@326f815e920df16bafa8234b236e2de4b78ee660
+    uses: raintree-technology/.github/.github/workflows/drift-check.yml@a99e879574108241a5fc7e96479512b135248d2a
+    with:
+      standard-ref: a99e879574108241a5fc7e96479512b135248d2a

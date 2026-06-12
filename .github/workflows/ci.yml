@@ -12,18 +12,20 @@ permissions:
 jobs:
   root:
     name: Root package
-    uses: raintree-technology/.github/.github/workflows/ci.yml@326f815e920df16bafa8234b236e2de4b78ee660
+    uses: raintree-technology/.github/.github/workflows/ci.yml@a99e879574108241a5fc7e96479512b135248d2a
     with:
       package-manager: npm
       node-version: "22"
       working-directory: "."
+      standard-ref: a99e879574108241a5fc7e96479512b135248d2a
     secrets: inherit
 
   site:
     name: Marketing site
-    uses: raintree-technology/.github/.github/workflows/ci.yml@326f815e920df16bafa8234b236e2de4b78ee660
+    uses: raintree-technology/.github/.github/workflows/ci.yml@a99e879574108241a5fc7e96479512b135248d2a
     with:
       package-manager: bun
       bun-version: "1.3.11"
       working-directory: site
+      standard-ref: a99e879574108241a5fc7e96479512b135248d2a
     secrets: inherit
