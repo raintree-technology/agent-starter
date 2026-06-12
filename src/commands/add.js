@@ -1,6 +1,6 @@
+import { resolve } from 'node:path';
 import chalk from 'chalk';
-import { resolve } from 'path';
-import { loadManifest, saveManifest, MANIFEST_FILENAME, MANIFEST_VERSION } from '../manifest.js';
+import { loadManifest, MANIFEST_FILENAME, MANIFEST_VERSION, saveManifest } from '../manifest.js';
 import { getCatalogMcp, MCP_CATALOG, validateMcpEntry } from '../mcps.js';
 import { SKILLS } from '../profiles.js';
 import { runSync } from './sync.js';
@@ -8,7 +8,9 @@ import { runSync } from './sync.js';
 async function loadManifestOrFail(targetDir) {
   const manifest = await loadManifest(targetDir);
   if (!manifest) {
-    throw new Error(`No ${MANIFEST_FILENAME} found in ${targetDir}. Run \`agent-starter init\` first.`);
+    throw new Error(
+      `No ${MANIFEST_FILENAME} found in ${targetDir}. Run \`agent-starter init\` first.`,
+    );
   }
   return manifest;
 }
@@ -43,8 +45,8 @@ export async function addMcp(name, options = {}) {
       entry = getCatalogMcp(name);
       if (!entry) {
         throw new Error(
-          `Unknown MCP: ${name}. Known: ${Object.keys(MCP_CATALOG).join(', ')}. `
-          + 'For anything else pass --command/--args or --url (and --env/--header KEY=VALUE).',
+          `Unknown MCP: ${name}. Known: ${Object.keys(MCP_CATALOG).join(', ')}. ` +
+            'For anything else pass --command/--args or --url (and --env/--header KEY=VALUE).',
         );
       }
     }
@@ -66,7 +68,9 @@ export async function addSkill(name, options = {}) {
     const manifest = await loadManifestOrFail(targetDir);
 
     if (!SKILLS.some((skill) => skill.id === name)) {
-      throw new Error(`Unknown skill: ${name}. Run \`agent-starter init\` to see available skills.`);
+      throw new Error(
+        `Unknown skill: ${name}. Run \`agent-starter init\` to see available skills.`,
+      );
     }
 
     manifest.version ??= MANIFEST_VERSION;

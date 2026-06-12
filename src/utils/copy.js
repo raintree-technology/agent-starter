@@ -1,19 +1,19 @@
-import { copy, pathExists, remove, ensureDir, move } from "fs-extra";
-import { lstat, mkdtemp, readFile, writeFile } from "fs/promises";
-import { join, dirname, resolve, basename } from "path";
-import { fileURLToPath } from "url";
-import { isValidSkillPath, isPathSafe, isValidCommandName, sanitizeForLog } from "./security.js";
-import { AGENT_TARGETS } from "../agents.js";
+import { lstat, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { basename, dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { copy, ensureDir, move, pathExists, remove } from 'fs-extra';
+import { AGENT_TARGETS } from '../agents.js';
+import { isPathSafe, isValidCommandName, isValidSkillPath, sanitizeForLog } from './security.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const LEGACY_SKILLS_PREFIX = "skills/";
-const INSTALL_STAGING_PREFIX = ".claude-install-";
-const INSTALL_BACKUP_PREFIX = ".claude.backup.";
-const SKILL_MARKDOWN_FILENAMES = ["skill.md", "SKILL.md"];
+const LEGACY_SKILLS_PREFIX = 'skills/';
+const INSTALL_STAGING_PREFIX = '.claude-install-';
+const INSTALL_BACKUP_PREFIX = '.claude.backup.';
+const SKILL_MARKDOWN_FILENAMES = ['skill.md', 'SKILL.md'];
 
 export function normalizeSkillPath(skillPath) {
-  if (typeof skillPath !== "string") {
+  if (typeof skillPath !== 'string') {
     throw new Error(`Invalid skill path: ${String(skillPath)}`);
   }
 
@@ -44,7 +44,7 @@ async function assertRegularTemplateFile(src, description) {
 }
 
 function shouldCopyTemplatePath(src) {
-  if (basename(src) === "settings.local.json" || basename(src) === "settings.local.json.example") {
+  if (basename(src) === 'settings.local.json' || basename(src) === 'settings.local.json.example') {
     return false;
   }
 
@@ -86,7 +86,7 @@ async function replaceDirectory(stagedDir, finalDir) {
       await remove(backupDir);
     }
   } catch (error) {
-    if (movedExisting && !(await pathExists(finalDir)) && await pathExists(backupDir)) {
+    if (movedExisting && !(await pathExists(finalDir)) && (await pathExists(backupDir))) {
       await move(backupDir, finalDir, { overwrite: false });
     }
     throw new Error(`Failed to replace ${finalDir}: ${error.message}`, { cause: error });
@@ -102,17 +102,17 @@ async function replaceDirectory(stagedDir, finalDir) {
  * Returns: /path/to/package/templates/.claude
  */
 export function getTemplatesDir() {
-  return join(__dirname, "../../templates/.claude");
+  return join(__dirname, '../../templates/.claude');
 }
 
 export function getAgentTemplateDir(agent) {
-  if (agent === "claude") {
+  if (agent === 'claude') {
     return getTemplatesDir();
   }
   if (!AGENT_TARGETS[agent]) {
     throw new Error(`Unknown agent target: ${sanitizeForLog(String(agent))}`);
   }
-  return join(__dirname, "../../templates", agent);
+  return join(__dirname, '../../templates', agent);
 }
 
 /**
@@ -120,7 +120,7 @@ export function getAgentTemplateDir(agent) {
  * Returns: /path/to/package/templates/.claude/skills
  */
 export function getSkillsDir() {
-  return join(getTemplatesDir(), "skills");
+  return join(getTemplatesDir(), 'skills');
 }
 
 function getAgentOutputDir(targetDir, agent) {
@@ -132,64 +132,68 @@ function getAgentOutputDir(targetDir, agent) {
 }
 
 function cursorRuleName(skillPath) {
-  return normalizeSkillPath(skillPath).replaceAll("/", "--");
+  return normalizeSkillPath(skillPath).replaceAll('/', '--');
 }
 
 function splitFrontmatter(markdown) {
-  if (!markdown.startsWith("---\n")) {
+  if (!markdown.startsWith('---\n')) {
     return { metadata: {}, body: markdown };
   }
 
-  const endIndex = markdown.indexOf("\n---", 4);
+  const endIndex = markdown.indexOf('\n---', 4);
   if (endIndex === -1) {
     return { metadata: {}, body: markdown };
   }
 
   const frontmatter = markdown.slice(4, endIndex).trim();
-  const bodyStart = markdown.indexOf("\n", endIndex + 4);
-  const body = bodyStart === -1 ? "" : markdown.slice(bodyStart + 1);
+  const bodyStart = markdown.indexOf('\n', endIndex + 4);
+  const body = bodyStart === -1 ? '' : markdown.slice(bodyStart + 1);
   const metadata = {};
-  const frontmatterLines = frontmatter.split("\n");
+  const frontmatterLines = frontmatter.split('\n');
 
   for (let index = 0; index < frontmatterLines.length; index += 1) {
     const line = frontmatterLines[index];
-    const separator = line.indexOf(":");
+    const separator = line.indexOf(':');
     if (separator === -1) continue;
     const key = line.slice(0, separator).trim();
     const value = line.slice(separator + 1).trim();
     if (!key) continue;
 
-    if ([">", ">-", "|", "|-"].includes(value)) {
+    if (['>', '>-', '|', '|-'].includes(value)) {
       const blockLines = [];
       while (
         index + 1 < frontmatterLines.length &&
-        (frontmatterLines[index + 1].startsWith(" ") || frontmatterLines[index + 1].trim() === "")
+        (frontmatterLines[index + 1].startsWith(' ') || frontmatterLines[index + 1].trim() === '')
       ) {
         index += 1;
-        blockLines.push(frontmatterLines[index].replace(/^ {2}/, ""));
+        blockLines.push(frontmatterLines[index].replace(/^ {2}/, ''));
       }
-      metadata[key] = value.startsWith("|")
-        ? blockLines.join("\n").trim()
-        : blockLines.map((blockLine) => blockLine.trim()).join(" ").replace(/\s+/g, " ").trim();
+      metadata[key] = value.startsWith('|')
+        ? blockLines.join('\n').trim()
+        : blockLines
+            .map((blockLine) => blockLine.trim())
+            .join(' ')
+            .replace(/\s+/g, ' ')
+            .trim();
       continue;
     }
 
-    metadata[key] = value.replace(/^"(.*)"$/, "$1").replaceAll('\\"', '"');
+    metadata[key] = value.replace(/^"(.*)"$/, '$1').replaceAll('\\"', '"');
   }
 
   return { metadata, body };
 }
 
 function normalizeDescriptionForAgent(description) {
-  return String(description || "")
-    .replaceAll("Use when Claude needs", "Use when the agent needs")
-    .replaceAll("When Claude needs", "When the agent needs")
-    .replaceAll("Claude needs", "the agent needs");
+  return String(description || '')
+    .replaceAll('Use when Claude needs', 'Use when the agent needs')
+    .replaceAll('When Claude needs', 'When the agent needs')
+    .replaceAll('Claude needs', 'the agent needs');
 }
 
 function normalizeCursorBody(skillPath, body) {
   const ruleName = cursorRuleName(skillPath);
-  return body.replaceAll("`references/", `\`${ruleName}/references/`);
+  return body.replaceAll('`references/', `\`${ruleName}/references/`);
 }
 
 async function getSkillMarkdownSource(skillPath) {
@@ -197,7 +201,7 @@ async function getSkillMarkdownSource(skillPath) {
   const skillDir = resolve(getSkillsDir(), normalizedSkillPath);
 
   if (!isPathSafe(skillDir, getSkillsDir())) {
-    throw new Error("Security: skill path escapes templates directory");
+    throw new Error('Security: skill path escapes templates directory');
   }
   if (!(await pathExists(skillDir))) {
     throw new Error(`Skill not found: ${normalizedSkillPath}`);
@@ -208,7 +212,7 @@ async function getSkillMarkdownSource(skillPath) {
     const markdownPath = join(skillDir, fileName);
     if (await pathExists(markdownPath)) {
       await assertRegularTemplateFile(markdownPath, `${normalizedSkillPath} skill markdown`);
-      const markdown = await readFile(markdownPath, "utf-8");
+      const markdown = await readFile(markdownPath, 'utf-8');
       const parsed = splitFrontmatter(markdown);
       return {
         skillDir,
@@ -236,29 +240,29 @@ async function writeGeneratedFile(destPath, content, options = {}) {
     throw new Error(`File already exists: ${sanitizeForLog(destPath)}. Use --force to overwrite.`);
   }
   await ensureDir(dirname(destPath));
-  await writeFile(destPath, content, "utf-8");
+  await writeFile(destPath, content, 'utf-8');
 }
 
 async function copyCodexSkill(targetDir, skillPath, options = {}) {
   const source = await getSkillMarkdownSource(skillPath);
-  const codexSkillsRoot = resolve(targetDir, ".codex", "skills");
+  const codexSkillsRoot = resolve(targetDir, '.codex', 'skills');
   const destDir = resolve(codexSkillsRoot, source.normalizedSkillPath);
-  const destPath = resolve(destDir, "SKILL.md");
+  const destPath = resolve(destDir, 'SKILL.md');
 
   if (!isPathSafe(destPath, codexSkillsRoot)) {
-    throw new Error("Security: destination path escapes .codex skills directory");
+    throw new Error('Security: destination path escapes .codex skills directory');
   }
 
   const description = normalizeDescriptionForAgent(source.metadata.description);
   const name = source.metadata.name || source.normalizedSkillPath;
   const content = [
-    "---",
+    '---',
     `name: ${name}`,
     `description: ${description}`,
-    "---",
-    "",
+    '---',
+    '',
     source.body.trimStart(),
-  ].join("\n");
+  ].join('\n');
 
   await writeGeneratedFile(destPath, content, options);
   await copySkillSupportFiles(source.skillDir, destDir, options);
@@ -268,25 +272,25 @@ async function copyCodexSkill(targetDir, skillPath, options = {}) {
 
 async function copyCursorSkill(targetDir, skillPath, options = {}) {
   const source = await getSkillMarkdownSource(skillPath);
-  const rulesRoot = resolve(targetDir, ".cursor", "rules");
+  const rulesRoot = resolve(targetDir, '.cursor', 'rules');
   const ruleName = cursorRuleName(source.normalizedSkillPath);
   const destPath = resolve(rulesRoot, `${ruleName}.mdc`);
   const supportDir = resolve(rulesRoot, ruleName);
 
   if (!isPathSafe(destPath, rulesRoot) || !isPathSafe(supportDir, rulesRoot)) {
-    throw new Error("Security: destination path escapes .cursor rules directory");
+    throw new Error('Security: destination path escapes .cursor rules directory');
   }
 
   const description = normalizeDescriptionForAgent(source.metadata.description);
   const content = [
-    "---",
+    '---',
     `description: ${JSON.stringify(description)}`,
-    "globs:",
-    "alwaysApply: false",
-    "---",
-    "",
+    'globs:',
+    'alwaysApply: false',
+    '---',
+    '',
     normalizeCursorBody(source.normalizedSkillPath, source.body.trimStart()),
-  ].join("\n");
+  ].join('\n');
 
   await writeGeneratedFile(destPath, content, options);
   await copySkillSupportFiles(source.skillDir, supportDir, options);
@@ -312,7 +316,7 @@ export async function getSkillSummaries(skillPaths) {
  */
 export async function copyAll(targetDir, options = {}) {
   const templatesDir = getTemplatesDir();
-  const claudeDir = join(targetDir, ".claude");
+  const claudeDir = join(targetDir, '.claude');
 
   if (await pathExists(claudeDir)) {
     if (options.force) {
@@ -333,7 +337,7 @@ export async function copyAll(targetDir, options = {}) {
       return claudeDir;
     } else if (!options.merge) {
       throw new Error(
-        ".claude directory already exists. Use --force to overwrite or --merge to merge.",
+        '.claude directory already exists. Use --force to overwrite or --merge to merge.',
       );
     }
   }
@@ -356,13 +360,13 @@ export async function copySkill(targetDir, skillPath, options = {}) {
 
   const skillsDir = getSkillsDir();
   const srcPath = resolve(skillsDir, normalizedSkillPath);
-  const destPath = resolve(targetDir, ".claude/skills", normalizedSkillPath);
+  const destPath = resolve(targetDir, '.claude/skills', normalizedSkillPath);
 
   // Security: Verify resolved paths stay within expected directories
   if (!isPathSafe(srcPath, getSkillsDir())) {
     throw new Error(`Security: skill path escapes templates directory`);
   }
-  if (!isPathSafe(destPath, resolve(targetDir, ".claude/skills"))) {
+  if (!isPathSafe(destPath, resolve(targetDir, '.claude/skills'))) {
     throw new Error(`Security: destination path escapes .claude directory`);
   }
 
@@ -374,9 +378,7 @@ export async function copySkill(targetDir, skillPath, options = {}) {
   await rejectSymlink(srcPath);
 
   if ((await pathExists(destPath)) && !options.force) {
-    throw new Error(
-      `Skill already installed: ${skillPath}. Use --force to overwrite.`,
-    );
+    throw new Error(`Skill already installed: ${skillPath}. Use --force to overwrite.`);
   }
 
   await ensureDir(dirname(destPath));
@@ -418,32 +420,34 @@ export async function copySkills(targetDir, skillPaths, options = {}) {
  * Check if a skill is installed
  */
 export async function isSkillInstalled(targetDir, skillPath) {
-  const destPath = join(targetDir, ".claude", "skills", normalizeSkillPath(skillPath));
+  const destPath = join(targetDir, '.claude', 'skills', normalizeSkillPath(skillPath));
   return pathExists(destPath);
 }
 
 export async function isAgentSkillInstalled(targetDir, agent, skillPath) {
   const normalizedSkillPath = normalizeSkillPath(skillPath);
-  if (agent === "claude") {
+  if (agent === 'claude') {
     return isSkillInstalled(targetDir, normalizedSkillPath);
   }
-  if (agent === "codex") {
-    return pathExists(join(targetDir, ".codex", "skills", normalizedSkillPath, "SKILL.md"));
+  if (agent === 'codex') {
+    return pathExists(join(targetDir, '.codex', 'skills', normalizedSkillPath, 'SKILL.md'));
   }
-  if (agent === "cursor") {
-    return pathExists(join(targetDir, ".cursor", "rules", `${cursorRuleName(normalizedSkillPath)}.mdc`));
+  if (agent === 'cursor') {
+    return pathExists(
+      join(targetDir, '.cursor', 'rules', `${cursorRuleName(normalizedSkillPath)}.mdc`),
+    );
   }
   throw new Error(`Unknown agent target: ${sanitizeForLog(String(agent))}`);
 }
 
 export async function copyAgentEssentials(targetDir, agent, options = {}) {
-  if (agent === "claude") {
+  if (agent === 'claude') {
     return copyEssentials(targetDir, options);
   }
 
   const templatesDir = getAgentTemplateDir(agent);
   const outputDir = getAgentOutputDir(targetDir, agent);
-  const readmePath = join(templatesDir, "README.md");
+  const readmePath = join(templatesDir, 'README.md');
 
   if (await pathExists(readmePath)) {
     await assertRegularTemplateFile(readmePath, `${agent} README template`);
@@ -452,26 +456,26 @@ export async function copyAgentEssentials(targetDir, agent, options = {}) {
   await ensureDir(outputDir);
 
   if (await pathExists(readmePath)) {
-    await copy(readmePath, join(outputDir, "README.md"), {
+    await copy(readmePath, join(outputDir, 'README.md'), {
       overwrite: options.force,
     });
   }
 
-  if (agent === "cursor") {
-    await ensureDir(join(outputDir, "rules"));
+  if (agent === 'cursor') {
+    await ensureDir(join(outputDir, 'rules'));
   }
 
   return outputDir;
 }
 
 export async function copyAgentSkill(targetDir, agent, skillPath, options = {}) {
-  if (agent === "claude") {
+  if (agent === 'claude') {
     return copySkill(targetDir, skillPath, options);
   }
-  if (agent === "codex") {
+  if (agent === 'codex') {
     return copyCodexSkill(targetDir, skillPath, options);
   }
-  if (agent === "cursor") {
+  if (agent === 'cursor') {
     return copyCursorSkill(targetDir, skillPath, options);
   }
   throw new Error(`Unknown agent target: ${sanitizeForLog(String(agent))}`);
@@ -498,28 +502,31 @@ export async function copyAgentSkills(targetDir, agent, skillPaths, options = {}
 
 export async function writeCodexAgentsFile(targetDir, skillPaths, options = {}) {
   const summaries = await getSkillSummaries(skillPaths);
-  const destPath = resolve(targetDir, "AGENTS.md");
+  const destPath = resolve(targetDir, 'AGENTS.md');
 
-  const skillList = summaries.map((skill) => (
-    `- \`${skill.id}\`: ${skill.description}\n  Read \`.codex/skills/${skill.id}/SKILL.md\` before using this skill.`
-  )).join("\n");
+  const skillList = summaries
+    .map(
+      (skill) =>
+        `- \`${skill.id}\`: ${skill.description}\n  Read \`.codex/skills/${skill.id}/SKILL.md\` before using this skill.`,
+    )
+    .join('\n');
 
   const content = [
-    "# AGENTS.md",
-    "",
-    "This project includes Agent Starter guidance for Codex.",
-    "",
-    "When a user request matches one of the skills below, read the matching local skill file before answering, planning, or editing. Keep the selected skill active only for the current task unless the user asks to continue that workflow.",
-    "",
-    "## Skills",
-    "",
-    skillList || "- No skills were installed.",
-    "",
-    "## Local Skill Files",
-    "",
-    "Codex skill files are stored under `.codex/skills/<skill-id>/SKILL.md` so project-specific expertise can live with the repository.",
-    "",
-  ].join("\n");
+    '# AGENTS.md',
+    '',
+    'This project includes Agent Starter guidance for Codex.',
+    '',
+    'When a user request matches one of the skills below, read the matching local skill file before answering, planning, or editing. Keep the selected skill active only for the current task unless the user asks to continue that workflow.',
+    '',
+    '## Skills',
+    '',
+    skillList || '- No skills were installed.',
+    '',
+    '## Local Skill Files',
+    '',
+    'Codex skill files are stored under `.codex/skills/<skill-id>/SKILL.md` so project-specific expertise can live with the repository.',
+    '',
+  ].join('\n');
 
   await writeGeneratedFile(destPath, content, options);
   return destPath;
@@ -527,29 +534,27 @@ export async function writeCodexAgentsFile(targetDir, skillPaths, options = {}) 
 
 export async function writeCursorProjectRule(targetDir, skillPaths, options = {}) {
   const summaries = await getSkillSummaries(skillPaths);
-  const rulesRoot = resolve(targetDir, ".cursor", "rules");
-  const destPath = resolve(rulesRoot, "agent-starter.mdc");
+  const rulesRoot = resolve(targetDir, '.cursor', 'rules');
+  const destPath = resolve(rulesRoot, 'agent-starter.mdc');
 
-  const skillList = summaries.map((skill) => (
-    `- \`${skill.id}\`: ${skill.description}`
-  )).join("\n");
+  const skillList = summaries.map((skill) => `- \`${skill.id}\`: ${skill.description}`).join('\n');
 
   const content = [
-    "---",
+    '---',
     'description: "Agent Starter skill-selection guidance for Cursor"',
-    "globs:",
-    "alwaysApply: true",
-    "---",
-    "",
-    "# Agent Starter",
-    "",
-    "Use the project rules in this directory when a request matches their descriptions. Each skill rule is Agent Requested by default so Cursor can select it when the task context calls for it.",
-    "",
-    "## Installed Skills",
-    "",
-    skillList || "- No skills were installed.",
-    "",
-  ].join("\n");
+    'globs:',
+    'alwaysApply: true',
+    '---',
+    '',
+    '# Agent Starter',
+    '',
+    'Use the project rules in this directory when a request matches their descriptions. Each skill rule is Agent Requested by default so Cursor can select it when the task context calls for it.',
+    '',
+    '## Installed Skills',
+    '',
+    skillList || '- No skills were installed.',
+    '',
+  ].join('\n');
 
   await writeGeneratedFile(destPath, content, options);
   return destPath;
@@ -557,21 +562,21 @@ export async function writeCursorProjectRule(targetDir, skillPaths, options = {}
 
 export async function copyEssentials(targetDir, options = {}) {
   const templatesDir = getTemplatesDir();
-  const claudeDir = join(targetDir, ".claude");
+  const claudeDir = join(targetDir, '.claude');
 
   await ensureDir(claudeDir);
 
-  const settingsPath = join(templatesDir, "settings.json");
-  const readmePath = join(templatesDir, "README.md");
+  const settingsPath = join(templatesDir, 'settings.json');
+  const readmePath = join(templatesDir, 'README.md');
 
-  await assertRegularTemplateFile(settingsPath, "settings template");
-  await assertRegularTemplateFile(readmePath, "README template");
+  await assertRegularTemplateFile(settingsPath, 'settings template');
+  await assertRegularTemplateFile(readmePath, 'README template');
 
-  await copy(settingsPath, join(claudeDir, "settings.json"), {
+  await copy(settingsPath, join(claudeDir, 'settings.json'), {
     overwrite: options.force,
   });
 
-  await copy(readmePath, join(claudeDir, "README.md"), {
+  await copy(readmePath, join(claudeDir, 'README.md'), {
     overwrite: options.force,
   });
 
@@ -580,11 +585,11 @@ export async function copyEssentials(targetDir, options = {}) {
 
 export async function copyToonUtils(targetDir, options = {}) {
   const templatesDir = getTemplatesDir();
-  const srcToonDir = join(templatesDir, "utils", "toon");
-  const destToonDir = join(targetDir, ".claude", "utils", "toon");
+  const srcToonDir = join(templatesDir, 'utils', 'toon');
+  const destToonDir = join(targetDir, '.claude', 'utils', 'toon');
 
   if (!(await pathExists(srcToonDir))) {
-    throw new Error("TOON utility wrapper is missing from templates");
+    throw new Error('TOON utility wrapper is missing from templates');
   }
 
   await ensureDir(dirname(destToonDir));
@@ -605,8 +610,8 @@ export async function copyCommands(targetDir, commandNames, options = {}) {
   }
 
   const templatesDir = getTemplatesDir();
-  const commandsDir = join(targetDir, ".claude/commands");
-  const commandsTemplateDir = join(templatesDir, "commands");
+  const commandsDir = join(targetDir, '.claude/commands');
+  const commandsTemplateDir = join(templatesDir, 'commands');
 
   for (const commandName of commandNames) {
     if (!isValidCommandName(commandName)) {
@@ -640,8 +645,8 @@ export async function copyCommands(targetDir, commandNames, options = {}) {
  */
 export async function copyHooks(targetDir, options = {}) {
   const templatesDir = getTemplatesDir();
-  const srcHooksDir = join(templatesDir, "hooks");
-  const destHooksDir = join(targetDir, ".claude/hooks");
+  const srcHooksDir = join(templatesDir, 'hooks');
+  const destHooksDir = join(targetDir, '.claude/hooks');
 
   if (!(await pathExists(srcHooksDir))) {
     return;

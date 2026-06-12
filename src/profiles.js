@@ -1,9 +1,6 @@
 import { getCatalogMcp } from './mcps.js';
 
-export const HCI_SKILLS = [
-  'human-processor-model',
-  'goms-klm-analysis',
-];
+export const HCI_SKILLS = ['human-processor-model', 'goms-klm-analysis'];
 
 export const HIG_SKILLS = [
   'hig-doctor-audit',
@@ -113,8 +110,15 @@ export const profiles = {
 
   'next-saas': {
     name: 'Next.js SaaS',
-    description: 'Stack-aware profile for Next.js SaaS apps (next-starter): cleanup + copywriting skills, finish-setup provisioning, and Neon/Stripe/Resend/PostHog/GitHub MCPs',
-    skills: ['finish-setup', 'cleanup-unused', 'cleanup-types', 'cleanup-slop', 'copywriting-frameworks'],
+    description:
+      'Stack-aware profile for Next.js SaaS apps (next-starter): cleanup + copywriting skills, finish-setup provisioning, and Neon/Stripe/Resend/PostHog/GitHub MCPs',
+    skills: [
+      'finish-setup',
+      'cleanup-unused',
+      'cleanup-types',
+      'cleanup-slop',
+      'copywriting-frameworks',
+    ],
     mcps: catalogMcps('neon', 'stripe', 'resend', 'posthog', 'github'),
     toon: false,
     hooks: false,
@@ -167,7 +171,10 @@ export function detectStackProfile(packageJson) {
     ...(packageJson.dependencies || {}),
     ...(packageJson.devDependencies || {}),
   };
-  if (deps.next && (deps['drizzle-orm'] || deps['better-auth'] || deps['@neondatabase/serverless'])) {
+  if (
+    deps.next &&
+    (deps['drizzle-orm'] || deps['better-auth'] || deps['@neondatabase/serverless'])
+  ) {
     return 'next-saas';
   }
   if (deps.next) {

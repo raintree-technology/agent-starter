@@ -1,12 +1,8 @@
-import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
+import test from 'node:test';
 
-import {
-  isValidCommandName,
-  isPathSafe,
-  sanitizeForLog,
-} from '../src/utils/security.js';
+import { isPathSafe, isValidCommandName, sanitizeForLog } from '../src/utils/security.js';
 
 // ── FIX 5: Command name validation ──────────────────────────────────────
 
@@ -82,10 +78,10 @@ test('sanitizeForLog coerces non-string input to a string', () => {
 test('settings.local.json template is renamed to .example', () => {
   assert.ok(
     existsSync('templates/.claude/settings.local.json.example'),
-    'settings.local.json.example should exist'
+    'settings.local.json.example should exist',
   );
   assert.ok(
     !existsSync('templates/.claude/settings.local.json'),
-    'settings.local.json should NOT exist (renamed to .example)'
+    'settings.local.json should NOT exist (renamed to .example)',
   );
 });

@@ -1,12 +1,12 @@
-import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
-import { lstat, mkdtemp, readFile, rm, mkdir, writeFile, readdir } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { lstat, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import test from 'node:test';
 import { promisify } from 'node:util';
-
+import { parseAgentTargets } from '../src/agents.js';
 import {
   copyAgentEssentials,
   copyAgentSkills,
@@ -21,7 +21,6 @@ import {
   writeCursorProjectRule,
 } from '../src/utils/copy.js';
 import { setupToonBinary } from '../src/utils/toon.js';
-import { parseAgentTargets } from '../src/agents.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -61,14 +60,16 @@ test('codex target installs local skills and root AGENTS guidance', async (t) =>
     true,
   );
   assert.equal(
-    existsSync(join(
-      dir,
-      '.codex',
-      'skills',
-      'copywriting-frameworks',
-      'references',
-      'direct-response-patterns.md',
-    )),
+    existsSync(
+      join(
+        dir,
+        '.codex',
+        'skills',
+        'copywriting-frameworks',
+        'references',
+        'direct-response-patterns.md',
+      ),
+    ),
     true,
   );
   assert.equal(existsSync(join(dir, 'AGENTS.md')), true);
@@ -85,14 +86,16 @@ test('cursor target installs project rules and skill references', async (t) => {
   assert.equal(existsSync(join(dir, '.cursor', 'rules', 'agent-starter.mdc')), true);
   assert.equal(existsSync(join(dir, '.cursor', 'rules', 'copywriting-frameworks.mdc')), true);
   assert.equal(
-    existsSync(join(
-      dir,
-      '.cursor',
-      'rules',
-      'copywriting-frameworks',
-      'references',
-      'direct-response-patterns.md',
-    )),
+    existsSync(
+      join(
+        dir,
+        '.cursor',
+        'rules',
+        'copywriting-frameworks',
+        'references',
+        'direct-response-patterns.md',
+      ),
+    ),
     true,
   );
   assert.equal(await isAgentSkillInstalled(dir, 'cursor', 'copywriting-frameworks'), true);
@@ -100,10 +103,7 @@ test('cursor target installs project rules and skill references', async (t) => {
 
 test('real Apple HIG skills install with references for Codex and Cursor', async (t) => {
   const dir = await withTempDir(t);
-  const skillPaths = [
-    'hig-foundations',
-    'hig-components-layout',
-  ];
+  const skillPaths = ['hig-foundations', 'hig-components-layout'];
 
   await copyAgentEssentials(dir, 'codex');
   await copyAgentSkills(dir, 'codex', skillPaths);
@@ -142,14 +142,16 @@ test('copywriting skill installs with its reference material', async (t) => {
     true,
   );
   assert.equal(
-    existsSync(join(
-      dir,
-      '.claude',
-      'skills',
-      'copywriting-frameworks',
-      'references',
-      'direct-response-patterns.md',
-    )),
+    existsSync(
+      join(
+        dir,
+        '.claude',
+        'skills',
+        'copywriting-frameworks',
+        'references',
+        'direct-response-patterns.md',
+      ),
+    ),
     true,
   );
 });
@@ -178,10 +180,7 @@ test('copySkills preflights all requested skills before writing', async (t) => {
 test('copyCommands rejects traversal before creating command output', async (t) => {
   const dir = await withTempDir(t);
 
-  await assert.rejects(
-    copyCommands(dir, ['../escape']),
-    /Invalid command name/,
-  );
+  await assert.rejects(copyCommands(dir, ['../escape']), /Invalid command name/);
 
   assert.equal(existsSync(join(dir, '.claude', 'commands')), false);
 });
@@ -233,14 +232,7 @@ test('CLI explicit init subcommand respects non-interactive options', async (t) 
   const dir = await withTempDir(t);
   const cliPath = resolve('bin/cli.js');
 
-  await execFileAsync(process.execPath, [
-    cliPath,
-    'init',
-    dir,
-    '--yes',
-    '--profile',
-    'minimal',
-  ]);
+  await execFileAsync(process.execPath, [cliPath, 'init', dir, '--yes', '--profile', 'minimal']);
 
   assert.equal(existsSync(join(dir, '.claude', 'skills', 'toon-formatter', 'skill.md')), true);
   assert.equal(existsSync(join(dir, '.claude', 'utils', 'toon', 'cli.mjs')), true);
@@ -262,8 +254,14 @@ test('CLI can install all supported agent targets', async (t) => {
     'copywriting-frameworks',
   ]);
 
-  assert.equal(existsSync(join(dir, '.claude', 'skills', 'copywriting-frameworks', 'skill.md')), true);
-  assert.equal(existsSync(join(dir, '.codex', 'skills', 'copywriting-frameworks', 'SKILL.md')), true);
+  assert.equal(
+    existsSync(join(dir, '.claude', 'skills', 'copywriting-frameworks', 'skill.md')),
+    true,
+  );
+  assert.equal(
+    existsSync(join(dir, '.codex', 'skills', 'copywriting-frameworks', 'SKILL.md')),
+    true,
+  );
   assert.equal(existsSync(join(dir, 'AGENTS.md')), true);
   assert.equal(existsSync(join(dir, '.cursor', 'rules', 'copywriting-frameworks.mdc')), true);
 });

@@ -3,7 +3,7 @@
 // Uses gpt-tokenizer (OpenAI BPE) as a proxy for Claude's tokenizer.
 // Writes RESULTS.md with a markdown table.
 
-import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { encode as toonEncode } from '@toon-format/toon';
@@ -15,7 +15,9 @@ const RESULTS = join(__dirname, 'RESULTS.md');
 
 const countTokens = (text) => gptEncode(text).length;
 
-const files = readdirSync(WORKLOADS).filter((f) => f.endsWith('.json')).sort();
+const files = readdirSync(WORKLOADS)
+  .filter((f) => f.endsWith('.json'))
+  .sort();
 
 const rows = files.map((f) => {
   const path = join(WORKLOADS, f);
@@ -24,7 +26,6 @@ const rows = files.map((f) => {
 
   let toonStr;
   let toonTokens;
-  let savedPct;
   let encodeError = null;
   try {
     toonStr = toonEncode(data);
@@ -37,7 +38,7 @@ const rows = files.map((f) => {
 
   const jsonTokens = countTokens(raw);
   const delta = toonTokens !== null ? jsonTokens - toonTokens : null;
-  savedPct = delta !== null && jsonTokens ? (delta / jsonTokens) * 100 : null;
+  const savedPct = delta !== null && jsonTokens ? (delta / jsonTokens) * 100 : null;
 
   return {
     file: f,

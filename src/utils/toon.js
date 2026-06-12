@@ -1,5 +1,5 @@
-import { existsSync, lstatSync } from 'fs';
-import { join } from 'path';
+import { existsSync, lstatSync } from 'node:fs';
+import { join } from 'node:path';
 
 const TOON_WRAPPER_RELATIVE_PATH = ['utils', 'toon', 'cli.mjs'];
 

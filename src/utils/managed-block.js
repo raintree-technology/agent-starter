@@ -1,14 +1,16 @@
-import { readFile, writeFile } from 'fs/promises';
-import { pathExists, ensureDir } from 'fs-extra';
-import { dirname } from 'path';
+import { readFile, writeFile } from 'node:fs/promises';
+import { dirname } from 'node:path';
+import { ensureDir, pathExists } from 'fs-extra';
 
 const MARKER_STYLES = {
   markdown: {
-    begin: '<!-- agent-starter:begin (generated; edits inside this block are overwritten by `agent-starter sync`) -->',
+    begin:
+      '<!-- agent-starter:begin (generated; edits inside this block are overwritten by `agent-starter sync`) -->',
     end: '<!-- agent-starter:end -->',
   },
   hash: {
-    begin: '# >>> agent-starter:begin (generated; edits inside this block are overwritten by `agent-starter sync`)',
+    begin:
+      '# >>> agent-starter:begin (generated; edits inside this block are overwritten by `agent-starter sync`)',
     end: '# <<< agent-starter:end',
   },
 };
@@ -46,7 +48,9 @@ export async function upsertManagedBlock(filePath, blockContent, style) {
     const separator = existing.endsWith('\n') ? '\n' : '\n\n';
     next = `${existing}${separator}${block}\n`;
   } else {
-    throw new Error(`Corrupted agent-starter markers in ${filePath}. Remove the stray marker and re-run sync.`);
+    throw new Error(
+      `Corrupted agent-starter markers in ${filePath}. Remove the stray marker and re-run sync.`,
+    );
   }
 
   await writeFile(filePath, next, 'utf-8');

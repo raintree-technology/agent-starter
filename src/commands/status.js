@@ -1,12 +1,12 @@
+import { readFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import chalk from 'chalk';
-import { readFile } from 'fs/promises';
 import { pathExists } from 'fs-extra';
-import { join, resolve } from 'path';
+import { AGENT_TARGETS } from '../agents.js';
+import { loadManifest, MANIFEST_FILENAME, resolveManifest } from '../manifest.js';
+import { buildMcpServersMap } from '../mcps.js';
 import { isAgentSkillInstalled } from '../utils/copy.js';
 import { readManagedBlock } from '../utils/managed-block.js';
-import { loadManifest, resolveManifest, MANIFEST_FILENAME } from '../manifest.js';
-import { buildMcpServersMap } from '../mcps.js';
-import { AGENT_TARGETS } from '../agents.js';
 
 const MCP_JSON_PATHS = {
   claude: ['.mcp.json'],
@@ -45,7 +45,7 @@ async function diffMcpJsonTarget(targetDir, target, plan) {
 async function diffCodexMcps(targetDir, plan) {
   const block = await readManagedBlock(join(targetDir, '.codex', 'config.toml'), 'hash');
   const missing = plan.mcps
-    .filter((entry) => !block || !block.includes(`[mcp_servers.${entry.name}]`))
+    .filter((entry) => !block?.includes(`[mcp_servers.${entry.name}]`))
     .map((entry) => entry.name);
   return { missing, drifted: [], unmanaged: [] };
 }
@@ -54,7 +54,9 @@ export async function getStatus(dir = '.') {
   const targetDir = resolve(dir);
   const manifest = await loadManifest(targetDir);
   if (!manifest) {
-    throw new Error(`No ${MANIFEST_FILENAME} found in ${targetDir}. Run \`agent-starter init\` first.`);
+    throw new Error(
+      `No ${MANIFEST_FILENAME} found in ${targetDir}. Run \`agent-starter init\` first.`,
+    );
   }
   const plan = resolveManifest(manifest);
   const report = { plan, targets: {} };
@@ -77,18 +79,23 @@ export async function getStatus(dir = '.') {
     report.targets[target] = { missingSkills, mcps };
   }
 
-  report.inSync = Object.values(report.targets).every((targetReport) => (
-    targetReport.missingSkills.length === 0
-    && targetReport.mcps.missing.length === 0
-    && targetReport.mcps.drifted.length === 0
-  ));
+  report.inSync = Object.values(report.targets).every(
+    (targetReport) =>
+      targetReport.missingSkills.length === 0 &&
+      targetReport.mcps.missing.length === 0 &&
+      targetReport.mcps.drifted.length === 0,
+  );
   return report;
 }
 
 export async function status(dir = '.') {
   try {
     const report = await getStatus(dir);
-    console.log(chalk.bold(`\nagent.json status${report.plan.profile ? ` (profile: ${report.plan.profile})` : ''}\n`));
+    console.log(
+      chalk.bold(
+        `\nagent.json status${report.plan.profile ? ` (profile: ${report.plan.profile})` : ''}\n`,
+      ),
+    );
 
     for (const [target, targetReport] of Object.entries(report.targets)) {
       const label = AGENT_TARGETS[target].name;
@@ -109,7 +116,9 @@ export async function status(dir = '.') {
         console.log(`  ${chalk.red('✗')} ${label} — ${problems.join('; ')}`);
       }
       if (targetReport.mcps.unmanaged.length > 0) {
-        console.log(chalk.dim(`      unmanaged MCPs (left alone): ${targetReport.mcps.unmanaged.join(', ')}`));
+        console.log(
+          chalk.dim(`      unmanaged MCPs (left alone): ${targetReport.mcps.unmanaged.join(', ')}`),
+        );
       }
     }
 

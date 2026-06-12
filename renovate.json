@@ -1,0 +1,3 @@
+{
+  "extends": ["github>raintree-technology/.github//configs/renovate-base.json"]
+}
