@@ -7,6 +7,16 @@ No orchestration framework. No aspirational YAML. Just agent-native project file
 [![npm version](https://img.shields.io/npm/v/create-agent-starter.svg)](https://www.npmjs.com/package/create-agent-starter)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+## Star History
+
+<a href="https://star-history.com/#raintree-technology/agent-starter&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=raintree-technology/agent-starter&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=raintree-technology/agent-starter&type=Date" />
+    <img alt="Star history chart for raintree-technology/agent-starter" src="https://api.star-history.com/svg?repos=raintree-technology/agent-starter&type=Date" />
+  </picture>
+</a>
+
 ## What you get
 
 **29 shipped skills**:
