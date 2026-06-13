@@ -258,6 +258,11 @@ export async function init(dir = '.', options = {}) {
       console.log(chalk.dim('  Cursor project rules:'));
       console.log(`     ${chalk.cyan(join(targetDir, '.cursor/rules'))}`);
     }
+    console.log(chalk.dim('  Re-sync from agent.json:'));
+    console.log(`     ${chalk.cyan('npx create-agent-starter@latest sync')}`);
+    console.log(chalk.dim('  Optional global CLI for repeated sync/status/add:'));
+    console.log(`     ${chalk.cyan('npm i -g create-agent-starter')}`);
+    console.log(`     ${chalk.cyan('agent-starter sync')}`);
     console.log('');
   } catch (error) {
     spinner.fail('Installation failed');

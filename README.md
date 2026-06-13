@@ -67,6 +67,8 @@ Claude remains the default for backwards compatibility. Use `--agent all` to ins
 
 ## Install
 
+First run / project setup:
+
 ```bash
 # Claude Code only (default)
 npx create-agent-starter@latest
@@ -83,6 +85,19 @@ npx create-agent-starter@latest --agent all
 # Backwards-compatible aliases still work
 npx create-claude-starter@3.0.1 --agent all
 ```
+
+Optional global CLI for repeated `sync`, `status`, and `add` commands:
+
+```bash
+npm i -g create-agent-starter
+
+agent-starter sync
+agent-starter status
+agent-starter add mcp neon
+agent-starter add skill cleanup-types
+```
+
+For team setup, prefer the `npx create-agent-starter@latest ...` commands above so contributors do not need a preinstalled global binary.
 
 For Claude TOON commands, add the runtime deps to your project:
 
@@ -108,16 +123,16 @@ Stack profiles (`next-saas`, `next`, `node`, `base`) additionally bundle MCP ser
 `init` writes an `agent.json` manifest at the project root — the single declaration of the project's agent environment (profile, targets, skills, MCP servers). Check it into git; every contributor then runs:
 
 ```bash
-npx agent-starter sync
+npx create-agent-starter@latest sync
 ```
 
-and gets identical native config for whichever agent they use: skills plus `.mcp.json` (Claude Code), `.codex/config.toml` + `AGENTS.md` (Codex), and `.cursor/mcp.json` + rules (Cursor). Sync is idempotent — generated sections are fenced with markers, manual edits outside them survive, and MCP entries agent-starter didn't write are never touched.
+or `agent-starter sync` after installing the global CLI, and gets identical native config for whichever agent they use: skills plus `.mcp.json` (Claude Code), `.codex/config.toml` + `AGENTS.md` (Codex), and `.cursor/mcp.json` + rules (Cursor). Sync is idempotent — generated sections are fenced with markers, manual edits outside them survive, and MCP entries agent-starter didn't write are never touched.
 
 ```bash
-npx agent-starter status            # diff agent.json vs native configs; exits 1 on drift
-npx agent-starter add mcp neon      # catalog: github, neon, stripe, resend, posthog
-npx agent-starter add mcp internal --command ./bin/mcp --env API_KEY='${API_KEY}'
-npx agent-starter add skill cleanup-types
+npx create-agent-starter@latest status            # diff agent.json vs native configs; exits 1 on drift
+npx create-agent-starter@latest add mcp neon      # catalog: github, neon, stripe, resend, posthog
+npx create-agent-starter@latest add mcp internal --command ./bin/mcp --env API_KEY='${API_KEY}'
+npx create-agent-starter@latest add skill cleanup-types
 ```
 
 Secrets are referenced as `${VAR}` and resolved by each agent at runtime — never written to the generated files. Sync appends missing vars to `.env.example` and warns when they're unset.

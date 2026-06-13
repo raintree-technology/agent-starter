@@ -19,7 +19,7 @@ The rules-sync space is already crowded (ruler, rulesync, agent_sync). The MCP-i
 
 `agent.json` is to agent environments what `package.json` is to Node projects.
 
-Check it into git. Every contributor runs `npx agent-starter sync` and their agent — whichever one they use — is fully configured. No README setup steps, no config drift between teammates.
+Check it into git. Every contributor runs `npx create-agent-starter@latest sync` and their agent — whichever one they use — is fully configured. No README setup steps, no config drift between teammates. Contributors who run the CLI often can optionally install it globally with `npm i -g create-agent-starter` and use `agent-starter sync`.
 
 ---
 
@@ -99,7 +99,7 @@ Profiles are a starting point, not a lock-in. Anything in `agent.json` overrides
 
 ### Profile detection
 
-`npx agent-starter init` reads `package.json`, `starter.config.ts`, and `.env.example` to infer the best profile. It shows what it found and confirms before writing `agent.json`.
+`npx create-agent-starter@latest init` reads `package.json`, `starter.config.ts`, and `.env.example` to infer the best profile. It shows what it found and confirms before writing `agent.json`.
 
 ---
 
@@ -125,14 +125,14 @@ Owns the **agent environment**. `agent.json`, profiles, sync, skills — everyth
 
 ### The handshake
 
-The scaffolder's last step writes `agent.json` with `"profile": "next-saas"` and runs `npx agent-starter sync`. That's the entire coupling — a profile name and a schema version. Both packages release independently; the contract is the profile.
+The scaffolder's last step writes `agent.json` with `"profile": "next-saas"` and runs `npx create-agent-starter@latest sync`. That's the entire coupling — a profile name and a schema version. Both packages release independently; the contract is the profile.
 
 ```
 npm create next-saas-starter my-app
   → prompts (tenancy, integrations, agent targets)
   → scaffold app + starter.config.ts
   → write agent.json (profile: next-saas)
-  → npx agent-starter sync        ← .claude/ + AGENTS.md + .cursor/ all configured
+  → npx create-agent-starter@latest sync        ← .claude/ + AGENTS.md + .cursor/ all configured
   → vercel link (optional)
 ```
 
@@ -158,7 +158,7 @@ No other starter does this. Everyone else stops at "here's your `.env.example`, 
 
 ## CLI
 
-### `npx agent-starter sync`
+### `npx create-agent-starter@latest sync`
 
 Reads `agent.json` and writes native config for all listed targets. Safe to re-run — generated sections are fenced with markers so manual edits outside the markers survive.
 
@@ -168,25 +168,27 @@ Reads `agent.json` and writes native config for all listed targets. Safe to re-r
 
 For rules/skills sync, agent-starter writes directly. It does not delegate to ruler or rulesync — adding a dependency for something this simple would be worse than owning the small set of target formats.
 
-### `npx agent-starter init`
+### `npx create-agent-starter@latest init`
 
 Interactive setup. Detects stack → proposes profile → confirms → writes `agent.json` → runs sync. Generates `.env.example` entries for any MCP env vars not already present.
 
-### `npx agent-starter add mcp <name-or-package>`
+### `npx create-agent-starter@latest add mcp <name-or-package>`
 
 Adds an MCP entry to `agent.json`, prompts for required env vars, appends to `.env.example`, re-syncs.
 
-### `npx agent-starter add skill <name>`
+### `npx create-agent-starter@latest add skill <name>`
 
 Resolves skill from skills.sh or local templates, adds to `agent.json`, installs skill files, re-syncs.
 
-### `npx agent-starter status`
+### `npx create-agent-starter@latest status`
 
 Diffs `agent.json` against what's currently in each target's native config. Shows what's in sync and what's drifted.
 
-### `npx create-agent-starter` (unchanged alias)
+### `npx create-agent-starter@latest` (unchanged alias)
 
 Runs `init`. Existing CLI aliases (`claude-starter`, `create-claude-starter`) preserved.
+
+Optional global CLI for repeated use: `npm i -g create-agent-starter`, then `agent-starter sync`, `agent-starter status`, and `agent-starter add ...`.
 
 ---
 

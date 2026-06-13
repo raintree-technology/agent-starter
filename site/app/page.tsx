@@ -169,10 +169,10 @@ function Manifest() {
     `}`,
   ].join("\n");
   const commands = [
-    { code: "npx agent-starter sync", note: "agent.json → native config for every target" },
-    { code: "npx agent-starter status", note: "diff manifest vs configs; exits 1 on drift" },
-    { code: "npx agent-starter add mcp neon", note: "catalog: github, neon, stripe, resend, posthog" },
-    { code: "npx agent-starter add skill cleanup-types", note: "add a shipped skill and re-sync" },
+    { code: "npx create-agent-starter@latest sync", note: "agent.json → native config for every target" },
+    { code: "npx create-agent-starter@latest status", note: "diff manifest vs configs; exits 1 on drift" },
+    { code: "npx create-agent-starter@latest add mcp neon", note: "catalog: github, neon, stripe, resend, posthog" },
+    { code: "npx create-agent-starter@latest add skill cleanup-types", note: "add a shipped skill and re-sync" },
   ];
   return (
     <section id="manifest" className="scroll-mt-20 border-t border-border/60">
@@ -181,10 +181,14 @@ function Manifest() {
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
           One declarative manifest for the whole agent environment. Check it into git; every
           contributor runs{" "}
-          <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">npx agent-starter sync</code>{" "}
-          and gets identical skills and MCP servers in whichever agent they use. Sync is
-          idempotent — generated sections are fenced with markers, manual edits outside them
-          survive, and MCP entries agent-starter didn&apos;t write are never touched. Secrets stay{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">
+            npx create-agent-starter@latest sync
+          </code>{" "}
+          or{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">agent-starter sync</code>{" "}
+          after a global install, and gets identical skills and MCP servers in whichever agent
+          they use. Sync is idempotent — generated sections are fenced with markers, manual edits
+          outside them survive, and MCP entries agent-starter didn&apos;t write are never touched. Secrets stay{" "}
           <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">{"${VAR}"}</code>{" "}
           references, resolved by each agent at runtime.
         </p>
@@ -504,11 +508,22 @@ function Install() {
         <SectionLabel>Install</SectionLabel>
         <ol className="mt-8 space-y-5 font-mono text-sm">
           <Snippet step="1" code="npx create-agent-starter@latest --agent all" hint="init: detect stack, write agent.json, sync" />
-          <Snippet step="2" code="npx agent-starter sync" hint="teammates: agent.json → native config" />
+          <Snippet step="2" code="npx create-agent-starter@latest sync" hint="teammates: agent.json → native config" />
           <Snippet step="3" code="npx create-agent-starter@latest --agent codex,cursor --profile apple-hig" hint="HIG Doctor profile" />
           <Snippet step="4" code="npx create-agent-starter@latest --agent codex,cursor --skills copywriting-frameworks,cleanup-unused" hint="targeted install" />
           <Snippet step="5" code="npm i @toon-format/toon gpt-tokenizer" hint="for Claude /toon-* commands" />
         </ol>
+        <div className="mt-8 rounded-md border border-border/60 bg-muted/30 px-4 py-3.5 font-mono text-sm">
+          <p className="text-xs text-muted-foreground">Optional global CLI for repeated sync/status/add commands</p>
+          <code className="mt-3 block overflow-x-auto">
+            <span className="select-none text-muted-foreground">$ </span>
+            npm i -g create-agent-starter
+          </code>
+          <code className="mt-2 block overflow-x-auto">
+            <span className="select-none text-muted-foreground">$ </span>
+            agent-starter status
+          </code>
+        </div>
       </div>
     </section>
   );

@@ -47,7 +47,7 @@ async function buildClaudeSkillsBlock(skills) {
   return [
     '## Agent Starter skills',
     '',
-    'Managed by `agent.json` — run `npx agent-starter sync` after editing it.',
+    'Managed by `agent.json` — run `npx create-agent-starter@latest sync` after editing it, or `agent-starter sync` with the global CLI.',
     '',
     ...summaries.map((skill) => `- \`${skill.id}\`: ${skill.description}`),
   ].join('\n');
@@ -150,7 +150,7 @@ export async function runSync(dir = '.', options = {}) {
   const targetDir = resolve(dir);
   const manifest = await loadManifest(targetDir);
   if (!manifest) {
-    throw new Error(`No ${MANIFEST_FILENAME} found in ${targetDir}. Run \`agent-starter init\` first.`);
+    throw new Error(`No ${MANIFEST_FILENAME} found in ${targetDir}. Run \`npx create-agent-starter@latest init\` first.`);
   }
   const plan = resolveManifest(manifest);
 

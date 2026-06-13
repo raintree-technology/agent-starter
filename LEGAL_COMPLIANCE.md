@@ -44,7 +44,7 @@ Created TRADEMARKS.md with proper disclaimers for:
 
 **External Documentation:**
 - Vendor docs are not bundled in the published package
-- Users pull separately through `npx agent-starter docs pull <skill>` for Claude installs or by using the vendor documentation directly
+- Users use vendor documentation directly or manage any local documentation pulls outside the published package
 - Respects robots.txt and ToS of documentation sites
 
 ## ✅ Tooling Distribution

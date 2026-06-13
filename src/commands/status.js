@@ -54,7 +54,7 @@ export async function getStatus(dir = '.') {
   const targetDir = resolve(dir);
   const manifest = await loadManifest(targetDir);
   if (!manifest) {
-    throw new Error(`No ${MANIFEST_FILENAME} found in ${targetDir}. Run \`agent-starter init\` first.`);
+    throw new Error(`No ${MANIFEST_FILENAME} found in ${targetDir}. Run \`npx create-agent-starter@latest init\` first.`);
   }
   const plan = resolveManifest(manifest);
   const report = { plan, targets: {} };
@@ -115,7 +115,9 @@ export async function status(dir = '.') {
 
     console.log('');
     if (!report.inSync) {
-      console.log(chalk.yellow('Run `agent-starter sync` to reconcile.\n'));
+      console.log(chalk.yellow(
+        'Run `npx create-agent-starter@latest sync` to reconcile, or `agent-starter sync` with the global CLI.\n',
+      ));
       process.exitCode = 1;
     }
   } catch (error) {
